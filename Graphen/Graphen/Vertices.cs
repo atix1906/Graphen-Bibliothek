@@ -8,5 +8,16 @@ namespace Graphen
 {
     class Vertices
     {
+        public bool mUsed = false;
+        public string name;
+
+        public Vertices()
+        {
+
+        }
+        public Vertices(string name)
+        {
+            this.name = name;
+        }
     }
 }
