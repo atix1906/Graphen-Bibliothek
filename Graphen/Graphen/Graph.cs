@@ -9,8 +9,8 @@ namespace Graphen
 {
     class Graph
     {
-        private List<Edges> edges;
-        private List<Vertices> vertices;
+        public List<Edges> edges;
+        public List<Vertices> vertices;
         private string[] fileGraph;
 
         public Graph()
@@ -20,11 +20,52 @@ namespace Graphen
         }
 
         //Generiert Graphen
-        public void setFileGraph(string[] Graph)
+        public void SetFileGraph(string[] Graph)
         {
             fileGraph = Graph;
             generateGraph();
         }
+
+        #region Getter Funktionen
+
+        public List<Vertices> GetVerticesList()
+        {
+            return vertices;
+        }
+
+        public List<Edges> GetEdgesList()
+        {
+            return edges;
+        }
+
+        public List<List<Vertices>> GetAdjazenzliste()
+        {
+            List<List<Vertices>> adjazenzliste = new List<List<Vertices>>();
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                adjazenzliste.Add(new List<Vertices>());
+            }
+
+            for (int i = 0; i < edges.Count; i++)
+            {
+                adjazenzliste[Int32.Parse(edges[i].connectedVertices[0].name)].Add(edges[i].connectedVertices[1]);  //Anhängen der Knoten an die jeweilige Liste
+            }
+
+            try
+            {
+                for (int i = 0; i < adjazenzliste.Count; i++)
+                {
+                    adjazenzliste[i] = adjazenzliste[i].OrderBy(o => Int32.Parse(o.name)).ToList();
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("GetAdjazenzliste " + ex.ToString());
+            }
+            return adjazenzliste;
+        }
+
+        #endregion
 
         private void generateGraph()
         {
@@ -39,15 +80,15 @@ namespace Graphen
 
             if (checkIfAdjMatrix >= numberVertices)
             {
-                buildFromAdjMatrix(checkIfAdjMatrix);
+                BuildFromAdjMatrix(checkIfAdjMatrix);
             }
             else
             {
-                buildFromEdgeList();
+                BuildFromEdgeList();
             }
         }
 
-        private void buildFromAdjMatrix(int size)
+        private void BuildFromAdjMatrix(int size)
         {
             int rows, cols;
             rows = cols = size;
@@ -80,11 +121,11 @@ namespace Graphen
             catch (Exception ex)
             {
                 MessageBox.Show("Graph buildFromAdjMatrix" + ex.ToString());
-                clearGraph();
+                ClearGraph();
             }
         }
 
-        private void buildFromEdgeList()
+        private void BuildFromEdgeList()
         {
             try
             {
@@ -96,16 +137,19 @@ namespace Graphen
 
                     newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[0])]);
                     newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[1])]);
+                    newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt sind
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Graph buildFromEdgeList" + ex.ToString());
-                clearGraph();
+                ClearGraph();
             }
         }
 
-        public void clearGraph()
+
+
+        public void ClearGraph()
         {
             edges.Clear();
             vertices.Clear();

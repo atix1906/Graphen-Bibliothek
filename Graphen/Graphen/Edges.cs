@@ -14,5 +14,7 @@ namespace Graphen
         {
             connectedVertices = new List<Vertices>();
         }
+
+
     }
 }

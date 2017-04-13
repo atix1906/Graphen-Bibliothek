@@ -13,16 +13,18 @@ namespace Graphen
 {
     public partial class Form1 : Form
     {
-        private Graph mGraph;
+        private Graph graph;
+        private Functions functions;
         public Form1()
         {
             InitializeComponent();
-            mGraph = new Graph();
+            graph = new Graph();
+            functions = new Functions(graph);
+
         }
 
         private void loadGraph_Click(object sender, EventArgs e)
         {
-            Stream myStream = null;
             OpenFileDialog openFileDialogGetGraph = new OpenFileDialog();
 
             openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum";
@@ -36,7 +38,7 @@ namespace Graphen
                 {
                     if (File.Exists(openFileDialogGetGraph.FileName))
                     {
-                        mGraph.setFileGraph(File.ReadAllLines(openFileDialogGetGraph.FileName));
+                        graph.SetFileGraph(File.ReadAllLines(openFileDialogGetGraph.FileName));
                     }
                 }
                 catch (Exception ex)
@@ -48,7 +50,35 @@ namespace Graphen
 
         private void clearBtn_Click(object sender, EventArgs e)
         {
-            mGraph.clearGraph();
+            graph.ClearGraph();
+        }
+
+        private void breitensucheBtn_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+                functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value);
+            }
+            else
+            {
+                MessageBox.Show("Bei der Breitensuche ist etwas schief gegangen.");
+            }
+        }
+
+        private void tiefensucheBtn_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+            }
+            else
+            {
+                MessageBox.Show("Bei der Tiefensuche ist etwas schief gegangen.");
+            }
         }
     }
 }

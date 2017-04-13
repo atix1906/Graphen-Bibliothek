@@ -8,7 +8,7 @@ namespace Graphen
 {
     class Vertices
     {
-        public bool mUsed = false;
+        public bool used = false;
         public string name;
 
         public Vertices()
