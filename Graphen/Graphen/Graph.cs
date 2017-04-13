@@ -12,6 +12,7 @@ namespace Graphen
         public List<Edges> edges;
         public List<Vertices> vertices;
         private string[] fileGraph;
+        private List<List<Vertices>> adjazenzliste;
 
         public Graph()
         {
@@ -24,6 +25,7 @@ namespace Graphen
         {
             fileGraph = Graph;
             generateGraph();
+            generateAdjazenzliste();
         }
 
         #region Getter Funktionen
@@ -40,7 +42,12 @@ namespace Graphen
 
         public List<List<Vertices>> GetAdjazenzliste()
         {
-            List<List<Vertices>> adjazenzliste = new List<List<Vertices>>();
+            return this.adjazenzliste;
+        }
+
+        private void generateAdjazenzliste()
+        {
+            adjazenzliste = new List<List<Vertices>>();
             for (int i = 0; i < vertices.Count; i++)
             {
                 adjazenzliste.Add(new List<Vertices>());
@@ -62,7 +69,6 @@ namespace Graphen
             {
                 MessageBox.Show("GetAdjazenzliste " + ex.ToString());
             }
-            return adjazenzliste;
         }
 
         #endregion
@@ -73,7 +79,6 @@ namespace Graphen
             for (int i = 0; i < numberVertices; i++)          //Fügt Anzahl der in der 1. Zeile der .txt Datei angegebenen Knoten der Liste hinzu
             {
                 vertices.Add(new Vertices(i.ToString()));
-
             }
 
             int checkIfAdjMatrix = fileGraph[1].Split('\t').Length;    //Anzahl der Tabs dient zur Entscheidung ob Adjazenzmatrix oder Kantenliste
@@ -135,9 +140,16 @@ namespace Graphen
                     edges.Add(new Edges());
                     Edges newEdge = edges.ElementAt<Edges>(edges.Count - 1);
 
-                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[0])]);
+                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[0])]);       //Hinrichtung
                     newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[1])]);
-                    newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt sind
+                    newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt
+
+                    edges.Add(new Edges());
+                    newEdge = edges.ElementAt<Edges>(edges.Count - 1);
+
+                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[1])]);       //Rückrichtung
+                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[0])]);
+                    newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt
                 }
             }
             catch (Exception ex)

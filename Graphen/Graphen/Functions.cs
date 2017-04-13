@@ -21,7 +21,7 @@ namespace Graphen
         }
 
 
-        public void BreitensucheIterativ(Graph graph, int v0)
+        public int BreitensucheIterativ(Graph graph, int v0)
         {
             this.graph = graph;
             Queue<Vertices> queueVertices = new Queue<Vertices>();
@@ -46,22 +46,55 @@ namespace Graphen
                         queueVertices.Enqueue(adjazentliste[Int32.Parse(activeNode.name)].ElementAt(i));
                     }
                 }
-                if (queueVertices.Count == 0)
+
+                if (queueVertices.Count == 0)       //Suche nach noch nicht verwendeten Knoten
                 {
                     Vertices toEnqueue = new Vertices();
                     toEnqueue = vertices.FirstOrDefault<Vertices>(x => x.used == false);
                     if (toEnqueue != null)
                     {
-                        //vertices.Contains(toEnqueue);
                         toEnqueue.used = true;
                         queueVertices.Enqueue(toEnqueue);
                         countZusammenhangskompontenten++;
                     }
                 }
             }
-            //edges.Sort()
+            return countZusammenhangskompontenten;
+        }
 
 
+        public int StartTiefensucheRekursiv(Graph graph, int v)
+        {
+            int countZusammenhangskomponente = 1;
+            int startknoten = v;
+            TiefensucheRekursiv(startknoten, v, graph.GetAdjazenzliste(), graph.vertices, ref countZusammenhangskomponente);
+
+            return countZusammenhangskomponente;
+        }
+
+        private void TiefensucheRekursiv(int startknoten, int v, List<List<Vertices>> adjazenzliste, List<Vertices> vertices, ref int countZusammenhangskomponente)
+        {
+            vertices[v].used = true;
+            for (int i = 0; i < adjazenzliste[v].Count; i++)
+            {
+                if (!adjazenzliste[v].ElementAt<Vertices>(i).used)
+                {
+                    TiefensucheRekursiv(startknoten, Int32.Parse(adjazenzliste[v].ElementAt<Vertices>(i).name), adjazenzliste, vertices, ref countZusammenhangskomponente);
+                }
+
+            }
+
+            if (v == startknoten)
+            {
+                Vertices toVisit = new Vertices();
+                toVisit = vertices.FirstOrDefault<Vertices>(x => x.used == false);
+                if (toVisit != null)
+                {
+                    TiefensucheRekursiv(Int32.Parse(toVisit.name), Int32.Parse(toVisit.name), adjazenzliste, vertices, ref countZusammenhangskomponente);
+                    countZusammenhangskomponente++;
+                }
+
+            }
         }
     }
 }

@@ -51,6 +51,7 @@ namespace Graphen
         private void clearBtn_Click(object sender, EventArgs e)
         {
             graph.ClearGraph();
+            this.graph = new Graph();
         }
 
         private void breitensucheBtn_Click(object sender, EventArgs e)
@@ -59,7 +60,7 @@ namespace Graphen
             {
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
-                functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value);
+                textBoxZusammenhangskomponente.Text = functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value).ToString();
             }
             else
             {
@@ -73,7 +74,7 @@ namespace Graphen
             {
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
-
+                textBoxZusammenhangskomponente.Text = functions.StartTiefensucheRekursiv(graph, (int)numericUpDownStartknoten.Value).ToString();
             }
             else
             {
