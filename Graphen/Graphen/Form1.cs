@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Graphen
 {
@@ -15,12 +16,13 @@ namespace Graphen
     {
         private Graph graph;
         private Functions functions;
+        private Stopwatch sw;
         public Form1()
         {
             InitializeComponent();
             graph = new Graph();
             functions = new Functions(graph);
-
+            sw = new Stopwatch();
         }
 
         private void loadGraph_Click(object sender, EventArgs e)
@@ -60,7 +62,14 @@ namespace Graphen
             {
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
-                textBoxZusammenhangskomponente.Text = functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value).ToString();
+                
+                sw.Restart();
+                int zusammenhangskomponenten = functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value);
+                MessageBox.Show("Breitensuche(iterativ)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString() +
+                    "\nElapsed Time: "+sw.Elapsed.ToString());
+
+                sw.Stop();
+                ResetUsedVertices();
             }
             else
             {
@@ -74,11 +83,29 @@ namespace Graphen
             {
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
-                textBoxZusammenhangskomponente.Text = functions.StartTiefensucheRekursiv(graph, (int)numericUpDownStartknoten.Value).ToString();
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                int zusammenhangskomponenten = functions.StartTiefensucheRekursiv(graph, (int)numericUpDownStartknoten.Value);
+                MessageBox.Show("Tiefensuche(rekursiv)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString() +
+                    "\nElapsed Time: " + sw.Elapsed.ToString());
+
+                sw.Stop();
+                ResetUsedVertices();
             }
             else
             {
                 MessageBox.Show("Bei der Tiefensuche ist etwas schief gegangen.");
+            }
+        }
+
+
+        private void ResetUsedVertices()
+        {
+            foreach (var item in graph.vertices)
+            {
+                item.used = false;
             }
         }
     }

@@ -45,6 +45,10 @@ namespace Graphen
             return this.adjazenzliste;
         }
 
+
+
+        #endregion
+
         private void generateAdjazenzliste()
         {
             adjazenzliste = new List<List<Vertices>>();
@@ -65,14 +69,11 @@ namespace Graphen
                     adjazenzliste[i] = adjazenzliste[i].OrderBy(o => Int32.Parse(o.name)).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("GetAdjazenzliste " + ex.ToString());
             }
         }
-
-        #endregion
-
         private void generateGraph()
         {
             int numberVertices = Int32.Parse(fileGraph[0]);
