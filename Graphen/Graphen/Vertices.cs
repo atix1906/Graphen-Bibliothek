@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Graphen
 {
-    class Vertices
+    class Vertex
     {
         public bool used = false;
-        public string name;
+        public int name;
 
-        public Vertices()
+        public Vertex()
         {
 
         }
-        public Vertices(string name)
+        public Vertex(int name)
         {
             this.name = name;
         }

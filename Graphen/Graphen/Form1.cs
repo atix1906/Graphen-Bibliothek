@@ -65,8 +65,8 @@ namespace Graphen
                 
                 sw.Restart();
                 int zusammenhangskomponenten = functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value);
-                MessageBox.Show("Breitensuche(iterativ)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString() +
-                    "\nElapsed Time: "+sw.Elapsed.ToString());
+                MessageBox.Show("Breitensuche(iterativ)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString());
+                    //+"\nElapsed Time: "+sw.Elapsed.ToString());
 
                 sw.Stop();
                 ResetUsedVertices();
@@ -88,8 +88,8 @@ namespace Graphen
                 sw.Restart();
 
                 int zusammenhangskomponenten = functions.StartTiefensucheRekursiv(graph, (int)numericUpDownStartknoten.Value);
-                MessageBox.Show("Tiefensuche(rekursiv)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString() +
-                    "\nElapsed Time: " + sw.Elapsed.ToString());
+                MessageBox.Show("Tiefensuche(rekursiv)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString());
+                //+"\nElapsed Time: " + sw.Elapsed.ToString());
 
                 sw.Stop();
                 ResetUsedVertices();

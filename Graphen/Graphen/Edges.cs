@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace Graphen
 {
-    class Edges
+    class Edge
     {
         public double cost = 0;
-        public List<Vertices> connectedVertices;          
-        public Edges()
+        public List<Vertex> connectedVertices;
+        public Vertex v1;
+        public Vertex v2;         
+        public Edge()
         {
-            connectedVertices = new List<Vertices>();
+            connectedVertices = new List<Vertex>();
         }
 
 

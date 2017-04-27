@@ -4,82 +4,100 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Graphen
 {
     class Graph
     {
-        public List<Edges> edges;
-        public List<Vertices> vertices;
+        public List<Edge> edges;
+        public List<Vertex> vertices;
         private string[] fileGraph;
-        private List<List<Vertices>> adjazenzliste;
+        private List<List<Vertex>> adjazenzliste;
 
         public Graph()
         {
-            edges = new List<Edges>();
-            vertices = new List<Vertices>();
+            edges = new List<Edge>();
+            vertices = new List<Vertex>();
         }
 
         //Generiert Graphen
         public void SetFileGraph(string[] Graph)
         {
             fileGraph = Graph;
-            generateGraph();
-            generateAdjazenzliste();
+            try
+            {
+                generateGraph();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("generateGraph()" + ex.ToString());
+            }
+            try
+            {
+                generateAdjazenzliste();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("generateAdjazenzliste()" + ex.ToString());
+            }
+
         }
 
         #region Getter Funktionen
 
-        public List<Vertices> GetVerticesList()
+        public List<Vertex> GetVerticesList()
         {
             return vertices;
         }
 
-        public List<Edges> GetEdgesList()
+        public List<Edge> GetEdgesList()
         {
             return edges;
         }
 
-        public List<List<Vertices>> GetAdjazenzliste()
+        public List<List<Vertex>> GetAdjazenzliste()
         {
             return this.adjazenzliste;
         }
-
-
 
         #endregion
 
         private void generateAdjazenzliste()
         {
-            adjazenzliste = new List<List<Vertices>>();
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            adjazenzliste = new List<List<Vertex>>();
             for (int i = 0; i < vertices.Count; i++)
             {
-                adjazenzliste.Add(new List<Vertices>());
+                adjazenzliste.Add(new List<Vertex>());
             }
 
             for (int i = 0; i < edges.Count; i++)
             {
-                adjazenzliste[Int32.Parse(edges[i].connectedVertices[0].name)].Add(edges[i].connectedVertices[1]);  //Anhängen der Knoten an die jeweilige Liste
+                adjazenzliste[edges[i].v1.name].Add(edges[i].v2);  //Anhängen der Knoten an die jeweilige Liste
             }
 
             try
             {
                 for (int i = 0; i < adjazenzliste.Count; i++)
                 {
-                    adjazenzliste[i] = adjazenzliste[i].OrderBy(o => Int32.Parse(o.name)).ToList();
+                    adjazenzliste[i] = adjazenzliste[i].OrderBy(o => o.name).ToList();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("GetAdjazenzliste " + ex.ToString());
             }
+            //sw.Stop();
+            //MessageBox.Show(sw.Elapsed.ToString());
         }
         private void generateGraph()
         {
             int numberVertices = Int32.Parse(fileGraph[0]);
             for (int i = 0; i < numberVertices; i++)          //Fügt Anzahl der in der 1. Zeile der .txt Datei angegebenen Knoten der Liste hinzu
             {
-                vertices.Add(new Vertices(i.ToString()));
+                vertices.Add(new Vertex(i));
             }
 
             int checkIfAdjMatrix = fileGraph[1].Split('\t').Length;    //Anzahl der Tabs dient zur Entscheidung ob Adjazenzmatrix oder Kantenliste
@@ -113,13 +131,13 @@ namespace Graphen
                     getRow = fileGraph[var_rows + 1].Split('\t');
                     isZero = getRow[var_cols];
 
-                    if (isZero != "0")          //
+                    if (isZero != "0")
                     {
-                        edges.Add(new Edges());
-                        Edges newEdge = edges.ElementAt<Edges>(edges.Count - 1);
+                        edges.Add(new Edge());
+                        Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                        newEdge.connectedVertices.Add(vertices[var_cols]);
-                        newEdge.connectedVertices.Add(vertices[var_rows]);
+                        newEdge.v1 = vertices[var_cols];
+                        newEdge.v2 = vertices[var_rows];
                         newEdge.cost = Int32.Parse(isZero);
                     }
                 }
@@ -131,26 +149,29 @@ namespace Graphen
             }
         }
 
-        private void BuildFromEdgeList()
+        private void BuildFromEdgeList(bool directedGraph = false)
         {
             try
             {
                 for (int i = 1; i < fileGraph.Length; i++)
                 {
                     string[] getEdge = fileGraph[i].Split('\t');
-                    edges.Add(new Edges());
-                    Edges newEdge = edges.ElementAt<Edges>(edges.Count - 1);
+                    edges.Add(new Edge());
+                    Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[0])]);       //Hinrichtung
-                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[1])]);
+                    newEdge.v1 = vertices[Int32.Parse(getEdge[0])];       //Hinrichtung
+                    newEdge.v2 = vertices[Int32.Parse(getEdge[1])];
                     newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt
 
-                    edges.Add(new Edges());
-                    newEdge = edges.ElementAt<Edges>(edges.Count - 1);
+                    if (!directedGraph)
+                    {
+                        edges.Add(new Edge());
+                        newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[1])]);       //Rückrichtung
-                    newEdge.connectedVertices.Add(vertices[Int32.Parse(getEdge[0])]);
-                    newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt
+                        newEdge.v1 = vertices[Int32.Parse(getEdge[1])];       //Rückrichtung
+                        newEdge.v2 = vertices[Int32.Parse(getEdge[0])];
+                        newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt
+                    }
                 }
             }
             catch (Exception ex)
