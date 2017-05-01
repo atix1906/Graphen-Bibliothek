@@ -105,10 +105,98 @@ namespace Graphen
 
         public void Kruskal(Graph G)
         {
+            List<Edge> edgeCost = G.edges.OrderBy(o => o.cost).ToList();
+            while (edgeCost != null)
+            {
 
+            }
         }
 
+        /// <summary>
+        /// Findet den minimalen Spannbaum mittels des Prim Algorithmus.
+        /// </summary>
+        /// <param name="G"></param>
+        /// <param name="v"></param>
+        public void Prim(Graph G, int v)
+        {
+            List<Vertex> verticesInGraph = G.vertices;
+            List<Edge> orderedEdges = G.edges.OrderBy(o => o.cost).ToList();
+            List<Edge> visitableEdges = new List<Edge>();
+            List<Edge> usedEdges = new List<Edge>();
+            List<Vertex> visitedVertex = new List<Vertex>();
+            for (int i = 0; i < G.edges.Count; i++)
+            {
+                List<Edge> tmp = FindAllEdgesConnectedToVertex(orderedEdges, v);
+
+                visitableEdges = AddAndSortByCost(visitableEdges, tmp);
+
+                verticesInGraph = MarkAsVisitedAndUpdateVertexList(verticesInGraph, v);
+
+                if (visitableEdges != null)
+                {
+                    Edge tmp2 = visitableEdges.FirstOrDefault((Edge e) => { return verticesInGraph.Contains(e.v2); });
+                    if (tmp2 == null)
+                    {
+                        continue;
+                    }
+                    usedEdges.Add(tmp2);
+                    v = usedEdges[usedEdges.Count - 1].v2.name;             // v ist nun der Knoten der mit der benutzten Kante verbunden ist
+                    visitableEdges.Remove(tmp2);
+                }
+            }
+            double MSTCost = getEdgeCostSum(usedEdges);
+        }
         #endregion
+
+        private double getEdgeCostSum(List<Edge> usedEdges)
+        {
+            double sum = 0;
+            foreach (var item in usedEdges)
+            {
+                sum += item.cost;
+            }
+            return sum;
+        }
+
+        /// <summary>
+        /// Durchsucht Kantenliste nach Kanten die mit einem Knoten verbunden sind
+        /// </summary>
+        /// <param name="edges"></param>
+        /// <param name="vertex"></param>
+        /// <returns></returns>
+        private List<Edge> FindAllEdgesConnectedToVertex(List<Edge> edges, int vertex)
+        {
+            return edges.FindAll((Edge e) => { return e.v1.name == vertex; });
+        }
+
+        /// <summary>
+        /// Fügt eine Kantenliste einer anderen Kantenliste hinzu und gibt eine nach Kosten sortierte Kantenliste zurück
+        /// </summary>
+        /// <param name="l1"></param>
+        /// <param name="l2"></param>
+        /// <returns></returns>
+        private List<Edge> AddAndSortByCost(List<Edge> l1, List<Edge> l2)
+        {
+            l1.AddRange(l2);
+            l1.OrderBy(o => o.cost);
+            return l1;
+        }
+
+        /// <summary>
+        /// Markiert benutzten Knoten und entfernt ihn aus der Knotenliste
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <param name="vertexToRemove"></param>
+        /// <returns></returns>
+        private List<Vertex> MarkAsVisitedAndUpdateVertexList(List<Vertex> vertices, int vertexToRemove)
+        {
+            int index = vertices.FindIndex((Vertex v) => { return v.name == vertexToRemove; });
+            if (index != -1)
+            {
+                vertices.RemoveAt(index);
+            }
+            return vertices;
+        }
 
     }
 }

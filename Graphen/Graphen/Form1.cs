@@ -108,5 +108,29 @@ namespace Graphen
                 item.used = false;
             }
         }
+
+        private void kruskalBtn_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                functions.Kruskal(graph);
+            }
+            else
+            {
+                MessageBox.Show("Beim Kruskal Algorithmus ist etwas schief gegangen.");
+            }
+        }
+
+        private void primBtn_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                functions.Prim(graph, (int)numericUpDownStartknoten.Value);
+            }
+            else
+            {
+                MessageBox.Show("Beim Prim Algorithmus ist etwas schief gegangen.");
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Graphen
 {
@@ -14,6 +15,8 @@ namespace Graphen
         public List<Vertex> vertices;
         private string[] fileGraph;
         private List<List<Vertex>> adjazenzliste;
+
+
 
         public Graph()
         {
@@ -55,6 +58,7 @@ namespace Graphen
         {
             return edges;
         }
+
 
         public List<List<Vertex>> GetAdjazenzliste()
         {
@@ -151,34 +155,49 @@ namespace Graphen
 
         private void BuildFromEdgeList(bool directedGraph = false)
         {
-            try
+            //try
+            //{
+            for (int i = 1; i < fileGraph.Length; i++)
             {
-                for (int i = 1; i < fileGraph.Length; i++)
+                string[] getEdge = fileGraph[i].Split('\t');
+                edges.Add(new Edge());
+                Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
+
+                newEdge.v1 = vertices[Int32.Parse(getEdge[0])];       //Hinrichtung
+                newEdge.v2 = vertices[Int32.Parse(getEdge[1])];
+                if (getEdge.Length > 2)
                 {
-                    string[] getEdge = fileGraph[i].Split('\t');
+                    newEdge.cost = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    newEdge.cost = 1;
+                }
+
+                if (!directedGraph)
+                {
                     edges.Add(new Edge());
-                    Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
+                    newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                    newEdge.v1 = vertices[Int32.Parse(getEdge[0])];       //Hinrichtung
-                    newEdge.v2 = vertices[Int32.Parse(getEdge[1])];
-                    newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt
+                    newEdge.v1 = vertices[Int32.Parse(getEdge[1])];       //Rückrichtung
+                    newEdge.v2 = vertices[Int32.Parse(getEdge[0])];
 
-                    if (!directedGraph)
+                    if (getEdge.Length > 2)
                     {
-                        edges.Add(new Edge());
-                        newEdge = edges.ElementAt<Edge>(edges.Count - 1);
-
-                        newEdge.v1 = vertices[Int32.Parse(getEdge[1])];       //Rückrichtung
-                        newEdge.v2 = vertices[Int32.Parse(getEdge[0])];
-                        newEdge.cost = 1;               ///TO DO: anpassen sobald Kosten bekannt
+                        newEdge.cost = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        newEdge.cost = 1;
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Graph buildFromEdgeList" + ex.ToString());
-                ClearGraph();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Graph buildFromEdgeList" + ex.ToString());
+            //    ClearGraph();
+            //}
         }
 
 
