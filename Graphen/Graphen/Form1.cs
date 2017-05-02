@@ -113,7 +113,17 @@ namespace Graphen
         {
             if (graph != null && functions != null)
             {
-                functions.Kruskal(graph);
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                double erg = functions.Kruskal(graph);
+                MessageBox.Show("Kruskal\nErgebnis: " + erg.ToString()
+                + "\nElapsed Time: " + sw.Elapsed.ToString());
+
+                sw.Stop();
             }
             else
             {
@@ -125,7 +135,19 @@ namespace Graphen
         {
             if (graph != null && functions != null)
             {
-                functions.Prim(graph, (int)numericUpDownStartknoten.Value);
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                
+
+                double erg = functions.Prim(graph, (int)numericUpDownStartknoten.Value);
+                MessageBox.Show("Prim\nErgebnis: " + erg.ToString()
+                +"\nElapsed Time: " + sw.Elapsed.ToString());
+
+                sw.Stop();
             }
             else
             {

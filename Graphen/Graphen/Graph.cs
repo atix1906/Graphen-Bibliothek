@@ -16,8 +16,6 @@ namespace Graphen
         private string[] fileGraph;
         private List<List<Vertex>> adjazenzliste;
 
-
-
         public Graph()
         {
             edges = new List<Edge>();
@@ -44,6 +42,8 @@ namespace Graphen
             {
                 MessageBox.Show("generateAdjazenzliste()" + ex.ToString());
             }
+
+            SortEdgesToVertex();
 
         }
 
@@ -200,7 +200,31 @@ namespace Graphen
             //}
         }
 
+        /// <summary>
+        /// Fügt die Kanten den jeweiligen Knoten hinzu
+        /// </summary>
+        private void SortEdgesToVertex()
+        {
+            try
+            {
+                for (int i = 0; i < edges.Count; i++)
+                {
+                    vertices[edges[i].v1.name].connectedEdges.Add(edges[i]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
+        public void SortConnectedEdgesByCost()
+        {
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                vertices[i].connectedEdges = vertices[i].connectedEdges.OrderBy(o => o.cost).ToList();
+            }
+        }
 
         public void ClearGraph()
         {

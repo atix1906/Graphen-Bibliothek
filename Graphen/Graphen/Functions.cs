@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Graphen
 {
     class Functions
     {
         private Graph graph;
-
+        Stopwatch sw = new Stopwatch();
+        Stopwatch sw2 = new Stopwatch();
         public Functions()
         {
 
@@ -103,13 +105,14 @@ namespace Graphen
 
         #region Praktikum 2 - Prim und Kruskal
 
-        public void Kruskal(Graph G)
+        public double Kruskal(Graph G)
         {
             List<Edge> edgeCost = G.edges.OrderBy(o => o.cost).ToList();
             while (edgeCost != null)
             {
 
             }
+            return 0;
         }
 
         /// <summary>
@@ -117,36 +120,87 @@ namespace Graphen
         /// </summary>
         /// <param name="G"></param>
         /// <param name="v"></param>
-        public void Prim(Graph G, int v)
+        public double Prim(Graph G, int v)
         {
+            TimeSpan t2, t3, t0, t1, t4;
+            //G.SortConnectedEdgesByCost();
             List<Vertex> verticesInGraph = G.vertices;
-            List<Edge> orderedEdges = G.edges.OrderBy(o => o.cost).ToList();
+            PriorityQueue queue = new PriorityQueue(G.vertices[v].connectedEdges);
+            var priorityQueue = new C5.IntervalHeap<Edge>();
+            sw.Restart();
+            t4 = sw.Elapsed;
             List<Edge> visitableEdges = new List<Edge>();
-            List<Edge> usedEdges = new List<Edge>();
-            List<Vertex> visitedVertex = new List<Vertex>();
-            for (int i = 0; i < G.edges.Count; i++)
+            List<Edge> edgesMST = new List<Edge>();
+            for (int i = 0; i < G.vertices.Count - 1; i++)
             {
-                List<Edge> tmp = FindAllEdgesConnectedToVertex(orderedEdges, v);
-
-                visitableEdges = AddAndSortByCost(visitableEdges, tmp);
-
-                verticesInGraph = MarkAsVisitedAndUpdateVertexList(verticesInGraph, v);
-
-                if (visitableEdges != null)
+                queue.heapSort();
+                visitableEdges = queue.ListEdges;
+                if (visitableEdges.Count > 0)
                 {
-                    Edge tmp2 = visitableEdges.FirstOrDefault((Edge e) => { return verticesInGraph.Contains(e.v2); });
-                    if (tmp2 == null)
+                    int j;
+                    sw.Restart();
+                    for (j = 0; j < visitableEdges.Count; j++)
                     {
-                        continue;
+                        if (!visitableEdges[j].v2.used)
+                        {
+                            edgesMST.Add(visitableEdges[j]);
+                            break;
+                        }
                     }
-                    usedEdges.Add(tmp2);
-                    v = usedEdges[usedEdges.Count - 1].v2.name;             // v ist nun der Knoten der mit der benutzten Kante verbunden ist
-                    visitableEdges.Remove(tmp2);
+                    t2 = sw.Elapsed;
+                    visitableEdges[j].v1.used = true;
+                    visitableEdges[j].v2.used = true;
+
+                    Edge tmp = visitableEdges[j].v2.connectedEdges.Find(o => o.v2 == visitableEdges[j].v1);
+
+                    List<Edge> notUsed = visitableEdges[j].v2.connectedEdges.FindAll((Edge e) => { return e.v2.used == false; });
+
+                    visitableEdges.AddRange(notUsed);
+
+                    //queue.AddElementsToQueue(visitableEdges[j].v2.connectedEdges);
+
+
+                    visitableEdges.RemoveAt(j);
+                    visitableEdges.Remove(tmp);
+                    sw.Restart();
+                    
+                    queue = new PriorityQueue(visitableEdges);
+                    t1 = sw.Elapsed;
                 }
+
+                //sw2.Restart();
+                //verticesInGraph[v].used = true;
+                //sw.Restart();
+                //visitableEdges.AddRange(verticesInGraph[v].connectedEdges);
+                // t1 = sw.Elapsed;
+
+                //if (visitableEdges != null)
+                //{
+                //    sw.Restart();
+                //    Edge tmp2 = FindCheapestEdge(visitableEdges, verticesInGraph);
+                //     t2 = sw.Elapsed;
+
+                //    //sw.Restart();
+                //    //visitableEdges = visitableEdges.OrderBy(o => o.cost).ToList();
+                //    //TimeSpan t3 = sw.Elapsed;
+                //    usedEdges.Add(tmp2);
+                //    v = usedEdges[usedEdges.Count - 1].v2.name;             // v ist nun der Knoten der mit der benutzten Kante verbunden ist
+                //    visitableEdges.Remove(tmp2);
+
+                //}
+                // t0 = sw2.Elapsed;
             }
-            double MSTCost = getEdgeCostSum(usedEdges);
+            return getEdgeCostSum(edgesMST);
         }
         #endregion
+
+
+        private C5.IntervalHeap<Edge> PriorityQueueEnqueueList(List<Edge> vertices)
+        {
+            var heap = new C5.IntervalHeap<Edge>();
+            heap.AddAll(vertices);
+            return heap;
+        }
 
         private double getEdgeCostSum(List<Edge> usedEdges)
         {
@@ -158,45 +212,11 @@ namespace Graphen
             return sum;
         }
 
-        /// <summary>
-        /// Durchsucht Kantenliste nach Kanten die mit einem Knoten verbunden sind
-        /// </summary>
-        /// <param name="edges"></param>
-        /// <param name="vertex"></param>
-        /// <returns></returns>
-        private List<Edge> FindAllEdgesConnectedToVertex(List<Edge> edges, int vertex)
-        {
-            return edges.FindAll((Edge e) => { return e.v1.name == vertex; });
-        }
 
-        /// <summary>
-        /// Fügt eine Kantenliste einer anderen Kantenliste hinzu und gibt eine nach Kosten sortierte Kantenliste zurück
-        /// </summary>
-        /// <param name="l1"></param>
-        /// <param name="l2"></param>
-        /// <returns></returns>
-        private List<Edge> AddAndSortByCost(List<Edge> l1, List<Edge> l2)
+        private Edge FindCheapestEdge(List<Edge> l, List<Vertex> v)
         {
-            l1.AddRange(l2);
-            l1.OrderBy(o => o.cost);
-            return l1;
+            int index = HelperFunctions.IndexOfMin(l);
+            return l[index];
         }
-
-        /// <summary>
-        /// Markiert benutzten Knoten und entfernt ihn aus der Knotenliste
-        /// </summary>
-        /// <param name="vertices"></param>
-        /// <param name="vertexToRemove"></param>
-        /// <returns></returns>
-        private List<Vertex> MarkAsVisitedAndUpdateVertexList(List<Vertex> vertices, int vertexToRemove)
-        {
-            int index = vertices.FindIndex((Vertex v) => { return v.name == vertexToRemove; });
-            if (index != -1)
-            {
-                vertices.RemoveAt(index);
-            }
-            return vertices;
-        }
-
     }
 }

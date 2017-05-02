@@ -11,6 +11,7 @@ namespace Graphen
         public bool used = false;
         public int name;
 
+        public List<Edge> connectedEdges = new List<Edge>();
         public Vertex()
         {
 

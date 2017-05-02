@@ -10,7 +10,7 @@ namespace Graphen
     {
         public double cost = 0;
         public Vertex v1;
-        public Vertex v2;         
+        public Vertex v2;
         public Edge()
         {
 
