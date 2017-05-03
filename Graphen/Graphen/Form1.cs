@@ -56,6 +56,7 @@ namespace Graphen
         private void clearBtn_Click(object sender, EventArgs e)
         {
             textBoxPrim.Clear();
+            textBoxKruskal.Clear();
             graph.ClearGraph();
             this.graph = new Graph();
         }
@@ -121,6 +122,7 @@ namespace Graphen
         {
             if (graph != null && functions != null)
             {
+                textBoxKruskal.Clear();
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
@@ -128,10 +130,10 @@ namespace Graphen
                 sw.Restart();
 
                 double erg = functions.Kruskal(graph);
-                MessageBox.Show("Kruskal\nErgebnis: " + erg.ToString()
-                + "\nElapsed Time: " + sw.Elapsed.ToString());
-
                 sw.Stop();
+                textBoxKruskal.AppendText(Math.Round(erg, 4).ToString());
+                MessageBox.Show("Kruskal\nElapsed Time: " + sw.Elapsed.ToString());
+                ResetGraph();
             }
             else
             {
@@ -149,13 +151,13 @@ namespace Graphen
 
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
-                
+
                 double erg = functions.Prim(graph, (int)numericUpDownStartknoten.Value);
+                sw.Stop();
                 
-                textBoxPrim.AppendText(Math.Round(erg, 3).ToString());
+                textBoxPrim.AppendText(Math.Round(erg, 4).ToString());
                 MessageBox.Show("Prim\nElapsed Time: " + sw.Elapsed.ToString());
 
-                sw.Stop();
                 ResetGraph();
             }
             else

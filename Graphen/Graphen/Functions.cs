@@ -24,6 +24,8 @@ namespace Graphen
         }
 
         #region Praktikum 1 - Breiten- und Tiefensuche
+
+        #region Breitensuche
         public int BreitensucheIterativ(Graph graph, int v0)
         {
             this.graph = graph;
@@ -64,7 +66,9 @@ namespace Graphen
             }
             return countZusammenhangskompontenten;
         }
+        #endregion
 
+        #region Tiefensuche
 
         public int StartTiefensucheRekursiv(Graph graph, int v)
         {
@@ -100,27 +104,55 @@ namespace Graphen
 
             }
         }
+        #endregion
 
         #endregion
 
 
         #region Praktikum 2 - Prim und Kruskal
 
+        #region Kruskal
+        /// <summary>
+        /// Findet den minimalen Spannbaum mittels des Prim Algorithmus.
+        /// </summary>
+        /// <param name="G"></param>
+        /// <param name="v"></param>
         public double Kruskal(Graph G)
         {
-            List<Subtree> Teilbaeume = new List<Subtree>();
+            UnionFindVertex ufv = new UnionFindVertex();
+            List<Edge> sortedByCost = G.edges.OrderBy(o => o.cost).ToList();
+            List<Edge> usedEdges = new List<Edge>();
+            double costMST = 0;
+            List<SubTree> teilbaeume = new List<SubTree>();
             for (int i = 0; i < G.vertices.Count; i++)
             {
-                Teilbaeume.Add(new Subtree());
-
+                teilbaeume.Add(new SubTree());
+                teilbaeume[i].parent = G.vertices[i];
+                teilbaeume[i].rank = i;
             }
-            //while (edgeCost != null)
+
+            for (int i = 0; i < sortedByCost.Count; i++)
             {
+                Vertex x = ufv.Find(teilbaeume, sortedByCost[i].sourceVertex);
+                Vertex y = ufv.Find(teilbaeume, sortedByCost[i].destinationVertex);
 
+                if (x != y)
+                {
+                    if (ufv.Union(teilbaeume, x, y))
+                    {
+                        usedEdges.Add(sortedByCost[i]);
+                        costMST += usedEdges[usedEdges.Count - 1].cost;
+                    }
+                }
             }
-            return 0;
+
+
+            return costMST;
         }
 
+        #endregion
+
+        #region Prim
         /// <summary>
         /// Findet den minimalen Spannbaum mittels des Prim Algorithmus.
         /// </summary>
@@ -131,33 +163,29 @@ namespace Graphen
             double costMST = 0;
             PriorityQueue<Edge> queue = new PriorityQueue<Edge>();
             List<Edge> edgesMST = new List<Edge>();
-            List<Vertex> verticesToVisit = new List<Vertex>();
-            verticesToVisit.AddRange(G.vertices);
 
             queue.EnqueueList(G.vertices[v].connectedEdges);
             for (int i = 0; i < G.vertices.Count - 1; i++)
             {
-                if (verticesToVisit.DefaultIfEmpty() == null)
-                {
-                    break;
-                }
-                while (queue.Peek().connectedVertex.used)
+                while (queue.Peek().destinationVertex.used)               //Suche noch nicht besuchten Knoten
                 {
                     queue.Dequeue();
                 }
-                if (!queue.Peek().connectedVertex.used)
+                if (!queue.Peek().destinationVertex.used)
                 {
-                    queue.Peek().mainVertex.used = true;
-                    queue.Peek().connectedVertex.used = true;
+                    queue.Peek().MarkVerticesAsUsed();
 
                     edgesMST.Add(queue.Dequeue());
-                    queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).connectedVertex.connectedEdges);
+                    queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).destinationVertex.connectedEdges.FindAll(    //FindAll: o(n)
+                        (Edge e) => { return e.destinationVertex.used == false; }));                      //Füge nur die Kanten der Queue hinzu, die unbesuchte connected Vertices haben
 
+                    costMST += edgesMST[edgesMST.Count - 1].cost;
                 }
-                costMST += edgesMST[edgesMST.Count - 1].cost;
             }
             return costMST;
         }
+        #endregion
+
         #endregion
     }
 }

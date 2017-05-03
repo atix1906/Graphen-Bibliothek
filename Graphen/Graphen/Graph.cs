@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
 
 namespace Graphen
 {
@@ -34,17 +35,7 @@ namespace Graphen
             {
                 MessageBox.Show("generateGraph()" + ex.ToString());
             }
-            try
-            {
-                generateAdjazenzliste();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("generateAdjazenzliste()" + ex.ToString());
-            }
-
-            SortEdgesToVertex();
-
+            generateAdjListAndSortEdgesToVertex();
         }
 
         #region Getter Funktionen
@@ -67,10 +58,40 @@ namespace Graphen
 
         #endregion
 
+        private void generateAdjListAndSortEdgesToVertex()
+        {
+            adjazenzliste = new List<List<Vertex>>();
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                adjazenzliste.Add(new List<Vertex>());
+            }
+            for (int i = 0; i < edges.Count; i++)
+            {
+                adjazenzliste[edges[i].sourceVertex.name].Add(edges[i].destinationVertex);  //Anhängen der Knoten an die jeweilige Liste
+                vertices[edges[i].sourceVertex.name].connectedEdges.Add(edges[i]);
+            }
+            try
+            {
+                Thread orderAdj = new Thread(OrderAdjazenzListe);
+                orderAdj.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("GetAdjazenzliste " + ex.ToString());
+            }
+        }
+
+        private void OrderAdjazenzListe()
+        {
+            for (int i = 0; i < adjazenzliste.Count; i++)
+            {
+                adjazenzliste[i] = adjazenzliste[i].OrderBy(o => o.name).ToList();
+            }
+        }
+
+
         private void generateAdjazenzliste()
         {
-            //Stopwatch sw = new Stopwatch();
-            //sw.Start();
             adjazenzliste = new List<List<Vertex>>();
             for (int i = 0; i < vertices.Count; i++)
             {
@@ -79,7 +100,7 @@ namespace Graphen
 
             for (int i = 0; i < edges.Count; i++)
             {
-                adjazenzliste[edges[i].mainVertex.name].Add(edges[i].connectedVertex);  //Anhängen der Knoten an die jeweilige Liste
+                adjazenzliste[edges[i].sourceVertex.name].Add(edges[i].destinationVertex);  //Anhängen der Knoten an die jeweilige Liste
             }
 
             try
@@ -140,8 +161,8 @@ namespace Graphen
                         edges.Add(new Edge());
                         Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                        newEdge.mainVertex = vertices[var_cols];
-                        newEdge.connectedVertex = vertices[var_rows];
+                        newEdge.sourceVertex = vertices[var_cols];
+                        newEdge.destinationVertex = vertices[var_rows];
                         newEdge.cost = Int32.Parse(isZero);
                     }
                 }
@@ -163,8 +184,8 @@ namespace Graphen
                 edges.Add(new Edge());
                 Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                newEdge.mainVertex = vertices[Int32.Parse(getEdge[0])];       //Hinrichtung
-                newEdge.connectedVertex = vertices[Int32.Parse(getEdge[1])];
+                newEdge.sourceVertex = vertices[Int32.Parse(getEdge[0])];       //Hinrichtung
+                newEdge.destinationVertex = vertices[Int32.Parse(getEdge[1])];
                 if (getEdge.Length > 2)
                 {
                     newEdge.cost = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
@@ -179,8 +200,8 @@ namespace Graphen
                     edges.Add(new Edge());
                     newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                    newEdge.mainVertex = vertices[Int32.Parse(getEdge[1])];       //Rückrichtung
-                    newEdge.connectedVertex = vertices[Int32.Parse(getEdge[0])];
+                    newEdge.sourceVertex = vertices[Int32.Parse(getEdge[1])];       //Rückrichtung
+                    newEdge.destinationVertex = vertices[Int32.Parse(getEdge[0])];
 
                     if (getEdge.Length > 2)
                     {
@@ -209,7 +230,7 @@ namespace Graphen
             {
                 for (int i = 0; i < edges.Count; i++)
                 {
-                    vertices[edges[i].mainVertex.name].connectedEdges.Add(edges[i]);
+                    vertices[edges[i].sourceVertex.name].connectedEdges.Add(edges[i]);
                 }
             }
             catch (Exception ex)

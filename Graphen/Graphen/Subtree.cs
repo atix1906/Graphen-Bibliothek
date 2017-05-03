@@ -6,21 +6,14 @@ using System.Threading.Tasks;
 
 namespace Graphen
 {
-    class Subtree
+    class SubTree
     {
-        public int id;
-        public List<Edge> SubTreeEdges;
-        public List<Vertex> SubTreeVertices;
+        public Vertex parent;
+        public int rank;
 
-        public Subtree()
+        public SubTree()
         {
-            SubTreeEdges = new List<Edge>();
-            SubTreeVertices = new List<Vertex>();
-        }
 
-        public Subtree(List<Vertex> SubTreeVertices)
-        {
-            this.SubTreeVertices = SubTreeVertices;
         }
     }
 }

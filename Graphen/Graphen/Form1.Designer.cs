@@ -45,6 +45,7 @@
             this.kruskalBtn = new System.Windows.Forms.Button();
             this.primBtn = new System.Windows.Forms.Button();
             this.textBoxPrim = new System.Windows.Forms.TextBox();
+            this.textBoxKruskal = new System.Windows.Forms.TextBox();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -127,7 +128,7 @@
             this.tabPage1.Controls.Add(this.tableLayoutPanelMain);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(858, 525);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
@@ -138,7 +139,7 @@
             this.tabPage2.Controls.Add(this.tableLayoutPanel1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(858, 525);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
@@ -234,6 +235,7 @@
             this.tableLayoutPanel4.Controls.Add(this.kruskalBtn, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.primBtn, 0, 1);
             this.tableLayoutPanel4.Controls.Add(this.textBoxPrim, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.textBoxKruskal, 1, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 262);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -260,7 +262,7 @@
             // 
             this.primBtn.Dock = System.Windows.Forms.DockStyle.Top;
             this.primBtn.Location = new System.Drawing.Point(2, 65);
-            this.primBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.primBtn.Margin = new System.Windows.Forms.Padding(2);
             this.primBtn.Name = "primBtn";
             this.primBtn.Size = new System.Drawing.Size(206, 29);
             this.primBtn.TabIndex = 1;
@@ -270,10 +272,19 @@
             // 
             // textBoxPrim
             // 
+            this.textBoxPrim.Dock = System.Windows.Forms.DockStyle.Left;
             this.textBoxPrim.Location = new System.Drawing.Point(213, 66);
             this.textBoxPrim.Name = "textBoxPrim";
             this.textBoxPrim.Size = new System.Drawing.Size(100, 20);
             this.textBoxPrim.TabIndex = 2;
+            // 
+            // textBoxKruskal
+            // 
+            this.textBoxKruskal.Dock = System.Windows.Forms.DockStyle.Left;
+            this.textBoxKruskal.Location = new System.Drawing.Point(213, 3);
+            this.textBoxKruskal.Name = "textBoxKruskal";
+            this.textBoxKruskal.Size = new System.Drawing.Size(100, 20);
+            this.textBoxKruskal.TabIndex = 3;
             // 
             // Form1
             // 
@@ -316,6 +327,7 @@
         private System.Windows.Forms.Button kruskalBtn;
         private System.Windows.Forms.Button primBtn;
         private System.Windows.Forms.TextBox textBoxPrim;
+        private System.Windows.Forms.TextBox textBoxKruskal;
     }
 }
 
