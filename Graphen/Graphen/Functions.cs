@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Graphen
 {
@@ -107,8 +108,13 @@ namespace Graphen
 
         public double Kruskal(Graph G)
         {
-            List<Edge> edgeCost = G.edges.OrderBy(o => o.cost).ToList();
-            while (edgeCost != null)
+            List<Subtree> Teilbaeume = new List<Subtree>();
+            for (int i = 0; i < G.vertices.Count; i++)
+            {
+                Teilbaeume.Add(new Subtree());
+
+            }
+            //while (edgeCost != null)
             {
 
             }
@@ -122,101 +128,36 @@ namespace Graphen
         /// <param name="v"></param>
         public double Prim(Graph G, int v)
         {
-            TimeSpan t2, t3, t0, t1, t4;
-            //G.SortConnectedEdgesByCost();
-            List<Vertex> verticesInGraph = G.vertices;
-            PriorityQueue queue = new PriorityQueue(G.vertices[v].connectedEdges);
-            var priorityQueue = new C5.IntervalHeap<Edge>();
-            sw.Restart();
-            t4 = sw.Elapsed;
-            List<Edge> visitableEdges = new List<Edge>();
+            double costMST = 0;
+            PriorityQueue<Edge> queue = new PriorityQueue<Edge>();
             List<Edge> edgesMST = new List<Edge>();
+            List<Vertex> verticesToVisit = new List<Vertex>();
+            verticesToVisit.AddRange(G.vertices);
+
+            queue.EnqueueList(G.vertices[v].connectedEdges);
             for (int i = 0; i < G.vertices.Count - 1; i++)
             {
-                queue.heapSort();
-                visitableEdges = queue.ListEdges;
-                if (visitableEdges.Count > 0)
+                if (verticesToVisit.DefaultIfEmpty() == null)
                 {
-                    int j;
-                    sw.Restart();
-                    for (j = 0; j < visitableEdges.Count; j++)
-                    {
-                        if (!visitableEdges[j].v2.used)
-                        {
-                            edgesMST.Add(visitableEdges[j]);
-                            break;
-                        }
-                    }
-                    t2 = sw.Elapsed;
-                    visitableEdges[j].v1.used = true;
-                    visitableEdges[j].v2.used = true;
-
-                    Edge tmp = visitableEdges[j].v2.connectedEdges.Find(o => o.v2 == visitableEdges[j].v1);
-
-                    List<Edge> notUsed = visitableEdges[j].v2.connectedEdges.FindAll((Edge e) => { return e.v2.used == false; });
-
-                    visitableEdges.AddRange(notUsed);
-
-                    //queue.AddElementsToQueue(visitableEdges[j].v2.connectedEdges);
-
-
-                    visitableEdges.RemoveAt(j);
-                    visitableEdges.Remove(tmp);
-                    sw.Restart();
-                    
-                    queue = new PriorityQueue(visitableEdges);
-                    t1 = sw.Elapsed;
+                    break;
                 }
+                while (queue.Peek().connectedVertex.used)
+                {
+                    queue.Dequeue();
+                }
+                if (!queue.Peek().connectedVertex.used)
+                {
+                    queue.Peek().mainVertex.used = true;
+                    queue.Peek().connectedVertex.used = true;
 
-                //sw2.Restart();
-                //verticesInGraph[v].used = true;
-                //sw.Restart();
-                //visitableEdges.AddRange(verticesInGraph[v].connectedEdges);
-                // t1 = sw.Elapsed;
+                    edgesMST.Add(queue.Dequeue());
+                    queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).connectedVertex.connectedEdges);
 
-                //if (visitableEdges != null)
-                //{
-                //    sw.Restart();
-                //    Edge tmp2 = FindCheapestEdge(visitableEdges, verticesInGraph);
-                //     t2 = sw.Elapsed;
-
-                //    //sw.Restart();
-                //    //visitableEdges = visitableEdges.OrderBy(o => o.cost).ToList();
-                //    //TimeSpan t3 = sw.Elapsed;
-                //    usedEdges.Add(tmp2);
-                //    v = usedEdges[usedEdges.Count - 1].v2.name;             // v ist nun der Knoten der mit der benutzten Kante verbunden ist
-                //    visitableEdges.Remove(tmp2);
-
-                //}
-                // t0 = sw2.Elapsed;
+                }
+                costMST += edgesMST[edgesMST.Count - 1].cost;
             }
-            return getEdgeCostSum(edgesMST);
+            return costMST;
         }
         #endregion
-
-
-        private C5.IntervalHeap<Edge> PriorityQueueEnqueueList(List<Edge> vertices)
-        {
-            var heap = new C5.IntervalHeap<Edge>();
-            heap.AddAll(vertices);
-            return heap;
-        }
-
-        private double getEdgeCostSum(List<Edge> usedEdges)
-        {
-            double sum = 0;
-            foreach (var item in usedEdges)
-            {
-                sum += item.cost;
-            }
-            return sum;
-        }
-
-
-        private Edge FindCheapestEdge(List<Edge> l, List<Vertex> v)
-        {
-            int index = HelperFunctions.IndexOfMin(l);
-            return l[index];
-        }
     }
 }

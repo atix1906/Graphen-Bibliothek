@@ -26,7 +26,7 @@ namespace Graphen
 
             for (int i = 0; i < self.Count; i++)
             {
-                if (self[i].cost < min &&  !self[i].v2.used)
+                if (self[i].cost < min &&  !self[i].connectedVertex.used)
                 {
                     min = self[i].cost;
                     minIndex = i;

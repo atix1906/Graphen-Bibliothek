@@ -17,6 +17,8 @@ namespace Graphen
         private Graph graph;
         private Functions functions;
         private Stopwatch sw;
+
+        private string pathToLastGraph;
         public Form1()
         {
             InitializeComponent();
@@ -40,7 +42,8 @@ namespace Graphen
                 {
                     if (File.Exists(openFileDialogGetGraph.FileName))
                     {
-                        graph.SetFileGraph(File.ReadAllLines(openFileDialogGetGraph.FileName));
+                        pathToLastGraph = openFileDialogGetGraph.FileName;
+                        graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
                     }
                 }
                 catch (Exception ex)
@@ -52,6 +55,7 @@ namespace Graphen
 
         private void clearBtn_Click(object sender, EventArgs e)
         {
+            textBoxPrim.Clear();
             graph.ClearGraph();
             this.graph = new Graph();
         }
@@ -100,7 +104,11 @@ namespace Graphen
             }
         }
 
-
+        private void ResetGraph()
+        {
+            graph.ClearGraph();
+            graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
+        }
         private void ResetUsedVertices()
         {
             foreach (var item in graph.vertices)
@@ -135,19 +143,20 @@ namespace Graphen
         {
             if (graph != null && functions != null)
             {
+                textBoxPrim.Clear();
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
-
                 
-
                 double erg = functions.Prim(graph, (int)numericUpDownStartknoten.Value);
-                MessageBox.Show("Prim\nErgebnis: " + erg.ToString()
-                +"\nElapsed Time: " + sw.Elapsed.ToString());
+                
+                textBoxPrim.AppendText(Math.Round(erg, 3).ToString());
+                MessageBox.Show("Prim\nElapsed Time: " + sw.Elapsed.ToString());
 
                 sw.Stop();
+                ResetGraph();
             }
             else
             {

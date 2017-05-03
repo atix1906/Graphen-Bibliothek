@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Graphen
 {
-    class Vertex
+    public class Vertex
     {
         public bool used = false;
         public int name;

@@ -79,7 +79,7 @@ namespace Graphen
 
             for (int i = 0; i < edges.Count; i++)
             {
-                adjazenzliste[edges[i].v1.name].Add(edges[i].v2);  //Anhängen der Knoten an die jeweilige Liste
+                adjazenzliste[edges[i].mainVertex.name].Add(edges[i].connectedVertex);  //Anhängen der Knoten an die jeweilige Liste
             }
 
             try
@@ -140,8 +140,8 @@ namespace Graphen
                         edges.Add(new Edge());
                         Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                        newEdge.v1 = vertices[var_cols];
-                        newEdge.v2 = vertices[var_rows];
+                        newEdge.mainVertex = vertices[var_cols];
+                        newEdge.connectedVertex = vertices[var_rows];
                         newEdge.cost = Int32.Parse(isZero);
                     }
                 }
@@ -163,8 +163,8 @@ namespace Graphen
                 edges.Add(new Edge());
                 Edge newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                newEdge.v1 = vertices[Int32.Parse(getEdge[0])];       //Hinrichtung
-                newEdge.v2 = vertices[Int32.Parse(getEdge[1])];
+                newEdge.mainVertex = vertices[Int32.Parse(getEdge[0])];       //Hinrichtung
+                newEdge.connectedVertex = vertices[Int32.Parse(getEdge[1])];
                 if (getEdge.Length > 2)
                 {
                     newEdge.cost = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
@@ -179,8 +179,8 @@ namespace Graphen
                     edges.Add(new Edge());
                     newEdge = edges.ElementAt<Edge>(edges.Count - 1);
 
-                    newEdge.v1 = vertices[Int32.Parse(getEdge[1])];       //Rückrichtung
-                    newEdge.v2 = vertices[Int32.Parse(getEdge[0])];
+                    newEdge.mainVertex = vertices[Int32.Parse(getEdge[1])];       //Rückrichtung
+                    newEdge.connectedVertex = vertices[Int32.Parse(getEdge[0])];
 
                     if (getEdge.Length > 2)
                     {
@@ -209,7 +209,7 @@ namespace Graphen
             {
                 for (int i = 0; i < edges.Count; i++)
                 {
-                    vertices[edges[i].v1.name].connectedEdges.Add(edges[i]);
+                    vertices[edges[i].mainVertex.name].connectedEdges.Add(edges[i]);
                 }
             }
             catch (Exception ex)
