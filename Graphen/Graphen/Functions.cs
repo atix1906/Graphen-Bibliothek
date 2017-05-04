@@ -120,15 +120,15 @@ namespace Graphen
         public double Kruskal(Graph G)
         {
             UnionFindVertex ufv = new UnionFindVertex();
-            List<Edge> sortedByCost = G.edges.OrderBy(o => o.cost).ToList();
+            List<Edge> sortedByCost = G.edges.OrderBy(o => o.cost).ToList();    //Sortiere Kantenliste nach Kosten
             List<Edge> usedEdges = new List<Edge>();
             double costMST = 0;
             List<SubTree> teilbaeume = new List<SubTree>();
             for (int i = 0; i < G.vertices.Count; i++)
             {
-                teilbaeume.Add(new SubTree());
-                teilbaeume[i].parent = G.vertices[i];
-                teilbaeume[i].rank = i;
+                teilbaeume.Add(new SubTree());              //Erstelle für jeden Knoten einen Teilbaum
+                teilbaeume[i].parent = G.vertices[i];       
+                teilbaeume[i].id = i;
             }
 
             for (int i = 0; i < sortedByCost.Count; i++)
@@ -145,8 +145,6 @@ namespace Graphen
                     }
                 }
             }
-
-
             return costMST;
         }
 
@@ -167,13 +165,13 @@ namespace Graphen
             queue.EnqueueList(G.vertices[v].connectedEdges);
             for (int i = 0; i < G.vertices.Count - 1; i++)
             {
-                while (queue.Peek().destinationVertex.used)               //Suche noch nicht besuchten Knoten
+                while (queue.Root().destinationVertex.used)               //Suche noch nicht besuchten Knoten
                 {
-                    queue.Dequeue();
+                    queue.Dequeue();                                      //Entferne besuchte Knoten aus der Queue
                 }
-                if (!queue.Peek().destinationVertex.used)
+                if (!queue.Root().destinationVertex.used)
                 {
-                    queue.Peek().MarkVerticesAsUsed();
+                    queue.Root().MarkVerticesAsUsed();
 
                     edgesMST.Add(queue.Dequeue());
                     queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).destinationVertex.connectedEdges.FindAll(    //FindAll: o(n)

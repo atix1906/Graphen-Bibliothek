@@ -10,6 +10,7 @@ namespace Graphen
     {
         public UnionFindVertex()
         {
+
         }
 
         /// <summary>
@@ -38,26 +39,14 @@ namespace Graphen
         {
             Vertex root1 = Find(st, v1);
             Vertex root2 = Find(st, v2);
-            if (st[root1.name].rank == st[root2.name].rank)
+            if (st[root1.name].id == st[root2.name].id)     //Knoten bereits im selben Teilbaum
             {
                 return false;
             }
 
-            if (st[root1.name].rank < st[root2.name].rank)
-            {
-                st[root1.name].parent = root2;
-            }
-            else if (st[root1.name].rank > st[root2.name].rank)
-            {
-                st[root2.name].parent = root1;
-            }
-            else
-            {
-                st[root2.name].parent = root1;
-                st[root1.name].rank++;
-            }
+            st[root1.name].parent = root2;
+
             return true;
         }
-
     }
 }

@@ -9,7 +9,7 @@ namespace Graphen
     class SubTree
     {
         public Vertex parent;
-        public int rank;
+        public int id;
 
         public SubTree()
         {

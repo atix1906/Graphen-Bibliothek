@@ -17,8 +17,10 @@ namespace Graphen
         }
         public int CompareTo(Edge other)
         {
-            if (this.cost < other.cost) return -1;
-            else if (this.cost > other.cost) return 1;
+            if (this.cost < other.cost)
+                return -1;
+            else if (this.cost > other.cost)
+                return 1;
             else return 0;
         }
 
