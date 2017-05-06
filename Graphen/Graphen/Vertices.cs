@@ -12,6 +12,9 @@ namespace Graphen
         public int name;
 
         public List<Edge> connectedEdges = new List<Edge>();
+
+        public Vertex parent;
+        public int id;
         public Vertex()
         {
 

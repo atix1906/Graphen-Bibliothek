@@ -113,7 +113,7 @@ namespace Graphen
 
         #region Kruskal
         /// <summary>
-        /// Findet den minimalen Spannbaum mittels des Prim Algorithmus.
+        /// Findet den minimalen Spannbaum mittels des Kruskal Algorithmus.
         /// </summary>
         /// <param name="G"></param>
         /// <param name="v"></param>
@@ -127,22 +127,19 @@ namespace Graphen
             for (int i = 0; i < G.vertices.Count; i++)
             {
                 teilbaeume.Add(new SubTree());              //Erstelle für jeden Knoten einen Teilbaum
-                teilbaeume[i].parent = G.vertices[i];       
+                teilbaeume[i].parent = G.vertices[i];
                 teilbaeume[i].id = i;
             }
 
             for (int i = 0; i < sortedByCost.Count; i++)
             {
-                Vertex x = ufv.Find(teilbaeume, sortedByCost[i].sourceVertex);
-                Vertex y = ufv.Find(teilbaeume, sortedByCost[i].destinationVertex);
+                Vertex x = sortedByCost[i].sourceVertex;          //Suche parent vom Source-Vertex
+                Vertex y = sortedByCost[i].destinationVertex;     //Suche parent vom Destination-Vertex
 
-                if (x != y)
+                if (ufv.Union(teilbaeume, x, y))        //Falls parents ungleich, verschmelze Teilbäume
                 {
-                    if (ufv.Union(teilbaeume, x, y))
-                    {
-                        usedEdges.Add(sortedByCost[i]);
-                        costMST += usedEdges[usedEdges.Count - 1].cost;
-                    }
+                    usedEdges.Add(sortedByCost[i]);
+                    costMST += usedEdges[usedEdges.Count - 1].cost;
                 }
             }
             return costMST;
@@ -169,16 +166,13 @@ namespace Graphen
                 {
                     queue.Dequeue();                                      //Entferne besuchte Knoten aus der Queue
                 }
-                if (!queue.Root().destinationVertex.used)
-                {
-                    queue.Root().MarkVerticesAsUsed();
+                queue.Root().MarkVerticesAsUsed();
 
-                    edgesMST.Add(queue.Dequeue());
-                    queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).destinationVertex.connectedEdges.FindAll(    //FindAll: o(n)
-                        (Edge e) => { return e.destinationVertex.used == false; }));                      //Füge nur die Kanten der Queue hinzu, die unbesuchte connected Vertices haben
+                edgesMST.Add(queue.Dequeue());
+                queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).destinationVertex.connectedEdges.FindAll(    //FindAll: o(n)
+                    (Edge e) => { return e.destinationVertex.used == false; }));                      //Füge nur die Kanten der Queue hinzu, die unbesuchte connected Vertices haben
 
-                    costMST += edgesMST[edgesMST.Count - 1].cost;
-                }
+                costMST += edgesMST[edgesMST.Count - 1].cost;
             }
             return costMST;
         }
