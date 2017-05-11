@@ -74,7 +74,7 @@ namespace Graphen
                     //+"\nElapsed Time: "+sw.Elapsed.ToString());
 
                 sw.Stop();
-                ResetUsedVertices();
+                graph.ResetUsedVertices();
             }
             else
             {
@@ -97,7 +97,7 @@ namespace Graphen
                 //+"\nElapsed Time: " + sw.Elapsed.ToString());
 
                 sw.Stop();
-                ResetUsedVertices();
+                ResetGraph();
             }
             else
             {
@@ -110,13 +110,7 @@ namespace Graphen
             graph.ClearGraph();
             graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
         }
-        private void ResetUsedVertices()
-        {
-            foreach (var item in graph.vertices)
-            {
-                item.used = false;
-            }
-        }
+        
 
         private void kruskalBtn_Click(object sender, EventArgs e)
         {
@@ -152,10 +146,10 @@ namespace Graphen
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
-                double erg = functions.Prim(graph, (int)numericUpDownStartknoten.Value);
+                var erg = functions.Prim(graph, (int)numericUpDownStartknoten.Value);
                 sw.Stop();
                 
-                textBoxPrim.AppendText(Math.Round(erg, 4).ToString());
+                textBoxPrim.AppendText(Math.Round(erg.Item1, 4).ToString());
                 MessageBox.Show("Prim\nElapsed Time: " + sw.Elapsed.ToString());
 
                 ResetGraph();
@@ -170,7 +164,7 @@ namespace Graphen
         {
             if (graph != null && functions != null)
             {
-                textBoxPrim.Clear();
+                nearestNeighbourtextBox.Clear();
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
@@ -195,17 +189,17 @@ namespace Graphen
         {
             if (graph != null && functions != null)
             {
-                textBoxPrim.Clear();
-                //numericUpDownStartknoten.Minimum = 0;
-                //numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+                textBoxDoppelterBaum.Clear();
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
-                double erg = functions.DoppelterBaum(graph);
+                var erg = functions.DoppelterBaum(graph, (int)numericUpDownStartknoten.Value);
                 sw.Stop();
 
-                textBoxDoppelterBaum.AppendText(Math.Round(erg, 4).ToString());
+                textBoxDoppelterBaum.AppendText(Math.Round(erg.Item1, 4).ToString());
                 MessageBox.Show("Doppelter Baum\nElapsed Time: " + sw.Elapsed.ToString());
 
                 ResetGraph();

@@ -254,5 +254,13 @@ namespace Graphen
             fileGraph = null;
         }
 
+
+        public void ResetUsedVertices()
+        {
+            foreach (var item in vertices)
+            {
+                item.used = false;
+            }
+        }
     }
 }

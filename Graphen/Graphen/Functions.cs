@@ -77,23 +77,25 @@ namespace Graphen
             List<Edge> visitedEdges = new List<Edge>();
             int startknoten = v;
 
-                visitedVertex.Add(graph.vertices[startknoten]);
-                TiefensucheRekursiv(startknoten, v, graph.GetAdjazenzliste(), graph.vertices, ref countZusammenhangskomponenten, ref visitedVertex);
+            visitedVertex.Add(graph.vertices[startknoten]);
+            TiefensucheRekursiv(startknoten, v, graph.GetAdjazenzliste(), graph.vertices, ref countZusammenhangskomponenten, ref visitedVertex);
 
-                return Tuple.Create(countZusammenhangskomponenten, visitedVertex);
+            return Tuple.Create(countZusammenhangskomponenten, visitedVertex);
 
         }
 
-        private List<Vertex> Tiefensuche(List<Edge> edges)
+        private Tuple<List<Vertex>, List<Edge>> Tiefensuche(List<Edge> edges)
         {
             List<Vertex> followMeAround = new List<Vertex>();
             Stack<Vertex> visitedVertex = new Stack<Vertex>();
+            List<Edge> visitedEdges = new List<Edge>();
 
             visitedVertex.Push(edges[0].sourceVertex);
             followMeAround.Add(edges[0].sourceVertex);
 
             visitedVertex.Push(edges[0].destinationVertex);
             followMeAround.Add(edges[0].destinationVertex);
+            visitedEdges.Add(edges[0]);
             edges.RemoveAt(0);
 
             while (visitedVertex.Count > 0)
@@ -103,10 +105,12 @@ namespace Graphen
 
                 while (index > -1)
                 {
+
                     Edge connectedEdge = edges[index];
                     edges.RemoveAt(index);
 
                     currentVertex = connectedEdge.destinationVertex;
+                    visitedEdges.Add(connectedEdge);
                     visitedVertex.Push(currentVertex);
                     followMeAround.Add(currentVertex);
 
@@ -121,7 +125,7 @@ namespace Graphen
                 }
             }
 
-            return followMeAround;
+            return Tuple.Create(followMeAround, visitedEdges);
         }
 
         private void TiefensucheRekursiv(int startknoten, int v, List<List<Vertex>> adjazenzliste, List<Vertex> vertices, ref int countZusammenhangskomponenten, ref List<Vertex> visitedVertex)
@@ -199,7 +203,7 @@ namespace Graphen
         /// </summary>
         /// <param name="G"></param>
         /// <param name="v"></param>
-        public double Prim(Graph G, int v)
+        public Tuple<double, List<Edge>> Prim(Graph G, int v)
         {
             double costMST = 0;
             PriorityQueue<Edge> queue = new PriorityQueue<Edge>();
@@ -220,7 +224,7 @@ namespace Graphen
 
                 costMST += edgesMST[edgesMST.Count - 1].cost;
             }
-            return costMST;
+            return Tuple.Create(costMST,edgesMST);
         }
         #endregion
 
@@ -242,14 +246,14 @@ namespace Graphen
 
             for (int i = 0; i < vertices.Count; i++)
             {
-                vertices[i].connectedEdges = vertices[i].connectedEdges.OrderBy(o => o.cost).ToList();
+                vertices[i].connectedEdges = vertices[i].connectedEdges.OrderBy(o => o.cost).ToList();      //sortiere die Kanten des Knoten nach ihren Kosten
             }
 
             visitedVertices.Add(vertices[v]);
 
             for (int i = 0; i < vertices.Count; i++)
             {
-                sortedEdges = vertices[v].connectedEdges.FindAll((Edge e) => { return e.destinationVertex.used == false; });
+                sortedEdges = vertices[v].connectedEdges.FindAll((Edge e) => { return e.destinationVertex.used == false; });    //Suche Kanten mit einem unbesuchten Zielknoten
 
                 if (sortedEdges.Count > 0)
                 {
@@ -276,10 +280,12 @@ namespace Graphen
 
         #region Doppelter-Baum
 
-        public double DoppelterBaum(Graph G)
+        public Tuple<double, List<Edge>> DoppelterBaum(Graph G,int v)
         {
-            var kruskal = Kruskal(G);
-            List<Edge> mst = kruskal.Item2;
+            double costDT = 0;
+            var prim = Prim(G,v);
+            G.ResetUsedVertices();
+            List<Edge> mst = prim.Item2;
             List<Edge> doubleEdgesMST = new List<Edge>();
             doubleEdgesMST.AddRange(mst);
 
@@ -293,9 +299,46 @@ namespace Graphen
                 doubleEdgesMST[mst.Count + i].cost = mst[i].cost;
             }
 
-            List<Vertex> ts = Tiefensuche(doubleEdgesMST);
+            var ts = Tiefensuche(doubleEdgesMST);
 
-            return 0;
+            List<Edge> tour = new List<Edge>();
+            Edge newEdge = new Edge();
+            Vertex newSource = new Vertex();
+            Vertex newDestination = new Vertex();
+
+            newSource = ts.Item1[0];
+            ts.Item1[0].used = true;
+            for (int i = 1; i < ts.Item1.Count; i++)
+            {
+                Vertex currentVertex = ts.Item1[i];
+                if (!currentVertex.used && newSource!=null)
+                {
+                    newDestination = currentVertex;
+                    currentVertex.used = true;
+                    newEdge.sourceVertex = newSource;
+                    newEdge.destinationVertex = newDestination;
+
+                    Edge tmp = G.edges.Find((Edge e) => { return e.destinationVertex == newEdge.destinationVertex && e.sourceVertex == newEdge.sourceVertex; });
+
+                    tour.Add(tmp);
+                    costDT += tmp.cost;
+                    newSource = newDestination;
+                    newDestination = new Vertex();
+                }
+            }
+
+            //Schließe Tour bei Startpunkt ab
+            newEdge = new Edge();
+            newEdge.destinationVertex = ts.Item1[0];
+            newEdge.sourceVertex = tour[tour.Count - 1].destinationVertex;
+
+            Edge lastEdge= G.edges.Find((Edge e) => { return e.destinationVertex == newEdge.destinationVertex && e.sourceVertex == newEdge.sourceVertex; });
+
+            tour.Add(lastEdge);
+            costDT += lastEdge.cost;
+
+
+            return Tuple.Create(costDT,tour);
         }
 
 
