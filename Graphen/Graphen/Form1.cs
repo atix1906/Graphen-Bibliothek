@@ -31,7 +31,7 @@ namespace Graphen
         {
             OpenFileDialog openFileDialogGetGraph = new OpenFileDialog();
 
-            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 2";
+            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 3";
             openFileDialogGetGraph.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileDialogGetGraph.FilterIndex = 2;
             openFileDialogGetGraph.RestoreDirectory = true;
@@ -92,8 +92,8 @@ namespace Graphen
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
-                int zusammenhangskomponenten = functions.StartTiefensucheRekursiv(graph, (int)numericUpDownStartknoten.Value);
-                MessageBox.Show("Tiefensuche(rekursiv)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString());
+                var erg = functions.StartTiefensucheRekursiv(graph, (int)numericUpDownStartknoten.Value);
+                MessageBox.Show("Tiefensuche(rekursiv)\nZusammenhangskomponenten: " + erg.Item1.ToString());
                 //+"\nElapsed Time: " + sw.Elapsed.ToString());
 
                 sw.Stop();
@@ -128,10 +128,10 @@ namespace Graphen
 
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
-
-                double erg = functions.Kruskal(graph);
+                
+                var erg = functions.Kruskal(graph);
                 sw.Stop();
-                textBoxKruskal.AppendText(Math.Round(erg, 4).ToString());
+                textBoxKruskal.AppendText(Math.Round(erg.Item1, 4).ToString());
                 MessageBox.Show("Kruskal\nElapsed Time: " + sw.Elapsed.ToString());
                 ResetGraph();
             }
@@ -163,6 +163,56 @@ namespace Graphen
             else
             {
                 MessageBox.Show("Beim Prim Algorithmus ist etwas schief gegangen.");
+            }
+        }
+
+        private void btnNearestNeighbour_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                textBoxPrim.Clear();
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                double erg = functions.NearestNeighbour(graph, (int)numericUpDownStartknoten.Value);
+                sw.Stop();
+
+                nearestNeighbourtextBox.AppendText(Math.Round(erg, 4).ToString());
+                MessageBox.Show("Nearest Neighbour\nElapsed Time: " + sw.Elapsed.ToString());
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim Nearest Neighbour Algorithmus ist etwas schief gegangen.");
+            }
+        }
+
+        private void btnDoppelterBaum_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                textBoxPrim.Clear();
+                //numericUpDownStartknoten.Minimum = 0;
+                //numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                double erg = functions.DoppelterBaum(graph);
+                sw.Stop();
+
+                textBoxDoppelterBaum.AppendText(Math.Round(erg, 4).ToString());
+                MessageBox.Show("Doppelter Baum\nElapsed Time: " + sw.Elapsed.ToString());
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim Doppelter Baum Algorithmus ist etwas schief gegangen.");
             }
         }
     }

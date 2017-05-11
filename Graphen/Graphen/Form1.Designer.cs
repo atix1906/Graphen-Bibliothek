@@ -46,6 +46,10 @@
             this.primBtn = new System.Windows.Forms.Button();
             this.textBoxPrim = new System.Windows.Forms.TextBox();
             this.textBoxKruskal = new System.Windows.Forms.TextBox();
+            this.btnNearestNeighbour = new System.Windows.Forms.Button();
+            this.nearestNeighbourtextBox = new System.Windows.Forms.TextBox();
+            this.btnDoppelterBaum = new System.Windows.Forms.Button();
+            this.textBoxDoppelterBaum = new System.Windows.Forms.TextBox();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -236,6 +240,10 @@
             this.tableLayoutPanel4.Controls.Add(this.primBtn, 0, 1);
             this.tableLayoutPanel4.Controls.Add(this.textBoxPrim, 1, 1);
             this.tableLayoutPanel4.Controls.Add(this.textBoxKruskal, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.btnNearestNeighbour, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.nearestNeighbourtextBox, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.btnDoppelterBaum, 0, 3);
+            this.tableLayoutPanel4.Controls.Add(this.textBoxDoppelterBaum, 1, 3);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 262);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -286,6 +294,44 @@
             this.textBoxKruskal.Size = new System.Drawing.Size(100, 20);
             this.textBoxKruskal.TabIndex = 3;
             // 
+            // btnNearestNeighbour
+            // 
+            this.btnNearestNeighbour.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnNearestNeighbour.Location = new System.Drawing.Point(3, 129);
+            this.btnNearestNeighbour.Name = "btnNearestNeighbour";
+            this.btnNearestNeighbour.Size = new System.Drawing.Size(204, 29);
+            this.btnNearestNeighbour.TabIndex = 4;
+            this.btnNearestNeighbour.Text = "Nearest Neighbour";
+            this.btnNearestNeighbour.UseVisualStyleBackColor = true;
+            this.btnNearestNeighbour.Click += new System.EventHandler(this.btnNearestNeighbour_Click);
+            // 
+            // nearestNeighbourtextBox
+            // 
+            this.nearestNeighbourtextBox.Dock = System.Windows.Forms.DockStyle.Left;
+            this.nearestNeighbourtextBox.Location = new System.Drawing.Point(213, 129);
+            this.nearestNeighbourtextBox.Name = "nearestNeighbourtextBox";
+            this.nearestNeighbourtextBox.Size = new System.Drawing.Size(100, 20);
+            this.nearestNeighbourtextBox.TabIndex = 5;
+            // 
+            // btnDoppelterBaum
+            // 
+            this.btnDoppelterBaum.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDoppelterBaum.Location = new System.Drawing.Point(3, 192);
+            this.btnDoppelterBaum.Name = "btnDoppelterBaum";
+            this.btnDoppelterBaum.Size = new System.Drawing.Size(204, 29);
+            this.btnDoppelterBaum.TabIndex = 6;
+            this.btnDoppelterBaum.Text = "Doppelter Baum";
+            this.btnDoppelterBaum.UseVisualStyleBackColor = true;
+            this.btnDoppelterBaum.Click += new System.EventHandler(this.btnDoppelterBaum_Click);
+            // 
+            // textBoxDoppelterBaum
+            // 
+            this.textBoxDoppelterBaum.Dock = System.Windows.Forms.DockStyle.Left;
+            this.textBoxDoppelterBaum.Location = new System.Drawing.Point(213, 192);
+            this.textBoxDoppelterBaum.Name = "textBoxDoppelterBaum";
+            this.textBoxDoppelterBaum.Size = new System.Drawing.Size(100, 20);
+            this.textBoxDoppelterBaum.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -328,6 +374,10 @@
         private System.Windows.Forms.Button primBtn;
         private System.Windows.Forms.TextBox textBoxPrim;
         private System.Windows.Forms.TextBox textBoxKruskal;
+        private System.Windows.Forms.Button btnNearestNeighbour;
+        private System.Windows.Forms.TextBox nearestNeighbourtextBox;
+        private System.Windows.Forms.Button btnDoppelterBaum;
+        private System.Windows.Forms.TextBox textBoxDoppelterBaum;
     }
 }
 

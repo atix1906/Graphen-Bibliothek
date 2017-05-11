@@ -163,7 +163,7 @@ namespace Graphen
 
                         newEdge.sourceVertex = vertices[var_cols];
                         newEdge.destinationVertex = vertices[var_rows];
-                        newEdge.cost = Int32.Parse(isZero);
+                        newEdge.cost = Double.Parse(isZero);
                     }
                 }
             }
