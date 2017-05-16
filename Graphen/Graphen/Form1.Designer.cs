@@ -50,6 +50,8 @@
             this.nearestNeighbourtextBox = new System.Windows.Forms.TextBox();
             this.btnDoppelterBaum = new System.Windows.Forms.Button();
             this.textBoxDoppelterBaum = new System.Windows.Forms.TextBox();
+            this.btnAllTour = new System.Windows.Forms.Button();
+            this.textBoxAllTours = new System.Windows.Forms.TextBox();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -236,22 +238,25 @@
             this.tableLayoutPanel4.ColumnCount = 2;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.Controls.Add(this.textBoxAllTours, 1, 4);
             this.tableLayoutPanel4.Controls.Add(this.kruskalBtn, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.primBtn, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.btnNearestNeighbour, 0, 2);
             this.tableLayoutPanel4.Controls.Add(this.textBoxPrim, 1, 1);
             this.tableLayoutPanel4.Controls.Add(this.textBoxKruskal, 1, 0);
-            this.tableLayoutPanel4.Controls.Add(this.btnNearestNeighbour, 0, 2);
             this.tableLayoutPanel4.Controls.Add(this.nearestNeighbourtextBox, 1, 2);
             this.tableLayoutPanel4.Controls.Add(this.btnDoppelterBaum, 0, 3);
             this.tableLayoutPanel4.Controls.Add(this.textBoxDoppelterBaum, 1, 3);
-            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Controls.Add(this.btnAllTour, 0, 4);
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 262);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 4;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel4.RowCount = 6;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(420, 254);
             this.tableLayoutPanel4.TabIndex = 1;
             // 
@@ -269,7 +274,7 @@
             // primBtn
             // 
             this.primBtn.Dock = System.Windows.Forms.DockStyle.Top;
-            this.primBtn.Location = new System.Drawing.Point(2, 65);
+            this.primBtn.Location = new System.Drawing.Point(2, 44);
             this.primBtn.Margin = new System.Windows.Forms.Padding(2);
             this.primBtn.Name = "primBtn";
             this.primBtn.Size = new System.Drawing.Size(206, 29);
@@ -281,7 +286,7 @@
             // textBoxPrim
             // 
             this.textBoxPrim.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxPrim.Location = new System.Drawing.Point(213, 66);
+            this.textBoxPrim.Location = new System.Drawing.Point(213, 45);
             this.textBoxPrim.Name = "textBoxPrim";
             this.textBoxPrim.Size = new System.Drawing.Size(100, 20);
             this.textBoxPrim.TabIndex = 2;
@@ -297,7 +302,7 @@
             // btnNearestNeighbour
             // 
             this.btnNearestNeighbour.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnNearestNeighbour.Location = new System.Drawing.Point(3, 129);
+            this.btnNearestNeighbour.Location = new System.Drawing.Point(3, 87);
             this.btnNearestNeighbour.Name = "btnNearestNeighbour";
             this.btnNearestNeighbour.Size = new System.Drawing.Size(204, 29);
             this.btnNearestNeighbour.TabIndex = 4;
@@ -308,7 +313,7 @@
             // nearestNeighbourtextBox
             // 
             this.nearestNeighbourtextBox.Dock = System.Windows.Forms.DockStyle.Left;
-            this.nearestNeighbourtextBox.Location = new System.Drawing.Point(213, 129);
+            this.nearestNeighbourtextBox.Location = new System.Drawing.Point(213, 87);
             this.nearestNeighbourtextBox.Name = "nearestNeighbourtextBox";
             this.nearestNeighbourtextBox.Size = new System.Drawing.Size(100, 20);
             this.nearestNeighbourtextBox.TabIndex = 5;
@@ -316,7 +321,7 @@
             // btnDoppelterBaum
             // 
             this.btnDoppelterBaum.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnDoppelterBaum.Location = new System.Drawing.Point(3, 192);
+            this.btnDoppelterBaum.Location = new System.Drawing.Point(3, 129);
             this.btnDoppelterBaum.Name = "btnDoppelterBaum";
             this.btnDoppelterBaum.Size = new System.Drawing.Size(204, 29);
             this.btnDoppelterBaum.TabIndex = 6;
@@ -327,10 +332,29 @@
             // textBoxDoppelterBaum
             // 
             this.textBoxDoppelterBaum.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxDoppelterBaum.Location = new System.Drawing.Point(213, 192);
+            this.textBoxDoppelterBaum.Location = new System.Drawing.Point(213, 129);
             this.textBoxDoppelterBaum.Name = "textBoxDoppelterBaum";
             this.textBoxDoppelterBaum.Size = new System.Drawing.Size(100, 20);
             this.textBoxDoppelterBaum.TabIndex = 7;
+            // 
+            // btnAllTour
+            // 
+            this.btnAllTour.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnAllTour.Location = new System.Drawing.Point(3, 171);
+            this.btnAllTour.Name = "btnAllTour";
+            this.btnAllTour.Size = new System.Drawing.Size(204, 23);
+            this.btnAllTour.TabIndex = 8;
+            this.btnAllTour.Text = "Alle Touren";
+            this.btnAllTour.UseVisualStyleBackColor = true;
+            this.btnAllTour.Click += new System.EventHandler(this.btnAllTour_Click);
+            // 
+            // textBoxAllTours
+            // 
+            this.textBoxAllTours.Dock = System.Windows.Forms.DockStyle.Left;
+            this.textBoxAllTours.Location = new System.Drawing.Point(213, 171);
+            this.textBoxAllTours.Name = "textBoxAllTours";
+            this.textBoxAllTours.Size = new System.Drawing.Size(100, 20);
+            this.textBoxAllTours.TabIndex = 9;
             // 
             // Form1
             // 
@@ -378,6 +402,8 @@
         private System.Windows.Forms.TextBox nearestNeighbourtextBox;
         private System.Windows.Forms.Button btnDoppelterBaum;
         private System.Windows.Forms.TextBox textBoxDoppelterBaum;
+        private System.Windows.Forms.Button btnAllTour;
+        private System.Windows.Forms.TextBox textBoxAllTours;
     }
 }
 

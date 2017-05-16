@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="Functions.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Permutation.cs" />
     <Compile Include="PriorityQueue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Graphen
 {
-    public class Vertex
+    public class Vertex:IComparable<Vertex>
     {
         public bool used = false;
         public int name;
@@ -22,6 +22,15 @@ namespace Graphen
         public Vertex(int name)
         {
             this.name = name;
+        }
+
+        public int CompareTo(Vertex other)
+        {
+            if (this.name < other.name)
+                return -1;
+            else if (this.name> other.name)
+                return 1;
+            else return 0;
         }
     }
 }

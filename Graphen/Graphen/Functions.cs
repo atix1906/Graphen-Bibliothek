@@ -224,7 +224,7 @@ namespace Graphen
 
                 costMST += edgesMST[edgesMST.Count - 1].cost;
             }
-            return Tuple.Create(costMST,edgesMST);
+            return Tuple.Create(costMST, edgesMST);
         }
         #endregion
 
@@ -280,10 +280,10 @@ namespace Graphen
 
         #region Doppelter-Baum
 
-        public Tuple<double, List<Edge>> DoppelterBaum(Graph G,int v)
+        public Tuple<double, List<Edge>> DoppelterBaum(Graph G, int v)
         {
             double costDT = 0;
-            var prim = Prim(G,v);
+            var prim = Prim(G, v);
             G.ResetUsedVertices();
             List<Edge> mst = prim.Item2;
             List<Edge> doubleEdgesMST = new List<Edge>();
@@ -311,14 +311,15 @@ namespace Graphen
             for (int i = 1; i < ts.Item1.Count; i++)
             {
                 Vertex currentVertex = ts.Item1[i];
-                if (!currentVertex.used && newSource!=null)
+                if (!currentVertex.used && newSource != null)
                 {
                     newDestination = currentVertex;
                     currentVertex.used = true;
                     newEdge.sourceVertex = newSource;
                     newEdge.destinationVertex = newDestination;
 
-                    Edge tmp = G.edges.Find((Edge e) => { return e.destinationVertex == newEdge.destinationVertex && e.sourceVertex == newEdge.sourceVertex; });
+                    Edge tmp = G.edges.Find((Edge e) =>
+                    { return e.destinationVertex == newEdge.destinationVertex && e.sourceVertex == newEdge.sourceVertex; });
 
                     tour.Add(tmp);
                     costDT += tmp.cost;
@@ -332,19 +333,46 @@ namespace Graphen
             newEdge.destinationVertex = ts.Item1[0];
             newEdge.sourceVertex = tour[tour.Count - 1].destinationVertex;
 
-            Edge lastEdge= G.edges.Find((Edge e) => { return e.destinationVertex == newEdge.destinationVertex && e.sourceVertex == newEdge.sourceVertex; });
+            Edge lastEdge = G.edges.Find((Edge e) =>
+            { return e.destinationVertex == newEdge.destinationVertex && e.sourceVertex == newEdge.sourceVertex; });
 
             tour.Add(lastEdge);
             costDT += lastEdge.cost;
 
 
-            return Tuple.Create(costDT,tour);
+            return Tuple.Create(costDT, tour);
         }
 
 
 
         #endregion
 
+
+        #endregion
+
+
+        #region Praktikum 4 - Ausprobieren aller Touren und Branch-and-Bound
+
+        #region Ausprobieren aller Touren
+
+        public double TryAllTours(Graph G)
+        {
+            double bestCost = 0;
+            List<List<Vertex>> allTours = new List<List<Vertex>>();
+            bestCost = Permutation.GetPermutation(G.vertices,ref allTours);
+            return bestCost;
+        }
+
+        #endregion
+
+        #region Branch-and-Bound
+
+        public void BranchAndBound()
+        {
+
+        }
+
+        #endregion
         #endregion
     }
 }

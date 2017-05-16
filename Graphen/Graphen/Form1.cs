@@ -209,5 +209,31 @@ namespace Graphen
                 MessageBox.Show("Beim Doppelter Baum Algorithmus ist etwas schief gegangen.");
             }
         }
+
+        private void btnAllTour_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                textBoxAllTours.Clear();
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                double erg = functions.TryAllTours(graph);
+                sw.Stop();
+
+                textBoxAllTours.AppendText(Math.Round(erg, 4).ToString());
+                MessageBox.Show("All Tours\nElapsed Time: " + sw.Elapsed.ToString());
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim All Tours Algorithmus ist etwas schief gegangen.");
+            }
+        }
+
     }
 }
