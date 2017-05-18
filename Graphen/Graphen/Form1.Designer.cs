@@ -42,16 +42,18 @@
             this.numericUpDownStartknoten = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.textBoxAllTours = new System.Windows.Forms.TextBox();
             this.kruskalBtn = new System.Windows.Forms.Button();
             this.primBtn = new System.Windows.Forms.Button();
+            this.btnNearestNeighbour = new System.Windows.Forms.Button();
             this.textBoxPrim = new System.Windows.Forms.TextBox();
             this.textBoxKruskal = new System.Windows.Forms.TextBox();
-            this.btnNearestNeighbour = new System.Windows.Forms.Button();
             this.nearestNeighbourtextBox = new System.Windows.Forms.TextBox();
             this.btnDoppelterBaum = new System.Windows.Forms.Button();
             this.textBoxDoppelterBaum = new System.Windows.Forms.TextBox();
             this.btnAllTour = new System.Windows.Forms.Button();
-            this.textBoxAllTours = new System.Windows.Forms.TextBox();
+            this.btnBranchAndBound = new System.Windows.Forms.Button();
+            this.textBoxBranchAndBound = new System.Windows.Forms.TextBox();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -238,6 +240,7 @@
             this.tableLayoutPanel4.ColumnCount = 2;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.Controls.Add(this.textBoxBranchAndBound, 1, 5);
             this.tableLayoutPanel4.Controls.Add(this.textBoxAllTours, 1, 4);
             this.tableLayoutPanel4.Controls.Add(this.kruskalBtn, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.primBtn, 0, 1);
@@ -248,6 +251,7 @@
             this.tableLayoutPanel4.Controls.Add(this.btnDoppelterBaum, 0, 3);
             this.tableLayoutPanel4.Controls.Add(this.textBoxDoppelterBaum, 1, 3);
             this.tableLayoutPanel4.Controls.Add(this.btnAllTour, 0, 4);
+            this.tableLayoutPanel4.Controls.Add(this.btnBranchAndBound, 0, 5);
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 262);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 6;
@@ -259,6 +263,14 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(420, 254);
             this.tableLayoutPanel4.TabIndex = 1;
+            // 
+            // textBoxAllTours
+            // 
+            this.textBoxAllTours.Dock = System.Windows.Forms.DockStyle.Left;
+            this.textBoxAllTours.Location = new System.Drawing.Point(213, 171);
+            this.textBoxAllTours.Name = "textBoxAllTours";
+            this.textBoxAllTours.Size = new System.Drawing.Size(100, 20);
+            this.textBoxAllTours.TabIndex = 9;
             // 
             // kruskalBtn
             // 
@@ -283,6 +295,17 @@
             this.primBtn.UseVisualStyleBackColor = true;
             this.primBtn.Click += new System.EventHandler(this.primBtn_Click);
             // 
+            // btnNearestNeighbour
+            // 
+            this.btnNearestNeighbour.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnNearestNeighbour.Location = new System.Drawing.Point(3, 87);
+            this.btnNearestNeighbour.Name = "btnNearestNeighbour";
+            this.btnNearestNeighbour.Size = new System.Drawing.Size(204, 29);
+            this.btnNearestNeighbour.TabIndex = 4;
+            this.btnNearestNeighbour.Text = "Nearest Neighbour";
+            this.btnNearestNeighbour.UseVisualStyleBackColor = true;
+            this.btnNearestNeighbour.Click += new System.EventHandler(this.btnNearestNeighbour_Click);
+            // 
             // textBoxPrim
             // 
             this.textBoxPrim.Dock = System.Windows.Forms.DockStyle.Left;
@@ -298,17 +321,6 @@
             this.textBoxKruskal.Name = "textBoxKruskal";
             this.textBoxKruskal.Size = new System.Drawing.Size(100, 20);
             this.textBoxKruskal.TabIndex = 3;
-            // 
-            // btnNearestNeighbour
-            // 
-            this.btnNearestNeighbour.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnNearestNeighbour.Location = new System.Drawing.Point(3, 87);
-            this.btnNearestNeighbour.Name = "btnNearestNeighbour";
-            this.btnNearestNeighbour.Size = new System.Drawing.Size(204, 29);
-            this.btnNearestNeighbour.TabIndex = 4;
-            this.btnNearestNeighbour.Text = "Nearest Neighbour";
-            this.btnNearestNeighbour.UseVisualStyleBackColor = true;
-            this.btnNearestNeighbour.Click += new System.EventHandler(this.btnNearestNeighbour_Click);
             // 
             // nearestNeighbourtextBox
             // 
@@ -348,13 +360,24 @@
             this.btnAllTour.UseVisualStyleBackColor = true;
             this.btnAllTour.Click += new System.EventHandler(this.btnAllTour_Click);
             // 
-            // textBoxAllTours
+            // btnBranchAndBound
             // 
-            this.textBoxAllTours.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxAllTours.Location = new System.Drawing.Point(213, 171);
-            this.textBoxAllTours.Name = "textBoxAllTours";
-            this.textBoxAllTours.Size = new System.Drawing.Size(100, 20);
-            this.textBoxAllTours.TabIndex = 9;
+            this.btnBranchAndBound.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnBranchAndBound.Location = new System.Drawing.Point(3, 213);
+            this.btnBranchAndBound.Name = "btnBranchAndBound";
+            this.btnBranchAndBound.Size = new System.Drawing.Size(204, 23);
+            this.btnBranchAndBound.TabIndex = 10;
+            this.btnBranchAndBound.Text = "Branch and Bound";
+            this.btnBranchAndBound.UseVisualStyleBackColor = true;
+            this.btnBranchAndBound.Click += new System.EventHandler(this.btnBranchAndBound_Click);
+            // 
+            // textBoxBranchAndBound
+            // 
+            this.textBoxBranchAndBound.Dock = System.Windows.Forms.DockStyle.Left;
+            this.textBoxBranchAndBound.Location = new System.Drawing.Point(213, 213);
+            this.textBoxBranchAndBound.Name = "textBoxBranchAndBound";
+            this.textBoxBranchAndBound.Size = new System.Drawing.Size(100, 20);
+            this.textBoxBranchAndBound.TabIndex = 11;
             // 
             // Form1
             // 
@@ -404,6 +427,8 @@
         private System.Windows.Forms.TextBox textBoxDoppelterBaum;
         private System.Windows.Forms.Button btnAllTour;
         private System.Windows.Forms.TextBox textBoxAllTours;
+        private System.Windows.Forms.TextBox textBoxBranchAndBound;
+        private System.Windows.Forms.Button btnBranchAndBound;
     }
 }
 

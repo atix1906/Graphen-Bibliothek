@@ -67,11 +67,11 @@ namespace Graphen
             {
                 numericUpDownStartknoten.Minimum = 0;
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
-                
+
                 sw.Restart();
                 int zusammenhangskomponenten = functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value);
                 MessageBox.Show("Breitensuche(iterativ)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString());
-                    //+"\nElapsed Time: "+sw.Elapsed.ToString());
+                //+"\nElapsed Time: "+sw.Elapsed.ToString());
 
                 sw.Stop();
                 graph.ResetUsedVertices();
@@ -110,7 +110,7 @@ namespace Graphen
             graph.ClearGraph();
             graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
         }
-        
+
 
         private void kruskalBtn_Click(object sender, EventArgs e)
         {
@@ -122,7 +122,7 @@ namespace Graphen
 
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
-                
+
                 var erg = functions.Kruskal(graph);
                 sw.Stop();
                 textBoxKruskal.AppendText(Math.Round(erg.Item1, 4).ToString());
@@ -148,7 +148,7 @@ namespace Graphen
 
                 var erg = functions.Prim(graph, (int)numericUpDownStartknoten.Value);
                 sw.Stop();
-                
+
                 textBoxPrim.AppendText(Math.Round(erg.Item1, 4).ToString());
                 MessageBox.Show("Prim\nElapsed Time: " + sw.Elapsed.ToString());
 
@@ -221,11 +221,17 @@ namespace Graphen
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
-                double erg = functions.TryAllTours(graph);
+                var erg = functions.TryAllTours(graph);
                 sw.Stop();
 
-                textBoxAllTours.AppendText(Math.Round(erg, 4).ToString());
-                MessageBox.Show("All Tours\nElapsed Time: " + sw.Elapsed.ToString());
+                textBoxAllTours.AppendText(Math.Round(erg.Item1, 4).ToString());
+                string bestPath = erg.Item2[0].sourceVertex.name.ToString();
+                for (int i = 0; i < erg.Item2.Count; i++)
+                {
+                    bestPath += "->";
+                    bestPath += erg.Item2[i].destinationVertex.name.ToString();
+                }
+                MessageBox.Show("All Tours\nElapsed Time: " + sw.Elapsed.ToString() + "\nBest Path: " + bestPath);
 
                 ResetGraph();
             }
@@ -235,5 +241,35 @@ namespace Graphen
             }
         }
 
+        private void btnBranchAndBound_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                textBoxBranchAndBound.Clear();
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                var erg = functions.BranchAndBound(graph);
+                sw.Stop();
+
+                textBoxBranchAndBound.AppendText(Math.Round(erg.Item1, 4).ToString());
+                string bestPath = erg.Item2[0].sourceVertex.name.ToString();
+                for (int i = 0; i < erg.Item2.Count; i++)
+                {
+                    bestPath += "->";
+                    bestPath += erg.Item2[i].destinationVertex.name.ToString();
+                }
+                MessageBox.Show("All Tours\nElapsed Time: " + sw.Elapsed.ToString() + "\nBest Path: " + bestPath);
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim All Tours Algorithmus ist etwas schief gegangen.");
+            }
+        }
     }
 }

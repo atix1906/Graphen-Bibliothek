@@ -355,21 +355,26 @@ namespace Graphen
 
         #region Ausprobieren aller Touren
 
-        public double TryAllTours(Graph G)
+        public Tuple<double,List<Edge>> TryAllTours(Graph G)
         {
             double bestCost = 0;
-            List<List<Vertex>> allTours = new List<List<Vertex>>();
-            bestCost = Permutation.GetPermutation(G.vertices,ref allTours);
-            return bestCost;
+            Permutation p = new Permutation(G);
+            bestCost = p.StartGetPermutation(G.vertices);
+            List<Edge> bestPath = p.bestTour;
+            return Tuple.Create(bestCost,bestPath);
         }
 
         #endregion
 
         #region Branch-and-Bound
 
-        public void BranchAndBound()
+        public Tuple<double,List<Edge>> BranchAndBound(Graph G)
         {
-
+            double bestCost = 0;
+            Permutation p = new Permutation(G);
+            bestCost = p.StartPermutationBranchAndBound(G.vertices);
+            List<Edge> bestTour = p.bestTour;
+            return Tuple.Create(bestCost,bestTour);
         }
 
         #endregion
