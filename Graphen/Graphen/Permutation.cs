@@ -36,19 +36,19 @@ namespace Graphen
             return bestCost;
         }
 
-        private void GetPermutation(List<Vertex> list, int k, int m, ref double bestCost)
+        private void GetPermutation(List<Vertex> list, int start, int end, ref double bestCost)
         {
-            if (k == m)
+            if (start == end)
             {
                 bestCost = IsBestCostOrNot(bestCost, list);
                 return;
             }
             else
-                for (int i = k; i <= m; i++)
+                for (int i = start; i <= end; i++)
                 {
-                    Swap(ref list, k, i);
-                    GetPermutation(list, k + 1, m, ref bestCost);
-                    Swap(ref list, k, i);
+                    Swap(ref list, start, i);
+                    GetPermutation(list, start + 1, end, ref bestCost);
+                    //Swap(ref list, start, i);
                 }
         }
 
@@ -109,14 +109,15 @@ namespace Graphen
             else
             {
                 List<Edge> edgesFromCurrentVertex = new List<Edge>();
-                edgesFromCurrentVertex = currentVertex.connectedEdges;
+                edgesFromCurrentVertex = currentVertex.connectedEdges;  // Alle Kanten des momentanen Knoten
+
                 for (int i = 0; i < edgesFromCurrentVertex.Count; i++)
                 {
-                    if (!edgesFromCurrentVertex[i].destinationVertex.used)
+                    if (!edgesFromCurrentVertex[i].destinationVertex.used)      //Wenn Zielknoten unbesucht, Kosten der Kante addieren
                     {
                         costs = currentCost + edgesFromCurrentVertex[i].cost;
 
-                        if (costs < bestCost)
+                        if (costs < bestCost)   //Wenn Kosten kleiner als die bisher besten Kosten sind, existiert möglicherweise ein günstiger Weg, daher Funktion erneut aufrufen
                         {
                             PermutationBranchAndBound(size, start, edgesFromCurrentVertex[i].destinationVertex, costs, currentTour, ref bestCost);
                         }
