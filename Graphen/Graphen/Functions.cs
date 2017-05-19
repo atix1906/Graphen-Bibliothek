@@ -355,29 +355,101 @@ namespace Graphen
 
         #region Ausprobieren aller Touren
 
-        public Tuple<double,List<Edge>> TryAllTours(Graph G)
+        public Tuple<double, List<Edge>> TryAllTours(Graph G)
         {
             double bestCost = 0;
             Permutation p = new Permutation(G);
             bestCost = p.StartGetPermutation(G.vertices);
             List<Edge> bestPath = p.bestTour;
-            return Tuple.Create(bestCost,bestPath);
+            return Tuple.Create(bestCost, bestPath);
         }
 
         #endregion
 
         #region Branch-and-Bound
 
-        public Tuple<double,List<Edge>> BranchAndBound(Graph G)
+        public Tuple<double, List<Edge>> BranchAndBound(Graph G)
         {
             double bestCost = 0;
             Permutation p = new Permutation(G);
-            bestCost = p.StartPermutationBranchAndBound(G.vertices);
+            bestCost = p.StartBranchAndBound(G.vertices);
             List<Edge> bestTour = p.bestTour;
-            return Tuple.Create(bestCost,bestTour);
+            return Tuple.Create(bestCost, bestTour);
         }
 
         #endregion
+        #endregion
+
+        #region Praktikum 5 - Dijkstra und Moore-Bellman-Ford-Algorithmus
+
+        #region Dijkstra
+
+        public List<Edge> Dijkstra(Graph G, int start)
+        {
+            //Initialisierung
+            List<Vertex> vertices = G.vertices;
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                if (i == start)
+                {
+                    vertices[i].parent = vertices[i];
+                    vertices[i].distToStart = 0;
+                }
+                else
+                {
+                    vertices[i].parent = null;
+                    vertices[i].distToStart = double.PositiveInfinity;
+                }
+            }
+
+            //Iteration
+            List<Edge> shortestPath = new List<Edge>();
+            PriorityQueue<Edge> prio = new PriorityQueue<Edge>();
+            int index = start;
+            List<Edge> connectedEdges = new List<Edge>();
+
+            connectedEdges = vertices[index].connectedEdges;     //Get connected Edges from Start Vertex
+            vertices.RemoveAt(index);
+
+            while (vertices.Count > 0)
+            {
+                for (int i = 0; i < connectedEdges.Count; i++)      //Lege Distanz zum Startknoten fest und pushe alle Kanten in die Queue
+                {
+                    Edge e = connectedEdges[i];
+                    if (vertices.Exists(o => o == connectedEdges[i].destinationVertex))
+                    {
+                        prio.Enqueue(connectedEdges[i]);
+                        double dist = connectedEdges[i].sourceVertex.distToStart + connectedEdges[i].cost;
+                        if(connectedEdges[i].sourceVertex.distToStart == double.PositiveInfinity)
+                        {
+                            MessageBox.Show("Terminierung durch unendliche Distanz zum Startknoten");
+                            return shortestPath;
+                        }
+                        if (dist < connectedEdges[i].destinationVertex.distToStart)
+                        {
+                            connectedEdges[i].destinationVertex.distToStart = dist;
+                            connectedEdges[i].destinationVertex.parent = connectedEdges[i].sourceVertex;
+                        }
+
+                    }
+                }
+
+                Edge minCostEdge = prio.Dequeue();
+                shortestPath.Add(minCostEdge);
+
+                connectedEdges = minCostEdge.destinationVertex.connectedEdges;
+                vertices.Remove(minCostEdge.destinationVertex);
+            }
+            return shortestPath;
+        }
+
+        #endregion
+
+        #region Moore-Bellman-Ford
+
+        #endregion
+
+
         #endregion
     }
 }

@@ -30,7 +30,7 @@ namespace Graphen
 
         public double StartGetPermutation(List<Vertex> list)
         {
-            double bestCost = double.MaxValue;
+            double bestCost = double.PositiveInfinity;
             int count = list.Count - 1;
             GetPermutation(list, 0, count, ref bestCost);
             return bestCost;
@@ -48,7 +48,7 @@ namespace Graphen
                 {
                     Swap(ref list, start, i);
                     GetPermutation(list, start + 1, end, ref bestCost);
-                    //Swap(ref list, start, i);
+                    Swap(ref list, start, i);
                 }
         }
 
@@ -88,16 +88,16 @@ namespace Graphen
             return bestCost;
         }
 
-        public double StartPermutationBranchAndBound(List<Vertex> list)
+        public double StartBranchAndBound(List<Vertex> list)
         {
-            double bestCost = double.MaxValue;
+            double bestCost = double.PositiveInfinity;
             int index = list.Count - 1;
-            PermutationBranchAndBound(list.Count, list[0], list[index], 0, new List<Vertex>(), ref bestCost);
+            BranchAndBound(list.Count, list[0], list[index], 0, new List<Vertex>(), ref bestCost);
 
             return bestCost;
         }
 
-        private void PermutationBranchAndBound(int size, Vertex start, Vertex currentVertex, double currentCost, List<Vertex> currentTour, ref double bestCost)
+        private void BranchAndBound(int size, Vertex start, Vertex currentVertex, double currentCost, List<Vertex> currentTour, ref double bestCost)
         {
             currentVertex.used = true;
             currentTour.Add(currentVertex);
@@ -119,7 +119,7 @@ namespace Graphen
 
                         if (costs < bestCost)   //Wenn Kosten kleiner als die bisher besten Kosten sind, existiert möglicherweise ein günstiger Weg, daher Funktion erneut aufrufen
                         {
-                            PermutationBranchAndBound(size, start, edgesFromCurrentVertex[i].destinationVertex, costs, currentTour, ref bestCost);
+                            BranchAndBound(size, start, edgesFromCurrentVertex[i].destinationVertex, costs, currentTour, ref bestCost);
                         }
                     }
                 }

@@ -14,6 +14,11 @@ public class PriorityQueue<T> where T : IComparable<T>
         this.data = new List<T>();
     }
 
+    public int GetLength()
+    {
+        return data.Count;
+    }
+
     public void EnqueueList(List<T> item)
     {
         for (int i = 0; i < item.Count; i++)

@@ -42,6 +42,7 @@
             this.numericUpDownStartknoten = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.textBoxBranchAndBound = new System.Windows.Forms.TextBox();
             this.textBoxAllTours = new System.Windows.Forms.TextBox();
             this.kruskalBtn = new System.Windows.Forms.Button();
             this.primBtn = new System.Windows.Forms.Button();
@@ -53,7 +54,8 @@
             this.textBoxDoppelterBaum = new System.Windows.Forms.TextBox();
             this.btnAllTour = new System.Windows.Forms.Button();
             this.btnBranchAndBound = new System.Windows.Forms.Button();
-            this.textBoxBranchAndBound = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnDijkstra = new System.Windows.Forms.Button();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -62,6 +64,7 @@
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStartknoten)).BeginInit();
             this.tableLayoutPanel4.SuspendLayout();
+            this.tableLayoutPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanelMain
@@ -73,7 +76,8 @@
             this.tableLayoutPanelMain.Controls.Add(this.clearBtn, 1, 0);
             this.tableLayoutPanelMain.Controls.Add(this.tableLayoutPanel3, 0, 1);
             this.tableLayoutPanelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanelMain.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelMain.Location = new System.Drawing.Point(4, 4);
+            this.tableLayoutPanelMain.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
             this.tableLayoutPanelMain.RowCount = 5;
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -81,15 +85,16 @@
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanelMain.Size = new System.Drawing.Size(852, 519);
+            this.tableLayoutPanelMain.Size = new System.Drawing.Size(1139, 641);
             this.tableLayoutPanelMain.TabIndex = 0;
             // 
             // loadGraph
             // 
             this.loadGraph.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.loadGraph.Location = new System.Drawing.Point(3, 58);
+            this.loadGraph.Location = new System.Drawing.Point(4, 72);
+            this.loadGraph.Margin = new System.Windows.Forms.Padding(4);
             this.loadGraph.Name = "loadGraph";
-            this.loadGraph.Size = new System.Drawing.Size(420, 42);
+            this.loadGraph.Size = new System.Drawing.Size(561, 52);
             this.loadGraph.TabIndex = 0;
             this.loadGraph.Text = "Load Graph";
             this.loadGraph.UseVisualStyleBackColor = true;
@@ -98,9 +103,10 @@
             // clearBtn
             // 
             this.clearBtn.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.clearBtn.Location = new System.Drawing.Point(429, 58);
+            this.clearBtn.Location = new System.Drawing.Point(573, 72);
+            this.clearBtn.Margin = new System.Windows.Forms.Padding(4);
             this.clearBtn.Name = "clearBtn";
-            this.clearBtn.Size = new System.Drawing.Size(420, 42);
+            this.clearBtn.Size = new System.Drawing.Size(562, 52);
             this.clearBtn.TabIndex = 1;
             this.clearBtn.Text = "Clear Graph";
             this.clearBtn.UseVisualStyleBackColor = true;
@@ -112,12 +118,13 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 106);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(4, 132);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(420, 97);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(561, 120);
             this.tableLayoutPanel3.TabIndex = 2;
             // 
             // tabControl1
@@ -126,18 +133,20 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(866, 551);
+            this.tabControl1.Size = new System.Drawing.Size(1155, 678);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.tableLayoutPanelMain);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(858, 525);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Size = new System.Drawing.Size(1147, 649);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -145,10 +154,11 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.tableLayoutPanel1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(858, 525);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Size = new System.Drawing.Size(1147, 649);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -160,13 +170,15 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(852, 519);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1139, 641);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -179,22 +191,24 @@
             this.tableLayoutPanel2.Controls.Add(this.numericUpDownStartknoten, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(4, 4);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 4;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(420, 253);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(561, 312);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // breitensucheBtn
             // 
             this.breitensucheBtn.Dock = System.Windows.Forms.DockStyle.Top;
-            this.breitensucheBtn.Location = new System.Drawing.Point(3, 3);
+            this.breitensucheBtn.Location = new System.Drawing.Point(4, 4);
+            this.breitensucheBtn.Margin = new System.Windows.Forms.Padding(4);
             this.breitensucheBtn.Name = "breitensucheBtn";
-            this.breitensucheBtn.Size = new System.Drawing.Size(204, 36);
+            this.breitensucheBtn.Size = new System.Drawing.Size(272, 44);
             this.breitensucheBtn.TabIndex = 0;
             this.breitensucheBtn.Text = "Breitensuche (iterativ)";
             this.breitensucheBtn.UseVisualStyleBackColor = true;
@@ -203,9 +217,10 @@
             // tiefensucheBtn
             // 
             this.tiefensucheBtn.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tiefensucheBtn.Location = new System.Drawing.Point(3, 66);
+            this.tiefensucheBtn.Location = new System.Drawing.Point(4, 82);
+            this.tiefensucheBtn.Margin = new System.Windows.Forms.Padding(4);
             this.tiefensucheBtn.Name = "tiefensucheBtn";
-            this.tiefensucheBtn.Size = new System.Drawing.Size(204, 32);
+            this.tiefensucheBtn.Size = new System.Drawing.Size(272, 39);
             this.tiefensucheBtn.TabIndex = 1;
             this.tiefensucheBtn.Text = "Tiefensuche (rekursiv)";
             this.tiefensucheBtn.UseVisualStyleBackColor = true;
@@ -214,23 +229,25 @@
             // numericUpDownStartknoten
             // 
             this.numericUpDownStartknoten.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numericUpDownStartknoten.Location = new System.Drawing.Point(213, 147);
+            this.numericUpDownStartknoten.Location = new System.Drawing.Point(284, 184);
+            this.numericUpDownStartknoten.Margin = new System.Windows.Forms.Padding(4);
             this.numericUpDownStartknoten.Maximum = new decimal(new int[] {
             -1981284353,
             -1966660860,
             0,
             0});
             this.numericUpDownStartknoten.Name = "numericUpDownStartknoten";
-            this.numericUpDownStartknoten.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownStartknoten.Size = new System.Drawing.Size(160, 22);
             this.numericUpDownStartknoten.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(3, 126);
+            this.label1.Location = new System.Drawing.Point(4, 156);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(204, 63);
+            this.label1.Size = new System.Drawing.Size(272, 78);
             this.label1.TabIndex = 3;
             this.label1.Text = "Startknoten";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -252,7 +269,8 @@
             this.tableLayoutPanel4.Controls.Add(this.textBoxDoppelterBaum, 1, 3);
             this.tableLayoutPanel4.Controls.Add(this.btnAllTour, 0, 4);
             this.tableLayoutPanel4.Controls.Add(this.btnBranchAndBound, 0, 5);
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 262);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(4, 324);
+            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 6;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
@@ -261,23 +279,34 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(420, 254);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(560, 313);
             this.tableLayoutPanel4.TabIndex = 1;
+            // 
+            // textBoxBranchAndBound
+            // 
+            this.textBoxBranchAndBound.Dock = System.Windows.Forms.DockStyle.Left;
+            this.textBoxBranchAndBound.Location = new System.Drawing.Point(284, 264);
+            this.textBoxBranchAndBound.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxBranchAndBound.Name = "textBoxBranchAndBound";
+            this.textBoxBranchAndBound.Size = new System.Drawing.Size(132, 22);
+            this.textBoxBranchAndBound.TabIndex = 11;
             // 
             // textBoxAllTours
             // 
             this.textBoxAllTours.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxAllTours.Location = new System.Drawing.Point(213, 171);
+            this.textBoxAllTours.Location = new System.Drawing.Point(284, 212);
+            this.textBoxAllTours.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxAllTours.Name = "textBoxAllTours";
-            this.textBoxAllTours.Size = new System.Drawing.Size(100, 20);
+            this.textBoxAllTours.Size = new System.Drawing.Size(132, 22);
             this.textBoxAllTours.TabIndex = 9;
             // 
             // kruskalBtn
             // 
             this.kruskalBtn.Dock = System.Windows.Forms.DockStyle.Top;
-            this.kruskalBtn.Location = new System.Drawing.Point(3, 3);
+            this.kruskalBtn.Location = new System.Drawing.Point(4, 4);
+            this.kruskalBtn.Margin = new System.Windows.Forms.Padding(4);
             this.kruskalBtn.Name = "kruskalBtn";
-            this.kruskalBtn.Size = new System.Drawing.Size(204, 31);
+            this.kruskalBtn.Size = new System.Drawing.Size(272, 38);
             this.kruskalBtn.TabIndex = 0;
             this.kruskalBtn.Text = "Kruskal";
             this.kruskalBtn.UseVisualStyleBackColor = true;
@@ -286,10 +315,10 @@
             // primBtn
             // 
             this.primBtn.Dock = System.Windows.Forms.DockStyle.Top;
-            this.primBtn.Location = new System.Drawing.Point(2, 44);
-            this.primBtn.Margin = new System.Windows.Forms.Padding(2);
+            this.primBtn.Location = new System.Drawing.Point(3, 54);
+            this.primBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.primBtn.Name = "primBtn";
-            this.primBtn.Size = new System.Drawing.Size(206, 29);
+            this.primBtn.Size = new System.Drawing.Size(274, 36);
             this.primBtn.TabIndex = 1;
             this.primBtn.Text = "Prim";
             this.primBtn.UseVisualStyleBackColor = true;
@@ -298,9 +327,10 @@
             // btnNearestNeighbour
             // 
             this.btnNearestNeighbour.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnNearestNeighbour.Location = new System.Drawing.Point(3, 87);
+            this.btnNearestNeighbour.Location = new System.Drawing.Point(4, 108);
+            this.btnNearestNeighbour.Margin = new System.Windows.Forms.Padding(4);
             this.btnNearestNeighbour.Name = "btnNearestNeighbour";
-            this.btnNearestNeighbour.Size = new System.Drawing.Size(204, 29);
+            this.btnNearestNeighbour.Size = new System.Drawing.Size(272, 36);
             this.btnNearestNeighbour.TabIndex = 4;
             this.btnNearestNeighbour.Text = "Nearest Neighbour";
             this.btnNearestNeighbour.UseVisualStyleBackColor = true;
@@ -309,33 +339,37 @@
             // textBoxPrim
             // 
             this.textBoxPrim.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxPrim.Location = new System.Drawing.Point(213, 45);
+            this.textBoxPrim.Location = new System.Drawing.Point(284, 56);
+            this.textBoxPrim.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxPrim.Name = "textBoxPrim";
-            this.textBoxPrim.Size = new System.Drawing.Size(100, 20);
+            this.textBoxPrim.Size = new System.Drawing.Size(132, 22);
             this.textBoxPrim.TabIndex = 2;
             // 
             // textBoxKruskal
             // 
             this.textBoxKruskal.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxKruskal.Location = new System.Drawing.Point(213, 3);
+            this.textBoxKruskal.Location = new System.Drawing.Point(284, 4);
+            this.textBoxKruskal.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxKruskal.Name = "textBoxKruskal";
-            this.textBoxKruskal.Size = new System.Drawing.Size(100, 20);
+            this.textBoxKruskal.Size = new System.Drawing.Size(132, 22);
             this.textBoxKruskal.TabIndex = 3;
             // 
             // nearestNeighbourtextBox
             // 
             this.nearestNeighbourtextBox.Dock = System.Windows.Forms.DockStyle.Left;
-            this.nearestNeighbourtextBox.Location = new System.Drawing.Point(213, 87);
+            this.nearestNeighbourtextBox.Location = new System.Drawing.Point(284, 108);
+            this.nearestNeighbourtextBox.Margin = new System.Windows.Forms.Padding(4);
             this.nearestNeighbourtextBox.Name = "nearestNeighbourtextBox";
-            this.nearestNeighbourtextBox.Size = new System.Drawing.Size(100, 20);
+            this.nearestNeighbourtextBox.Size = new System.Drawing.Size(132, 22);
             this.nearestNeighbourtextBox.TabIndex = 5;
             // 
             // btnDoppelterBaum
             // 
             this.btnDoppelterBaum.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnDoppelterBaum.Location = new System.Drawing.Point(3, 129);
+            this.btnDoppelterBaum.Location = new System.Drawing.Point(4, 160);
+            this.btnDoppelterBaum.Margin = new System.Windows.Forms.Padding(4);
             this.btnDoppelterBaum.Name = "btnDoppelterBaum";
-            this.btnDoppelterBaum.Size = new System.Drawing.Size(204, 29);
+            this.btnDoppelterBaum.Size = new System.Drawing.Size(272, 36);
             this.btnDoppelterBaum.TabIndex = 6;
             this.btnDoppelterBaum.Text = "Doppelter Baum";
             this.btnDoppelterBaum.UseVisualStyleBackColor = true;
@@ -344,17 +378,19 @@
             // textBoxDoppelterBaum
             // 
             this.textBoxDoppelterBaum.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxDoppelterBaum.Location = new System.Drawing.Point(213, 129);
+            this.textBoxDoppelterBaum.Location = new System.Drawing.Point(284, 160);
+            this.textBoxDoppelterBaum.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxDoppelterBaum.Name = "textBoxDoppelterBaum";
-            this.textBoxDoppelterBaum.Size = new System.Drawing.Size(100, 20);
+            this.textBoxDoppelterBaum.Size = new System.Drawing.Size(132, 22);
             this.textBoxDoppelterBaum.TabIndex = 7;
             // 
             // btnAllTour
             // 
             this.btnAllTour.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAllTour.Location = new System.Drawing.Point(3, 171);
+            this.btnAllTour.Location = new System.Drawing.Point(4, 212);
+            this.btnAllTour.Margin = new System.Windows.Forms.Padding(4);
             this.btnAllTour.Name = "btnAllTour";
-            this.btnAllTour.Size = new System.Drawing.Size(204, 23);
+            this.btnAllTour.Size = new System.Drawing.Size(272, 28);
             this.btnAllTour.TabIndex = 8;
             this.btnAllTour.Text = "Alle Touren";
             this.btnAllTour.UseVisualStyleBackColor = true;
@@ -363,28 +399,49 @@
             // btnBranchAndBound
             // 
             this.btnBranchAndBound.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnBranchAndBound.Location = new System.Drawing.Point(3, 213);
+            this.btnBranchAndBound.Location = new System.Drawing.Point(4, 264);
+            this.btnBranchAndBound.Margin = new System.Windows.Forms.Padding(4);
             this.btnBranchAndBound.Name = "btnBranchAndBound";
-            this.btnBranchAndBound.Size = new System.Drawing.Size(204, 23);
+            this.btnBranchAndBound.Size = new System.Drawing.Size(272, 28);
             this.btnBranchAndBound.TabIndex = 10;
             this.btnBranchAndBound.Text = "Branch and Bound";
             this.btnBranchAndBound.UseVisualStyleBackColor = true;
             this.btnBranchAndBound.Click += new System.EventHandler(this.btnBranchAndBound_Click);
             // 
-            // textBoxBranchAndBound
+            // tableLayoutPanel5
             // 
-            this.textBoxBranchAndBound.Dock = System.Windows.Forms.DockStyle.Left;
-            this.textBoxBranchAndBound.Location = new System.Drawing.Point(213, 213);
-            this.textBoxBranchAndBound.Name = "textBoxBranchAndBound";
-            this.textBoxBranchAndBound.Size = new System.Drawing.Size(100, 20);
-            this.textBoxBranchAndBound.TabIndex = 11;
+            this.tableLayoutPanel5.ColumnCount = 2;
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel5.Controls.Add(this.btnDijkstra, 0, 0);
+            this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(572, 3);
+            this.tableLayoutPanel5.Name = "tableLayoutPanel5";
+            this.tableLayoutPanel5.RowCount = 2;
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(564, 314);
+            this.tableLayoutPanel5.TabIndex = 2;
+            // 
+            // btnDijkstra
+            // 
+            this.btnDijkstra.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDijkstra.Location = new System.Drawing.Point(4, 4);
+            this.btnDijkstra.Margin = new System.Windows.Forms.Padding(4);
+            this.btnDijkstra.Name = "btnDijkstra";
+            this.btnDijkstra.Size = new System.Drawing.Size(274, 38);
+            this.btnDijkstra.TabIndex = 1;
+            this.btnDijkstra.Text = "Dijkstra";
+            this.btnDijkstra.UseVisualStyleBackColor = true;
+            this.btnDijkstra.Click += new System.EventHandler(this.btnDijkstra_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(866, 551);
+            this.ClientSize = new System.Drawing.Size(1155, 678);
             this.Controls.Add(this.tabControl1);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.tableLayoutPanelMain.ResumeLayout(false);
@@ -397,6 +454,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStartknoten)).EndInit();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
+            this.tableLayoutPanel5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -429,6 +487,8 @@
         private System.Windows.Forms.TextBox textBoxAllTours;
         private System.Windows.Forms.TextBox textBoxBranchAndBound;
         private System.Windows.Forms.Button btnBranchAndBound;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+        private System.Windows.Forms.Button btnDijkstra;
     }
 }
 

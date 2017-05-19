@@ -31,7 +31,7 @@ namespace Graphen
         {
             OpenFileDialog openFileDialogGetGraph = new OpenFileDialog();
 
-            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 3";
+            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5";
             openFileDialogGetGraph.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileDialogGetGraph.FilterIndex = 2;
             openFileDialogGetGraph.RestoreDirectory = true;
@@ -262,7 +262,37 @@ namespace Graphen
                     bestPath += "->";
                     bestPath += erg.Item2[i].destinationVertex.name.ToString();
                 }
-                MessageBox.Show("All Tours\nElapsed Time: " + sw.Elapsed.ToString() + "\nBest Path: " + bestPath);
+                MessageBox.Show("Branch and Bound\nElapsed Time: " + sw.Elapsed.ToString() + "\nBest Path: " + bestPath);
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim All Tours Algorithmus ist etwas schief gegangen.");
+            }
+        }
+
+        private void btnDijkstra_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                numericUpDownStartknoten.Minimum = 0;
+                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                List<Edge> erg = functions.Dijkstra(graph, (int)numericUpDownStartknoten.Value);
+                sw.Stop();
+
+                string output = "";
+                System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5\Ergebnis.txt");
+                for (int i = 0; i < erg.Count; i++)
+                {
+                    output = "V_" + erg[i].sourceVertex.name + "\t--" + Math.Round(erg[i].destinationVertex.distToStart,2) + "->" + "\tV_" + erg[i].destinationVertex.name;
+                    file.WriteLine(output);
+                }
+                file.Close();
 
                 ResetGraph();
             }
