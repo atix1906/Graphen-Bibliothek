@@ -324,7 +324,6 @@ namespace Graphen
 
                     List<Edge> erg = functions.Dijkstra(graph, (int)numericUpDownStartknoten.Value);
                     sw.Stop();
-                    Edge tmp = erg.Find(o => o.sourceVertex.name == 0 && o.destinationVertex.name == 1);
                     string filepath = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5\Ergebnis_Dijkstra.txt";
                     string output = "";
                     System.IO.StreamWriter file = new System.IO.StreamWriter(filepath);
@@ -373,7 +372,6 @@ namespace Graphen
 
                     List<Vertex> erg = functions.MooreBellmanFord(graph, (int)numericUpDownStartknoten.Value, true);
                     sw.Stop();
-                    //Vertex tmp = erg.Find(o => o.distToStart == 5.54417||o.name == 1 && o.parent.name == 0);
                     string filename = "C:\\Users\\atix\\Dropbox\\Studium\\Master\\1. Semester\\Mathematische Methoden der Informatik\\Praktikum\\Praktikum 5\\Ergebnis_MBF.txt";
                     if (erg != null)
                     {
