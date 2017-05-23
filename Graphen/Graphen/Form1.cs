@@ -43,7 +43,18 @@ namespace Graphen
                     if (File.Exists(openFileDialogGetGraph.FileName))
                     {
                         pathToLastGraph = openFileDialogGetGraph.FileName;
-                        graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
+                        if (radioButtonGerichtet.Checked)
+                        {
+                            graph.SetFileGraph(File.ReadAllLines(pathToLastGraph), true);
+                        }
+                        else if (radioButtonUngerichtet.Checked)
+                        {
+                            graph.SetFileGraph(File.ReadAllLines(pathToLastGraph), false);
+                        }
+                        else
+                        {
+                            graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -108,7 +119,18 @@ namespace Graphen
         private void ResetGraph()
         {
             graph.ClearGraph();
-            graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
+            if (radioButtonGerichtet.Checked)
+            {
+                graph.SetFileGraph(File.ReadAllLines(pathToLastGraph), true);
+            }
+            else if (radioButtonUngerichtet.Checked)
+            {
+                graph.SetFileGraph(File.ReadAllLines(pathToLastGraph), false);
+            }
+            else
+            {
+                graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
+            }
         }
 
 
@@ -243,62 +265,160 @@ namespace Graphen
 
         private void btnBranchAndBound_Click(object sender, EventArgs e)
         {
-            if (graph != null && functions != null)
+            try
             {
-                textBoxBranchAndBound.Clear();
-                numericUpDownStartknoten.Minimum = 0;
-                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
-                Stopwatch sw = new Stopwatch();
-                sw.Restart();
-
-                var erg = functions.BranchAndBound(graph);
-                sw.Stop();
-
-                textBoxBranchAndBound.AppendText(Math.Round(erg.Item1, 4).ToString());
-                string bestPath = erg.Item2[0].sourceVertex.name.ToString();
-                for (int i = 0; i < erg.Item2.Count; i++)
+                if (graph != null && functions != null)
                 {
-                    bestPath += "->";
-                    bestPath += erg.Item2[i].destinationVertex.name.ToString();
-                }
-                MessageBox.Show("Branch and Bound\nElapsed Time: " + sw.Elapsed.ToString() + "\nBest Path: " + bestPath);
+                    textBoxBranchAndBound.Clear();
+                    numericUpDownStartknoten.Minimum = 0;
+                    numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
-                ResetGraph();
+                    Stopwatch sw = new Stopwatch();
+                    sw.Restart();
+
+                    var erg = functions.BranchAndBound(graph);
+                    sw.Stop();
+
+                    textBoxBranchAndBound.AppendText(Math.Round(erg.Item1, 4).ToString());
+                    try
+                    {
+                        string bestPath = erg.Item2[0].sourceVertex.name.ToString();
+                        for (int i = 0; i < erg.Item2.Count; i++)
+                        {
+                            bestPath += "->";
+                            bestPath += erg.Item2[i].destinationVertex.name.ToString();
+                        }
+                        MessageBox.Show("Branch and Bound\nElapsed Time: " + sw.Elapsed.ToString() + "\nBest Path: " + bestPath);
+
+                    }
+                    catch
+                    {
+
+                    }
+
+                    ResetGraph();
+                }
+                else
+                {
+                    MessageBox.Show("Beim Branch and Bound Algorithmus ist etwas schief gegangen.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Beim All Tours Algorithmus ist etwas schief gegangen.");
+                MessageBox.Show(ex.ToString());
             }
         }
 
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
-            if (graph != null && functions != null)
+            try
             {
-                numericUpDownStartknoten.Minimum = 0;
-                numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
-
-                Stopwatch sw = new Stopwatch();
-                sw.Restart();
-
-                List<Edge> erg = functions.Dijkstra(graph, (int)numericUpDownStartknoten.Value);
-                sw.Stop();
-
-                string output = "";
-                System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5\Ergebnis.txt");
-                for (int i = 0; i < erg.Count; i++)
+                if (graph != null && functions != null)
                 {
-                    output = "V_" + erg[i].sourceVertex.name + "\t--" + Math.Round(erg[i].destinationVertex.distToStart,2) + "->" + "\tV_" + erg[i].destinationVertex.name;
-                    file.WriteLine(output);
-                }
-                file.Close();
+                    numericUpDownStartknoten.Minimum = 0;
+                    numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
-                ResetGraph();
+                    Stopwatch sw = new Stopwatch();
+                    sw.Restart();
+
+                    List<Edge> erg = functions.Dijkstra(graph, (int)numericUpDownStartknoten.Value);
+                    sw.Stop();
+                    Edge tmp = erg.Find(o => o.sourceVertex.name == 0 && o.destinationVertex.name == 1);
+                    string filepath = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5\Ergebnis_Dijkstra.txt";
+                    string output = "";
+                    System.IO.StreamWriter file = new System.IO.StreamWriter(filepath);
+                    for (int i = 0; i < erg.Count; i++)
+                    {
+                        output = "V_" + erg[i].sourceVertex.name + "\t--" + Math.Round(erg[i].destinationVertex.distToStart, 2) + "->" + "\tV_" + erg[i].destinationVertex.name;
+                        file.WriteLine(output);
+                    }
+                    file.Close();
+
+                    var process = new Process();
+                    process.StartInfo = new ProcessStartInfo()
+                    {
+                        UseShellExecute = true,
+                        FileName = filepath
+                    };
+
+                    process.Start();
+                    process.WaitForExit();
+
+                    ResetGraph();
+                }
+                else
+                {
+                    MessageBox.Show("Beim Dijkstra Algorithmus ist etwas schief gegangen.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Beim All Tours Algorithmus ist etwas schief gegangen.");
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void btnMooreBellmanFord_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (graph != null && functions != null)
+                {
+                    numericUpDownStartknoten.Minimum = 0;
+                    numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
+
+                    Stopwatch sw = new Stopwatch();
+                    sw.Restart();
+
+                    List<Vertex> erg = functions.MooreBellmanFord(graph, (int)numericUpDownStartknoten.Value, true);
+                    sw.Stop();
+                    //Vertex tmp = erg.Find(o => o.distToStart == 5.54417||o.name == 1 && o.parent.name == 0);
+                    string filename = "C:\\Users\\atix\\Dropbox\\Studium\\Master\\1. Semester\\Mathematische Methoden der Informatik\\Praktikum\\Praktikum 5\\Ergebnis_MBF.txt";
+                    if (erg != null)
+                    {
+
+                        string output = "";
+                        StreamWriter file = new StreamWriter(filename);
+
+                        for (int i = 0; i < erg.Count; i++)
+                        {
+                            if (erg[i].distToStart == double.PositiveInfinity)
+                            {
+                                output = "Knoten " + erg[i].name + "\tdistStart(v): inf\t\tpred(v): null";
+                            }
+                            else
+                            {
+                                output = "Knoten " + erg[i].name + "\tdistStart(v): " + erg[i].distToStart + "\t\tpred(v): " + erg[i].parent.name;
+
+                            }
+                            file.WriteLine(output);
+                        }
+
+                        file.Close();
+
+                        var process = new Process();
+                        process.StartInfo = new ProcessStartInfo()
+                        {
+                            UseShellExecute = true,
+                            FileName = filename
+                        };
+
+                        process.Start();
+                        process.WaitForExit();
+
+                    }
+
+                    ResetGraph();
+                }
+                else
+                {
+                    MessageBox.Show("Beim Moore-Bellman-Ford Algorithmus ist etwas schief gegangen.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }

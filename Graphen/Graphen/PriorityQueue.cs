@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class PriorityQueue<T> where T : IComparable<T>
 {
-    private List<T> data;
+    public List<T> data;
 
     public PriorityQueue()
     {

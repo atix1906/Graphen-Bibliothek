@@ -56,7 +56,11 @@
             this.btnBranchAndBound = new System.Windows.Forms.Button();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.btnDijkstra = new System.Windows.Forms.Button();
+            this.radioButtonGerichtet = new System.Windows.Forms.RadioButton();
+            this.radioButtonUngerichtet = new System.Windows.Forms.RadioButton();
+            this.btnMooreBellmanFord = new System.Windows.Forms.Button();
             this.tableLayoutPanelMain.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -117,6 +121,8 @@
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Controls.Add(this.radioButtonGerichtet, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.radioButtonUngerichtet, 1, 1);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(4, 132);
             this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(4);
@@ -414,6 +420,7 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.Controls.Add(this.btnDijkstra, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.btnMooreBellmanFord, 0, 1);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(572, 3);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -435,6 +442,41 @@
             this.btnDijkstra.UseVisualStyleBackColor = true;
             this.btnDijkstra.Click += new System.EventHandler(this.btnDijkstra_Click);
             // 
+            // radioButtonGerichtet
+            // 
+            this.radioButtonGerichtet.AutoSize = true;
+            this.radioButtonGerichtet.Checked = true;
+            this.radioButtonGerichtet.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.radioButtonGerichtet.Location = new System.Drawing.Point(283, 3);
+            this.radioButtonGerichtet.Name = "radioButtonGerichtet";
+            this.radioButtonGerichtet.Size = new System.Drawing.Size(275, 54);
+            this.radioButtonGerichtet.TabIndex = 0;
+            this.radioButtonGerichtet.TabStop = true;
+            this.radioButtonGerichtet.Text = "Gerichteter Graph";
+            this.radioButtonGerichtet.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonUngerichtet
+            // 
+            this.radioButtonUngerichtet.AutoSize = true;
+            this.radioButtonUngerichtet.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.radioButtonUngerichtet.Location = new System.Drawing.Point(283, 63);
+            this.radioButtonUngerichtet.Name = "radioButtonUngerichtet";
+            this.radioButtonUngerichtet.Size = new System.Drawing.Size(275, 54);
+            this.radioButtonUngerichtet.TabIndex = 1;
+            this.radioButtonUngerichtet.Text = "Ungerichteter Graph";
+            this.radioButtonUngerichtet.UseVisualStyleBackColor = true;
+            // 
+            // btnMooreBellmanFord
+            // 
+            this.btnMooreBellmanFord.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnMooreBellmanFord.Location = new System.Drawing.Point(3, 160);
+            this.btnMooreBellmanFord.Name = "btnMooreBellmanFord";
+            this.btnMooreBellmanFord.Size = new System.Drawing.Size(276, 38);
+            this.btnMooreBellmanFord.TabIndex = 2;
+            this.btnMooreBellmanFord.Text = "Moore-Bellman-Ford";
+            this.btnMooreBellmanFord.UseVisualStyleBackColor = true;
+            this.btnMooreBellmanFord.Click += new System.EventHandler(this.btnMooreBellmanFord_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -445,6 +487,8 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.tableLayoutPanelMain.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -489,6 +533,9 @@
         private System.Windows.Forms.Button btnBranchAndBound;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.Button btnDijkstra;
+        private System.Windows.Forms.RadioButton radioButtonGerichtet;
+        private System.Windows.Forms.RadioButton radioButtonUngerichtet;
+        private System.Windows.Forms.Button btnMooreBellmanFord;
     }
 }
 

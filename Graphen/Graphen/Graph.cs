@@ -24,12 +24,12 @@ namespace Graphen
         }
 
         //Generiert Graphen
-        public void SetFileGraph(string[] Graph)
+        public void SetFileGraph(string[] Graph,bool gerichtet=false)
         {
             fileGraph = Graph;
             try
             {
-                generateGraph();
+                generateGraph(gerichtet);
             }
             catch (Exception ex)
             {
@@ -117,7 +117,7 @@ namespace Graphen
             //sw.Stop();
             //MessageBox.Show(sw.Elapsed.ToString());
         }
-        private void generateGraph()
+        private void generateGraph(bool gerichtet=false)
         {
             int numberVertices = Int32.Parse(fileGraph[0]);
             for (int i = 0; i < numberVertices; i++)          //Fügt Anzahl der in der 1. Zeile der .txt Datei angegebenen Knoten der Liste hinzu
@@ -133,7 +133,7 @@ namespace Graphen
             }
             else
             {
-                BuildFromEdgeList();
+                BuildFromEdgeList(gerichtet);
             }
         }
 
@@ -213,12 +213,6 @@ namespace Graphen
                     }
                 }
             }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Graph buildFromEdgeList" + ex.ToString());
-            //    ClearGraph();
-            //}
         }
 
         /// <summary>
