@@ -321,16 +321,26 @@ namespace Graphen
 
                     Stopwatch sw = new Stopwatch();
                     sw.Restart();
-
+                    int count = graph.vertices.Count;
                     List<Edge> erg = functions.Dijkstra(graph, (int)numericUpDownStartknoten.Value);
                     sw.Stop();
                     string filepath = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5\Ergebnis_Dijkstra.txt";
-                    string output = "";
+                    //string output = "";
                     System.IO.StreamWriter file = new System.IO.StreamWriter(filepath);
+                    List<string> output = new List<string>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        output.Add("1");
+                    }
                     for (int i = 0; i < erg.Count; i++)
                     {
-                        output = "V_" + erg[i].sourceVertex.name + "\t--" + Math.Round(erg[i].destinationVertex.distToStart, 2) + "->" + "\tV_" + erg[i].destinationVertex.name;
-                        file.WriteLine(output);
+                        output[erg[i].sourceVertex.name] = "Knoten " + erg[i].sourceVertex.name.ToString() + "\tdistStart(v): " + erg[i].sourceVertex.distToStart.ToString();
+                        output[erg[i].destinationVertex.name] = "Knoten " + erg[i].destinationVertex.name.ToString() + "\tdistStart(v): " + erg[i].destinationVertex.distToStart.ToString();
+                        //output = "V_" + erg[i].sourceVertex.name + "\t--" + Math.Round(erg[i].destinationVertex.distToStart, 2) + "->" + "\tV_" + erg[i].destinationVertex.name;
+                    }
+                    foreach (var item in output)
+                    {
+                        file.WriteLine(item);
                     }
                     file.Close();
 
