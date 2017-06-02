@@ -384,7 +384,7 @@ namespace Graphen
 
         #region Dijkstra
 
-        public List<Edge> Dijkstra(Graph G, int start)
+        public List<Vertex> Dijkstra(Graph G, int start)
         {
             //Initialisierung
             List<Vertex> vertices = G.vertices;
@@ -403,47 +403,42 @@ namespace Graphen
             }
 
             //Iteration
-            List<Edge> shortestPath = new List<Edge>();
-            PriorityQueue<Edge> prio = new PriorityQueue<Edge>();
-            int index = start;
-            List<Edge> connectedEdges = new List<Edge>();
+            PriorityQueue<Vertex> prio = new PriorityQueue<Vertex>();
+            prio.EnqueueList(vertices);
 
-            connectedEdges = vertices[index].connectedEdges;     //Get connected Edges from Start Vertex
-            vertices.RemoveAt(index);
-
-            while (vertices.Count > 0)
+            for (int n = 0; n < vertices.Count; n++)
             {
-                for (int i = 0; i < connectedEdges.Count; i++)      //Lege Distanz zum Startknoten fest und pushe alle Kanten in die Queue
+                Vertex minDistVertex = new Vertex();
+                do
                 {
-                    Edge e = connectedEdges[i];
-                    if (vertices.Exists(o => o == connectedEdges[i].destinationVertex))
+                    minDistVertex = prio.Dequeue();
+                }
+                while (minDistVertex.used);
+
+                if (minDistVertex.distToStart == double.PositiveInfinity)
+                {
+                    MessageBox.Show("Terminierung durch unendliche Distanz zum Startknoten");
+                    return vertices;
+                }
+
+                minDistVertex.used = true;
+
+                for (int i = 0; i < minDistVertex.connectedEdges.Count; i++)
+                {
+                    Edge edgeTmp = minDistVertex.connectedEdges[i];
+
+                    double dist = minDistVertex.distToStart + edgeTmp.cost;
+
+                    if (dist < edgeTmp.destinationVertex.distToStart)
                     {
-                        prio.Enqueue(connectedEdges[i]);
-                        double dist = connectedEdges[i].sourceVertex.distToStart + connectedEdges[i].cost;
-                        if (connectedEdges[i].sourceVertex.distToStart == double.PositiveInfinity)
-                        {
-                            MessageBox.Show("Terminierung durch unendliche Distanz zum Startknoten");
-                            return shortestPath;
-                        }
-                        if (dist < connectedEdges[i].destinationVertex.distToStart)
-                        {
-                            connectedEdges[i].destinationVertex.distToStart = dist;
-                            connectedEdges[i].destinationVertex.parent = connectedEdges[i].sourceVertex;
-                        }
-
+                        edgeTmp.destinationVertex.distToStart = dist;
+                        edgeTmp.destinationVertex.parent = minDistVertex;
+                        prio.Enqueue(edgeTmp.destinationVertex);
                     }
-                }
-                if (prio.data.Count == 0)
-                {
-                    break;
-                }
-                Edge minCostEdge = prio.Dequeue();
-                shortestPath.Add(minCostEdge);
 
-                connectedEdges = minCostEdge.destinationVertex.connectedEdges;
-                vertices.Remove(minCostEdge.destinationVertex);
+                }
             }
-            return shortestPath;
+            return vertices;
         }
 
         #endregion
@@ -451,7 +446,7 @@ namespace Graphen
         #region Moore-Bellman-Ford
 
         #endregion
-        public List<Vertex> MooreBellmanFord(Graph G, int start, bool negZykel = false)
+        public List<Vertex> MooreBellmanFord(Graph G, int start)
         {
             List<Vertex> vertices = G.vertices;
             List<Edge> edges = G.edges;
@@ -472,7 +467,7 @@ namespace Graphen
 
             //Process
 
-            for (int i = 0; i < vertices.Count; i++)
+            for (int i = 0; i < vertices.Count - 1; i++)
             {
                 for (int k = 0; k < edges.Count; k++)
                 {
@@ -485,19 +480,19 @@ namespace Graphen
                     }
                 }
             }
-            if (negZykel)
+
+
+            for (int i = 0; i < edges.Count; i++)
             {
-                for (int i = 0; i < edges.Count; i++)
+                Vertex v = edges[i].sourceVertex;
+                Vertex w = edges[i].destinationVertex;
+                if (v.distToStart + edges[i].cost < w.distToStart)
                 {
-                    Vertex v = edges[i].sourceVertex;
-                    Vertex w = edges[i].destinationVertex;
-                    if (v.distToStart + edges[i].cost < w.distToStart)
-                    {
-                        MessageBox.Show("Es exisitert ein negativer Zykel");
-                        return null;
-                    }
+                    MessageBox.Show("Es exisitert ein negativer Zykel");
+                    return null;
                 }
             }
+
 
             return vertices;
         }

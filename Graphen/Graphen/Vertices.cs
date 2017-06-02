@@ -27,9 +27,9 @@ namespace Graphen
 
         public int CompareTo(Vertex other)
         {
-            if (this.name < other.name)
+            if (this.distToStart <= other.distToStart)
                 return -1;
-            else if (this.name> other.name)
+            else if (this.distToStart > other.distToStart)
                 return 1;
             else return 0;
         }

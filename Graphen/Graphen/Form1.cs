@@ -322,7 +322,7 @@ namespace Graphen
                     Stopwatch sw = new Stopwatch();
                     sw.Restart();
                     int count = graph.vertices.Count;
-                    List<Edge> erg = functions.Dijkstra(graph, (int)numericUpDownStartknoten.Value);
+                    List<Vertex> erg = functions.Dijkstra(graph, (int)numericUpDownStartknoten.Value);
                     sw.Stop();
                     string filepath = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5\Ergebnis_Dijkstra.txt";
                     //string output = "";
@@ -334,8 +334,8 @@ namespace Graphen
                     }
                     for (int i = 0; i < erg.Count; i++)
                     {
-                        output[erg[i].sourceVertex.name] = "Knoten " + erg[i].sourceVertex.name.ToString() + "\tdistStart(v): " + erg[i].sourceVertex.distToStart.ToString();
-                        output[erg[i].destinationVertex.name] = "Knoten " + erg[i].destinationVertex.name.ToString() + "\tdistStart(v): " + erg[i].destinationVertex.distToStart.ToString();
+                        output[erg[i].name] = "Knoten " + erg[i].name.ToString() + "\tdistStart(v): " + erg[i].distToStart.ToString();
+                        //output[erg[i].destinationVertex.name] = "Knoten " + erg[i].destinationVertex.name.ToString() + "\tdistStart(v): " + erg[i].destinationVertex.distToStart.ToString();
                         //output = "V_" + erg[i].sourceVertex.name + "\t--" + Math.Round(erg[i].destinationVertex.distToStart, 2) + "->" + "\tV_" + erg[i].destinationVertex.name;
                     }
                     foreach (var item in output)
@@ -380,7 +380,7 @@ namespace Graphen
                     Stopwatch sw = new Stopwatch();
                     sw.Restart();
 
-                    List<Vertex> erg = functions.MooreBellmanFord(graph, (int)numericUpDownStartknoten.Value, true);
+                    List<Vertex> erg = functions.MooreBellmanFord(graph, (int)numericUpDownStartknoten.Value);
                     sw.Stop();
                     string filename = "C:\\Users\\atix\\Dropbox\\Studium\\Master\\1. Semester\\Mathematische Methoden der Informatik\\Praktikum\\Praktikum 5\\Ergebnis_MBF.txt";
                     if (erg != null)
