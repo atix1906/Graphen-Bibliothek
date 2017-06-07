@@ -508,7 +508,7 @@ namespace Graphen
         #region Praktikum 6 - Ford-Fulkerson-Algorithmus
         #region
 
-        public double FordFulkerson(Graph G, int s, int t)
+        public double EdmondsKarp(Graph G, int s, int t)
         {
             List<Vertex> V = G.vertices;
             List<Edge> E = G.edges;
@@ -518,10 +518,6 @@ namespace Graphen
 
             double maxFlow = 0;
 
-            //foreach (var item in E)
-            //{
-            //    item.cost = 0;                                              //Schritt 1: Fluss aller Kanten auf 0 setzten
-            //}
             int count = G.edges.Count;
             for (int i = 0; i < count; i++)
             {
@@ -568,14 +564,9 @@ namespace Graphen
             Graph residualGraph = new Graph();
             List<Edge> edgesUpdate = new List<Edge>();
             residualGraph.vertices = V;
-            //residualGraph.edges = E;
             int count = E.Count / 2;
             for (int i = 0; i < count; i++)
             {
-                //double flow = E[i].cost;
-
-                //E[count + i].capacity = availableCapa;
-
                 if(0 < E[i].capacity)
                 {
                     edgesUpdate.Add(E[i]);
@@ -584,25 +575,6 @@ namespace Graphen
                 {
                     edgesUpdate.Add(E[count + i]);
                 }
-
-                ////Hinrichtung
-                //if (availableCapa > 0)      //Kantenkapazität nicht voll ausgeschöpft
-                //{
-                //    E[i].capacity = availableCapa;
-                //    //residualGraph.edges.Add(newEdge);
-                //}
-
-
-                ////Rückrichtung
-                //if (flow > 0)      //Flusswert der Kante ist 0
-                //{
-                //    newEdge = item;
-                //    Vertex tmp = newEdge.sourceVertex;
-                //    newEdge.sourceVertex = item.destinationVertex;
-                //    newEdge.destinationVertex = tmp;
-                //    newEdge.capacity = flow;
-                //    //residualGraph.edges.Add(newEdge);
-                //}
             }
             residualGraph.edges = edgesUpdate;
             return residualGraph;

@@ -429,7 +429,7 @@ namespace Graphen
             }
         }
 
-        private void btnFordFulkerson_Click(object sender, EventArgs e)
+        private void btnEdmondsKarp_Click(object sender, EventArgs e)
         {
             if (graph != null && functions != null)
             {
@@ -443,16 +443,16 @@ namespace Graphen
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
-                double erg = functions.FordFulkerson(graph, (int)numericUpDownSource.Value, (int)numericUpDownTarget.Value);
+                double erg = functions.EdmondsKarp(graph, (int)numericUpDownSource.Value, (int)numericUpDownTarget.Value);
                 sw.Stop();
 
-                MessageBox.Show("All Tours\nElapsed Time: " + sw.Elapsed.ToString() + "\nMaximaler Fluss: " + erg);
+                MessageBox.Show("Edmonds-Karp\nElapsed Time: " + sw.Elapsed.ToString() + "\nMaximaler Fluss: " + erg);
 
                 ResetGraph();
             }
             else
             {
-                MessageBox.Show("Beim Ford Fulkerson Algorithmus ist etwas schief gegangen.");
+                MessageBox.Show("Beim Edmonds-Karp Algorithmus ist etwas schief gegangen.");
             }
         }
     }

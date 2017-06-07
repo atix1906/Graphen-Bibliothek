@@ -60,7 +60,7 @@
             this.btnDijkstra = new System.Windows.Forms.Button();
             this.btnMooreBellmanFord = new System.Windows.Forms.Button();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnFordFulkerson = new System.Windows.Forms.Button();
+            this.btnEdmondsKarp = new System.Windows.Forms.Button();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.numericUpDownSource = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownTarget = new System.Windows.Forms.NumericUpDown();
@@ -146,7 +146,7 @@
             this.radioButtonGerichtet.Checked = true;
             this.radioButtonGerichtet.Dock = System.Windows.Forms.DockStyle.Fill;
             this.radioButtonGerichtet.Location = new System.Drawing.Point(212, 2);
-            this.radioButtonGerichtet.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.radioButtonGerichtet.Margin = new System.Windows.Forms.Padding(2);
             this.radioButtonGerichtet.Name = "radioButtonGerichtet";
             this.radioButtonGerichtet.Size = new System.Drawing.Size(206, 44);
             this.radioButtonGerichtet.TabIndex = 0;
@@ -159,7 +159,7 @@
             this.radioButtonUngerichtet.AutoSize = true;
             this.radioButtonUngerichtet.Dock = System.Windows.Forms.DockStyle.Fill;
             this.radioButtonUngerichtet.Location = new System.Drawing.Point(212, 50);
-            this.radioButtonUngerichtet.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.radioButtonUngerichtet.Margin = new System.Windows.Forms.Padding(2);
             this.radioButtonUngerichtet.Name = "radioButtonUngerichtet";
             this.radioButtonUngerichtet.Size = new System.Drawing.Size(206, 45);
             this.radioButtonUngerichtet.TabIndex = 1;
@@ -182,7 +182,7 @@
             this.tabPage1.Controls.Add(this.tableLayoutPanelMain);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(858, 525);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
@@ -193,7 +193,7 @@
             this.tabPage2.Controls.Add(this.tableLayoutPanel1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(858, 525);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
@@ -343,7 +343,7 @@
             // 
             this.primBtn.Dock = System.Windows.Forms.DockStyle.Top;
             this.primBtn.Location = new System.Drawing.Point(2, 44);
-            this.primBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.primBtn.Margin = new System.Windows.Forms.Padding(2);
             this.primBtn.Name = "primBtn";
             this.primBtn.Size = new System.Drawing.Size(206, 29);
             this.primBtn.TabIndex = 1;
@@ -436,7 +436,7 @@
             this.tableLayoutPanel5.Controls.Add(this.btnMooreBellmanFord, 0, 1);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(428, 2);
-            this.tableLayoutPanel5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel5.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -459,7 +459,7 @@
             // 
             this.btnMooreBellmanFord.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnMooreBellmanFord.Location = new System.Drawing.Point(2, 129);
-            this.btnMooreBellmanFord.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnMooreBellmanFord.Margin = new System.Windows.Forms.Padding(2);
             this.btnMooreBellmanFord.Name = "btnMooreBellmanFord";
             this.btnMooreBellmanFord.Size = new System.Drawing.Size(207, 31);
             this.btnMooreBellmanFord.TabIndex = 2;
@@ -472,7 +472,7 @@
             this.tableLayoutPanel6.ColumnCount = 2;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel6.Controls.Add(this.btnFordFulkerson, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.btnEdmondsKarp, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.tableLayoutPanel7, 1, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(429, 262);
@@ -485,16 +485,16 @@
             this.tableLayoutPanel6.Size = new System.Drawing.Size(420, 254);
             this.tableLayoutPanel6.TabIndex = 3;
             // 
-            // btnFordFulkerson
+            // btnEdmondsKarp
             // 
-            this.btnFordFulkerson.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnFordFulkerson.Location = new System.Drawing.Point(3, 3);
-            this.btnFordFulkerson.Name = "btnFordFulkerson";
-            this.btnFordFulkerson.Size = new System.Drawing.Size(204, 31);
-            this.btnFordFulkerson.TabIndex = 0;
-            this.btnFordFulkerson.Text = "Ford-Fulkerson";
-            this.btnFordFulkerson.UseVisualStyleBackColor = true;
-            this.btnFordFulkerson.Click += new System.EventHandler(this.btnFordFulkerson_Click);
+            this.btnEdmondsKarp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnEdmondsKarp.Location = new System.Drawing.Point(3, 3);
+            this.btnEdmondsKarp.Name = "btnEdmondsKarp";
+            this.btnEdmondsKarp.Size = new System.Drawing.Size(204, 31);
+            this.btnEdmondsKarp.TabIndex = 0;
+            this.btnEdmondsKarp.Text = "Edmonds-Karp";
+            this.btnEdmondsKarp.UseVisualStyleBackColor = true;
+            this.btnEdmondsKarp.Click += new System.EventHandler(this.btnEdmondsKarp_Click);
             // 
             // tableLayoutPanel7
             // 
@@ -621,7 +621,7 @@
         private System.Windows.Forms.RadioButton radioButtonUngerichtet;
         private System.Windows.Forms.Button btnMooreBellmanFord;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
-        private System.Windows.Forms.Button btnFordFulkerson;
+        private System.Windows.Forms.Button btnEdmondsKarp;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
         private System.Windows.Forms.NumericUpDown numericUpDownSource;
         private System.Windows.Forms.NumericUpDown numericUpDownTarget;
