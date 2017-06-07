@@ -31,7 +31,7 @@ namespace Graphen
         {
             OpenFileDialog openFileDialogGetGraph = new OpenFileDialog();
 
-            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 5";
+            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 6";
             openFileDialogGetGraph.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileDialogGetGraph.FilterIndex = 2;
             openFileDialogGetGraph.RestoreDirectory = true;
@@ -80,8 +80,8 @@ namespace Graphen
                 numericUpDownStartknoten.Maximum = graph.GetVerticesList().Count - 1;
 
                 sw.Restart();
-                int zusammenhangskomponenten = functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value);
-                MessageBox.Show("Breitensuche(iterativ)\nZusammenhangskomponenten: " + zusammenhangskomponenten.ToString());
+                var zusammenhangskomponenten = functions.BreitensucheIterativ(graph, (int)numericUpDownStartknoten.Value);
+                MessageBox.Show("Breitensuche(iterativ)\nZusammenhangskomponenten: " + zusammenhangskomponenten.Item1.ToString());
                 //+"\nElapsed Time: "+sw.Elapsed.ToString());
 
                 sw.Stop();
@@ -132,7 +132,6 @@ namespace Graphen
                 graph.SetFileGraph(File.ReadAllLines(pathToLastGraph));
             }
         }
-
 
         private void kruskalBtn_Click(object sender, EventArgs e)
         {
@@ -427,6 +426,33 @@ namespace Graphen
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void btnFordFulkerson_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                numericUpDownSource.Minimum = 0;
+                numericUpDownSource.Maximum = graph.GetVerticesList().Count - 1;
+
+                numericUpDownTarget.Minimum = 0;
+                numericUpDownTarget.Maximum = graph.GetVerticesList().Count - 1;
+
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                double erg = functions.FordFulkerson(graph, (int)numericUpDownSource.Value, (int)numericUpDownTarget.Value);
+                sw.Stop();
+
+                MessageBox.Show("All Tours\nElapsed Time: " + sw.Elapsed.ToString() + "\nMaximaler Fluss: " + erg);
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim Ford Fulkerson Algorithmus ist etwas schief gegangen.");
             }
         }
     }

@@ -99,7 +99,7 @@ namespace Graphen
 
         private void BranchAndBound(int size, Vertex start, Vertex currentVertex, double currentCost, List<Vertex> currentTour, ref double bestCost)
         {
-            currentVertex.used = true;
+            currentVertex.visited = true;
             currentTour.Add(currentVertex);
             double costs = 0;
             if (currentTour.Count == size)  //Tour vollständig, überprüfe ob Kosten geringer als die bisherigen geringsten Kosten sind
@@ -113,7 +113,7 @@ namespace Graphen
 
                 for (int i = 0; i < edgesFromCurrentVertex.Count; i++)
                 {
-                    if (!edgesFromCurrentVertex[i].destinationVertex.used)      //Wenn Zielknoten unbesucht, Kosten der Kante addieren
+                    if (!edgesFromCurrentVertex[i].destinationVertex.visited)      //Wenn Zielknoten unbesucht, Kosten der Kante addieren
                     {
                         costs = currentCost + edgesFromCurrentVertex[i].cost;
 
@@ -125,7 +125,7 @@ namespace Graphen
                 }
             }
 
-            currentVertex.used = false;
+            currentVertex.visited = false;
             currentTour.RemoveAt(currentTour.Count - 1);
         }
     }

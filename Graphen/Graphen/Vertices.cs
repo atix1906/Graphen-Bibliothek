@@ -8,7 +8,7 @@ namespace Graphen
 {
     public class Vertex:IComparable<Vertex>
     {
-        public bool used = false;
+        public bool visited = false;
         public int name;
 
         public List<Edge> connectedEdges = new List<Edge>();

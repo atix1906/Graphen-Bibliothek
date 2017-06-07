@@ -9,6 +9,7 @@ namespace Graphen
     public class Edge :IComparable<Edge>
     {
         public double cost = 0;
+        public double capacity = 0;
         public Vertex sourceVertex;
         public Vertex destinationVertex;
         public Edge()
@@ -26,8 +27,8 @@ namespace Graphen
 
         public void MarkVerticesAsUsed()
         {
-            sourceVertex.used = true;
-            destinationVertex.used = true;
+            sourceVertex.visited = true;
+            destinationVertex.visited = true;
         }
     }
 }

@@ -26,45 +26,54 @@ namespace Graphen
         #region Praktikum 1 - Breiten- und Tiefensuche
 
         #region Breitensuche
-        public int BreitensucheIterativ(Graph graph, int v0)
+        public Tuple<int, List<Vertex>> BreitensucheIterativ(Graph graph, int v0)
         {
-            this.graph = graph;
+            //this.graph = graph;
             Queue<Vertex> queueVertices = new Queue<Vertex>();
             List<Vertex> vertices = graph.GetVerticesList();
             List<Edge> edges = graph.GetEdgesList();
-            vertices.ElementAt<Vertex>(v0).used = true;               //makiere 1. Knoten als benutzt
+            int level = 0;
+            vertices.ElementAt<Vertex>(v0).visited = true;               //makiere 1. Knoten als benutzt
+            vertices.ElementAt<Vertex>(v0).id = level;
+            vertices.ElementAt<Vertex>(v0).parent = vertices.ElementAt<Vertex>(v0);
             queueVertices.Enqueue(vertices.ElementAt<Vertex>(v0));    //push 1. Knoten in Queue
-
-            List<List<Vertex>> adjazentliste = graph.GetAdjazenzliste();
+            List<Vertex> route = new List<Vertex>();
+            //List<List<Vertex>> adjazentliste = graph.GetAdjazenzliste();
 
             int countZusammenhangskompontenten = 1;
             Vertex activeNode;
             while (queueVertices.Count > 0)
             {
                 activeNode = queueVertices.Dequeue();
-                activeNode.used = true;
-                for (int i = 0; i < adjazentliste[activeNode.name].Count; i++)     //Knoten aus der Liste des aktiven Knoten anhängen
+                level = activeNode.id;
+                level++;
+                route.Add(activeNode);
+                activeNode.visited = true;
+                for (int i = 0; i < activeNode.connectedEdges.Count; i++)     //Knoten aus der Liste des aktiven Knoten anhängen
                 {
-                    if (!adjazentliste[activeNode.name].ElementAt(i).used)
+                    if (!activeNode.connectedEdges.ElementAt(i).destinationVertex.visited)
                     {
-                        adjazentliste[activeNode.name].ElementAt(i).used = true;
-                        queueVertices.Enqueue(adjazentliste[activeNode.name].ElementAt(i));
+                        activeNode.connectedEdges.ElementAt(i).destinationVertex.visited = true;
+                        activeNode.connectedEdges.ElementAt(i).destinationVertex.parent = activeNode;
+                        activeNode.connectedEdges.ElementAt(i).destinationVertex.id = level;
+                        queueVertices.Enqueue(activeNode.connectedEdges.ElementAt(i).destinationVertex);
                     }
                 }
 
                 if (queueVertices.Count == 0)       //Suche nach noch nicht verwendeten Knoten
                 {
+                    level = 0;
                     Vertex toEnqueue = new Vertex();
-                    toEnqueue = vertices.FirstOrDefault<Vertex>(x => x.used == false);
+                    toEnqueue = vertices.FirstOrDefault<Vertex>(x => x.visited == false);
                     if (toEnqueue != null)
                     {
-                        toEnqueue.used = true;
+                        toEnqueue.visited = true;
                         queueVertices.Enqueue(toEnqueue);
                         countZusammenhangskompontenten++;
                     }
                 }
             }
-            return countZusammenhangskompontenten;
+            return Tuple.Create(countZusammenhangskompontenten, route);
         }
         #endregion
 
@@ -130,10 +139,10 @@ namespace Graphen
 
         private void TiefensucheRekursiv(int startknoten, int v, List<List<Vertex>> adjazenzliste, List<Vertex> vertices, ref int countZusammenhangskomponenten, ref List<Vertex> visitedVertex)
         {
-            vertices[v].used = true;
+            vertices[v].visited = true;
             for (int i = 0; i < adjazenzliste[v].Count; i++)
             {
-                if (!adjazenzliste[v].ElementAt<Vertex>(i).used)
+                if (!adjazenzliste[v].ElementAt<Vertex>(i).visited)
                 {
                     visitedVertex.Add(adjazenzliste[v].ElementAt<Vertex>(i));
                     TiefensucheRekursiv(startknoten, adjazenzliste[v].ElementAt<Vertex>(i).name, adjazenzliste, vertices, ref countZusammenhangskomponenten, ref visitedVertex);
@@ -145,7 +154,7 @@ namespace Graphen
             {
                 Vertex toVisit = new Vertex();
 
-                toVisit = vertices.FirstOrDefault<Vertex>(x => x.used == false);
+                toVisit = vertices.FirstOrDefault<Vertex>(x => x.visited == false);
                 if (toVisit != null)
                 {
                     TiefensucheRekursiv(toVisit.name, toVisit.name, adjazenzliste, vertices, ref countZusammenhangskomponenten, ref visitedVertex);
@@ -157,7 +166,6 @@ namespace Graphen
         #endregion
 
         #endregion
-
 
         #region Praktikum 2 - Prim und Kruskal
 
@@ -212,7 +220,7 @@ namespace Graphen
             queue.EnqueueList(G.vertices[v].connectedEdges);
             for (int i = 0; i < G.vertices.Count - 1; i++)
             {
-                while (queue.Root().destinationVertex.used)               //Suche noch nicht besuchten Knoten
+                while (queue.Root().destinationVertex.visited)               //Suche noch nicht besuchten Knoten
                 {
                     queue.Dequeue();                                      //Entferne besuchte Knoten aus der Queue
                 }
@@ -220,7 +228,7 @@ namespace Graphen
 
                 edgesMST.Add(queue.Dequeue());
                 queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).destinationVertex.connectedEdges.FindAll(    //FindAll: o(n)
-                    (Edge e) => { return e.destinationVertex.used == false; }));                      //Füge nur die Kanten der Queue hinzu, die unbesuchte connected Vertices haben
+                    (Edge e) => { return e.destinationVertex.visited == false; }));                      //Füge nur die Kanten der Queue hinzu, die unbesuchte connected Vertices haben
 
                 costMST += edgesMST[edgesMST.Count - 1].cost;
             }
@@ -229,7 +237,6 @@ namespace Graphen
         #endregion
 
         #endregion
-
 
         #region Praktikum 3 - Nächster-Nachbar- und Doppelter-Baum Algorithmus
 
@@ -253,7 +260,7 @@ namespace Graphen
 
             for (int i = 0; i < vertices.Count; i++)
             {
-                sortedEdges = vertices[v].connectedEdges.FindAll((Edge e) => { return e.destinationVertex.used == false; });    //Suche Kanten mit einem unbesuchten Zielknoten
+                sortedEdges = vertices[v].connectedEdges.FindAll((Edge e) => { return e.destinationVertex.visited == false; });    //Suche Kanten mit einem unbesuchten Zielknoten
 
                 if (sortedEdges.Count > 0)
                 {
@@ -307,14 +314,14 @@ namespace Graphen
             Vertex newDestination = new Vertex();
 
             newSource = ts.Item1[0];
-            ts.Item1[0].used = true;
+            ts.Item1[0].visited = true;
             for (int i = 1; i < ts.Item1.Count; i++)
             {
                 Vertex currentVertex = ts.Item1[i];
-                if (!currentVertex.used && newSource != null)
+                if (!currentVertex.visited && newSource != null)
                 {
                     newDestination = currentVertex;
-                    currentVertex.used = true;
+                    currentVertex.visited = true;
                     newEdge.sourceVertex = newSource;
                     newEdge.destinationVertex = newDestination;
 
@@ -349,7 +356,6 @@ namespace Graphen
 
 
         #endregion
-
 
         #region Praktikum 4 - Ausprobieren aller Touren und Branch-and-Bound
 
@@ -413,7 +419,7 @@ namespace Graphen
                 {
                     minDistVertex = prio.Dequeue();
                 }
-                while (minDistVertex.used);
+                while (minDistVertex.visited);
 
                 if (minDistVertex.distToStart == double.PositiveInfinity)
                 {
@@ -421,7 +427,7 @@ namespace Graphen
                     return vertices;
                 }
 
-                minDistVertex.used = true;
+                minDistVertex.visited = true;
 
                 for (int i = 0; i < minDistVertex.connectedEdges.Count; i++)
                 {
@@ -497,6 +503,149 @@ namespace Graphen
             return vertices;
         }
 
+        #endregion
+
+        #region Praktikum 6 - Ford-Fulkerson-Algorithmus
+        #region
+
+        public double FordFulkerson(Graph G, int s, int t)
+        {
+            List<Vertex> V = G.vertices;
+            List<Edge> E = G.edges;
+
+            Vertex source = V[s];
+            Vertex target = V[t];
+
+            double maxFlow = 0;
+
+            //foreach (var item in E)
+            //{
+            //    item.cost = 0;                                              //Schritt 1: Fluss aller Kanten auf 0 setzten
+            //}
+            int count = G.edges.Count;
+            for (int i = 0; i < count; i++)
+            {
+                E.Add(new Edge());
+                int index = E.Count - 1;
+                E[index].sourceVertex = G.edges[i].destinationVertex;
+                E[index].destinationVertex = G.edges[i].sourceVertex;
+                G.edges[i].cost = 0;
+            }
+
+            while (true)
+            {
+                Graph residualGraph = generateResidualGraph(E, V);              //Schritt 2: Bestimmen von G_f und u_f(e)
+
+                residualGraph.ResetUsedVertices();
+                residualGraph.ResetParentsAndConnectedEdgesOfVertices();
+                V = residualGraph.SortEdgesToVertex(residualGraph.edges, V);
+                residualGraph.vertices = V;
+                var findP = BreitensucheIterativ(residualGraph, s);             //Schritt 3: Suche Weg von s nach t
+                List<Edge> path = generatePathFromStoT(findP.Item2, residualGraph.edges, s, t); //Schritt 3: konstruiere Weg
+                if (path == null)
+                {
+                    return maxFlow;                                             //Schritt 3: es existiert kein Weg mehr
+                }
+                double gamma = findMinCapacity(path);                           //Schritt 4: finde Gamma
+                adjustCapacity(gamma, path, E);                                       //Schritt 4: Verändere Fluss entlang des Weges aus Schritt 3
+
+                maxFlow += gamma;
+            }
+        }
+
+        private void adjustCapacity(double gamma, List<Edge> path, List<Edge> E)
+        {
+            foreach (var item in path)
+            {
+                item.capacity -= gamma;
+                Edge e = E.Find(o => o.destinationVertex.name == item.sourceVertex.name && o.sourceVertex.name == item.destinationVertex.name);
+                e.capacity += gamma;
+            }
+        }
+
+        private Graph generateResidualGraph(List<Edge> E, List<Vertex> V)
+        {
+            Graph residualGraph = new Graph();
+            List<Edge> edgesUpdate = new List<Edge>();
+            residualGraph.vertices = V;
+            //residualGraph.edges = E;
+            int count = E.Count / 2;
+            for (int i = 0; i < count; i++)
+            {
+                //double flow = E[i].cost;
+
+                //E[count + i].capacity = availableCapa;
+
+                if(0 < E[i].capacity)
+                {
+                    edgesUpdate.Add(E[i]);
+                }
+                if (E[count + i].capacity > 0)
+                {
+                    edgesUpdate.Add(E[count + i]);
+                }
+
+                ////Hinrichtung
+                //if (availableCapa > 0)      //Kantenkapazität nicht voll ausgeschöpft
+                //{
+                //    E[i].capacity = availableCapa;
+                //    //residualGraph.edges.Add(newEdge);
+                //}
+
+
+                ////Rückrichtung
+                //if (flow > 0)      //Flusswert der Kante ist 0
+                //{
+                //    newEdge = item;
+                //    Vertex tmp = newEdge.sourceVertex;
+                //    newEdge.sourceVertex = item.destinationVertex;
+                //    newEdge.destinationVertex = tmp;
+                //    newEdge.capacity = flow;
+                //    //residualGraph.edges.Add(newEdge);
+                //}
+            }
+            residualGraph.edges = edgesUpdate;
+            return residualGraph;
+        }
+
+        private List<Edge> generatePathFromStoT(List<Vertex> V, List<Edge> E, int s, int t)
+        {
+            List<Edge> pathEdges = new List<Edge>();
+            Vertex start = V.Find(o => o.name == s);
+            Vertex tmp = V.Find(o => o.name == t);
+
+            do
+            {
+                if (tmp == null)
+                {
+                    return null;
+                }
+                Edge e = E.Find(o => o.sourceVertex == tmp.parent && o.destinationVertex == tmp);
+                pathEdges.Add(e);
+                tmp = tmp.parent;
+            }
+            while (tmp != start);
+
+            pathEdges.Reverse();
+
+            return pathEdges;
+        }
+
+        private double findMinCapacity(List<Edge> path)
+        {
+            double gamma = double.PositiveInfinity;
+
+            foreach (var item in path)
+            {
+                if (gamma > item.capacity)
+                {
+                    gamma = item.capacity;
+                }
+            }
+
+            return gamma;
+        }
+        #endregion
         #endregion
     }
 }

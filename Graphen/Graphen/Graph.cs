@@ -189,10 +189,12 @@ namespace Graphen
                 if (getEdge.Length > 2)
                 {
                     newEdge.cost = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
+                    newEdge.capacity = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
                 }
                 else
                 {
                     newEdge.cost = 1;
+                    newEdge.capacity = 1;
                 }
 
                 if (!directedGraph)
@@ -206,10 +208,12 @@ namespace Graphen
                     if (getEdge.Length > 2)
                     {
                         newEdge.cost = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
+                        newEdge.capacity = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
                     }
                     else
                     {
                         newEdge.cost = 1;
+                        newEdge.capacity = 1;
                     }
                 }
             }
@@ -218,7 +222,7 @@ namespace Graphen
         /// <summary>
         /// Fügt die Kanten den jeweiligen Knoten hinzu
         /// </summary>
-        private void SortEdgesToVertex()
+        public void SortEdgesToVertex()
         {
             try
             {
@@ -231,6 +235,23 @@ namespace Graphen
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+
+        public List<Vertex> SortEdgesToVertex(List<Edge> edges, List<Vertex> vertices)
+        {
+            try
+            {
+                for (int i = 0; i < edges.Count; i++)
+                {
+                    vertices[edges[i].sourceVertex.name].connectedEdges.Add(edges[i]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return vertices;
         }
 
         public void SortConnectedEdgesByCost()
@@ -253,8 +274,18 @@ namespace Graphen
         {
             foreach (var item in vertices)
             {
-                item.used = false;
+                item.visited = false;
             }
         }
+
+        public void ResetParentsAndConnectedEdgesOfVertices()
+        {
+            foreach (var item in vertices)
+            {
+                item.parent = null;
+                item.connectedEdges.Clear();
+            }
+        }
+        
     }
 }
