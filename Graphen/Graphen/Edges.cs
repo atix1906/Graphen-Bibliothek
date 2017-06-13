@@ -30,5 +30,11 @@ namespace Graphen
             sourceVertex.visited = true;
             destinationVertex.visited = true;
         }
+
+        public Edge(Vertex source, Vertex destination)
+        {
+            sourceVertex = source;
+            destinationVertex = destination;
+        }
     }
 }

@@ -452,25 +452,18 @@ namespace Graphen
         #region Moore-Bellman-Ford
 
         #endregion
-        public List<Vertex> MooreBellmanFord(Graph G, int start)
+        public Tuple<List<Vertex>, bool> MooreBellmanFord(Graph G, int start)
         {
             List<Vertex> vertices = G.vertices;
             List<Edge> edges = G.edges;
             //Initialisierung
             for (int i = 0; i < vertices.Count; i++)
             {
-                if (i == start)
-                {
-                    vertices[i].distToStart = 0;
-                    vertices[i].parent = vertices[i];
-                }
-                else
-                {
-                    vertices[i].distToStart = double.PositiveInfinity;
-                    vertices[i].parent = null;
-                }
+                vertices[i].distToStart = double.PositiveInfinity;
+                vertices[i].parent = null;
             }
-
+            vertices[start].distToStart = 0;
+            vertices[start].parent = vertices[start];
             //Process
 
             for (int i = 0; i < vertices.Count - 1; i++)
@@ -487,25 +480,26 @@ namespace Graphen
                 }
             }
 
-
+            bool negZykel = false;
             for (int i = 0; i < edges.Count; i++)
             {
                 Vertex v = edges[i].sourceVertex;
                 Vertex w = edges[i].destinationVertex;
                 if (v.distToStart + edges[i].cost < w.distToStart)
                 {
-                    MessageBox.Show("Es exisitert ein negativer Zykel");
-                    return null;
+                    //MessageBox.Show("Es exisitert ein negativer Zykel");
+                    negZykel = true;
+                    //return Tuple.Create(vertices,negZykel);
                 }
             }
 
 
-            return vertices;
+            return Tuple.Create(vertices, negZykel);
         }
 
         #endregion
 
-        #region Praktikum 6 - Ford-Fulkerson-Algorithmus
+        #region Praktikum 6 - Edmonds-Karp-Algorithmus
         #region
 
         public double EdmondsKarp(Graph G, int s, int t)
@@ -525,12 +519,12 @@ namespace Graphen
                 int index = E.Count - 1;
                 E[index].sourceVertex = G.edges[i].destinationVertex;
                 E[index].destinationVertex = G.edges[i].sourceVertex;
-                G.edges[i].cost = 0;
+                G.edges[i].cost = 0;                                            //Schritt 1: Kosten auf 0
             }
 
             while (true)
             {
-                Graph residualGraph = generateResidualGraph(E, V);              //Schritt 2: Bestimmen von G_f und u_f(e)
+                Graph residualGraph = generateResidualGraph(ref E, ref V);              //Schritt 2: Bestimmen von G_f und u_f(e)
 
                 residualGraph.ResetUsedVertices();
                 residualGraph.ResetParentsAndConnectedEdgesOfVertices();
@@ -543,38 +537,40 @@ namespace Graphen
                     return maxFlow;                                             //Schritt 3: es existiert kein Weg mehr
                 }
                 double gamma = findMinCapacity(path);                           //Schritt 4: finde Gamma
-                adjustCapacity(gamma, path, E);                                       //Schritt 4: Verändere Fluss entlang des Weges aus Schritt 3
+                adjustCost(gamma, ref path, ref E);                                       //Schritt 4: Verändere Fluss entlang des Weges aus Schritt 3
 
                 maxFlow += gamma;
             }
         }
 
-        private void adjustCapacity(double gamma, List<Edge> path, List<Edge> E)
+        private void adjustCost(double gamma, ref List<Edge> path, ref List<Edge> E)
         {
             foreach (var item in path)
             {
                 item.capacity -= gamma;
                 Edge e = E.Find(o => o.destinationVertex.name == item.sourceVertex.name && o.sourceVertex.name == item.destinationVertex.name);
+
                 e.capacity += gamma;
+
             }
         }
 
-        private Graph generateResidualGraph(List<Edge> E, List<Vertex> V)
+        private Graph generateResidualGraph(ref List<Edge> E, ref List<Vertex> V)
         {
             Graph residualGraph = new Graph();
             List<Edge> edgesUpdate = new List<Edge>();
             residualGraph.vertices = V;
-            int count = E.Count / 2;
+            int count = E.Count;
             for (int i = 0; i < count; i++)
             {
-                if(0 < E[i].capacity)
+                if (0 < E[i].capacity)
                 {
                     edgesUpdate.Add(E[i]);
                 }
-                if (E[count + i].capacity > 0)
-                {
-                    edgesUpdate.Add(E[count + i]);
-                }
+                //if (E[count + i].capacity > 0 && E[count + i].capacity > E[count + i].cost)
+                //{
+                //    edgesUpdate.Add(E[count + i]);
+                //}
             }
             residualGraph.edges = edgesUpdate;
             return residualGraph;
@@ -618,6 +614,85 @@ namespace Graphen
             return gamma;
         }
         #endregion
+        #endregion
+
+        #region Praktikum 7 - Cycle-Cancleling-Algorithmus
+
+        public double CycleCanceling(Graph G)
+        {
+            //Schritt 1
+
+            var super = CreateSuperSourceAndSuperTarget(ref G);
+            Vertex sourceSuper = super.Item1;
+            Vertex targetSuper = super.Item2;
+
+
+            int indexSS = G.vertices.FindIndex(o => o.name == sourceSuper.name);
+            int indexST = G.vertices.FindIndex(o => o.name == targetSuper.name);
+
+
+            double ek = EdmondsKarp(G, indexSS, indexST);
+            double validBFlow = 0;
+
+            for (int i = 0; i < G.vertices.Count - 2; i++)
+            {
+                validBFlow += Math.Abs(G.vertices[i].balance);
+            }
+            validBFlow *= 0.5;
+            if (ek != validBFlow)
+            {
+                MessageBox.Show("Kein B-Fluss möglich!");
+                return double.NaN;
+            }
+            Graph residualGraph = generateResidualGraph(ref G.edges, ref G.vertices);              //Schritt 2: Bestimmen von G_f und u_f(e)
+
+            residualGraph.ResetUsedVertices();
+
+            var mbf = MooreBellmanFord(residualGraph, indexSS);
+            if (!mbf.Item2)
+            {
+                MessageBox.Show("Kein f-augmentierender Zykel in G_f mit negativen Kosten!");
+                return double.NaN;
+            }
+
+            return new double();
+        }
+
+        private Tuple<Vertex, Vertex> CreateSuperSourceAndSuperTarget(ref Graph G)
+        {
+            Vertex sourceSuper = new Vertex();
+            Vertex targetSuper = new Vertex();
+
+            int count = G.vertices.Count;
+            sourceSuper.name = G.vertices.Count;
+            G.vertices.Add(sourceSuper);
+            targetSuper.name = G.vertices.Count;
+            G.vertices.Add(targetSuper);
+
+            for (int i = 0; i < count; i++)
+            {
+                double bal = G.vertices[i].balance;
+                if (bal < 0)
+                {
+                    targetSuper.balance += bal;
+                    Edge e = new Edge(G.vertices[i], targetSuper);
+                    e.capacity = Math.Abs(G.vertices[i].balance);
+                    targetSuper.connectedEdges.Add(e);
+                    G.edges.Add(e);
+                }
+                else if (bal > 0)
+                {
+                    sourceSuper.balance += bal;
+                    Edge e = new Edge(sourceSuper, G.vertices[i]);
+                    e.capacity = Math.Abs(G.vertices[i].balance);
+                    sourceSuper.connectedEdges.Add(e);
+                    G.edges.Add(e);
+                }
+            }
+
+            return Tuple.Create(sourceSuper, targetSuper);
+        }
+
         #endregion
     }
 }

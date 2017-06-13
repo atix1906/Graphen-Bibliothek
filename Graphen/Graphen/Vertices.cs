@@ -16,6 +16,8 @@ namespace Graphen
         public Vertex parent;
         public int id;
         public double distToStart = 0;
+
+        public double balance = 0;
         public Vertex()
         {
 

@@ -31,7 +31,7 @@ namespace Graphen
         {
             OpenFileDialog openFileDialogGetGraph = new OpenFileDialog();
 
-            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 6";
+            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 7";
             openFileDialogGetGraph.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileDialogGetGraph.FilterIndex = 2;
             openFileDialogGetGraph.RestoreDirectory = true;
@@ -379,24 +379,24 @@ namespace Graphen
                     Stopwatch sw = new Stopwatch();
                     sw.Restart();
 
-                    List<Vertex> erg = functions.MooreBellmanFord(graph, (int)numericUpDownStartknoten.Value);
+                    var erg = functions.MooreBellmanFord(graph, (int)numericUpDownStartknoten.Value);
                     sw.Stop();
                     string filename = "C:\\Users\\atix\\Dropbox\\Studium\\Master\\1. Semester\\Mathematische Methoden der Informatik\\Praktikum\\Praktikum 5\\Ergebnis_MBF.txt";
-                    if (erg != null)
+                    if (!erg.Item2)
                     {
 
                         string output = "";
                         StreamWriter file = new StreamWriter(filename);
 
-                        for (int i = 0; i < erg.Count; i++)
+                        for (int i = 0; i < erg.Item1.Count; i++)
                         {
-                            if (erg[i].distToStart == double.PositiveInfinity)
+                            if (erg.Item1[i].distToStart == double.PositiveInfinity)
                             {
-                                output = "Knoten " + erg[i].name + "\tdistStart(v): inf\t\tpred(v): null";
+                                output = "Knoten " + erg.Item1[i].name + "\tdistStart(v): inf\t\tpred(v): null";
                             }
                             else
                             {
-                                output = "Knoten " + erg[i].name + "\tdistStart(v): " + erg[i].distToStart + "\t\tpred(v): " + erg[i].parent.name;
+                                output = "Knoten " + erg.Item1[i].name + "\tdistStart(v): " + erg.Item1[i].distToStart + "\t\tpred(v): " + erg.Item1[i].parent.name;
 
                             }
                             file.WriteLine(output);
@@ -453,6 +453,35 @@ namespace Graphen
             else
             {
                 MessageBox.Show("Beim Edmonds-Karp Algorithmus ist etwas schief gegangen.");
+            }
+        }
+
+        private void btnCycleCanceling_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                //numericUpDownSource.Minimum = 0;
+                //numericUpDownSource.Maximum = graph.GetVerticesList().Count - 1;
+
+                //numericUpDownTarget.Minimum = 0;
+                //numericUpDownTarget.Maximum = graph.GetVerticesList().Count - 1;
+
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                double erg = functions.CycleCanceling(graph);
+                sw.Stop();
+                if (erg != double.NaN)
+                {
+                    MessageBox.Show("Cycle-Canceling\nElapsed Time: " + sw.Elapsed.ToString() + "\nKostenminimaler Fluss: " + erg);
+                }
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim Cycle-Canceling Algorithmus ist etwas schief gegangen.");
             }
         }
     }

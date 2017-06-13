@@ -24,7 +24,7 @@ namespace Graphen
         }
 
         //Generiert Graphen
-        public void SetFileGraph(string[] Graph,bool gerichtet=false)
+        public void SetFileGraph(string[] Graph, bool gerichtet = false)
         {
             fileGraph = Graph;
             try
@@ -35,7 +35,7 @@ namespace Graphen
             {
                 MessageBox.Show("generateGraph()" + ex.ToString());
             }
-            generateAdjListAndSortEdgesToVertex();
+            //generateAdjListAndSortEdgesToVertex();
         }
 
         #region Getter Funktionen
@@ -117,15 +117,20 @@ namespace Graphen
             //sw.Stop();
             //MessageBox.Show(sw.Elapsed.ToString());
         }
-        private void generateGraph(bool gerichtet=false)
+        private void generateGraph(bool gerichtet = false)
         {
             int numberVertices = Int32.Parse(fileGraph[0]);
+            int checkIfAdjMatrix = fileGraph[1].Split('\t').Length;    //Anzahl der Tabs dient zur Entscheidung ob Adjazenzmatrix oder Kantenliste
+
             for (int i = 0; i < numberVertices; i++)          //Fügt Anzahl der in der 1. Zeile der .txt Datei angegebenen Knoten der Liste hinzu
             {
                 vertices.Add(new Vertex(i));
+                if (checkIfAdjMatrix == 1)
+                {
+                    vertices[i].balance = Double.Parse(fileGraph[i + 1], CultureInfo.InvariantCulture);
+                }
             }
 
-            int checkIfAdjMatrix = fileGraph[1].Split('\t').Length;    //Anzahl der Tabs dient zur Entscheidung ob Adjazenzmatrix oder Kantenliste
 
             if (checkIfAdjMatrix >= numberVertices)
             {
@@ -133,7 +138,14 @@ namespace Graphen
             }
             else
             {
-                BuildFromEdgeList(gerichtet);
+                if (checkIfAdjMatrix == 1)
+                {
+                    BuildFromEdgeList(gerichtet, numberVertices + 1);
+                }
+                else
+                {
+                    BuildFromEdgeList(gerichtet);
+                }
             }
         }
 
@@ -174,11 +186,9 @@ namespace Graphen
             }
         }
 
-        private void BuildFromEdgeList(bool directedGraph = false)
+        private void BuildFromEdgeList(bool directedGraph = false, int start = 1)
         {
-            //try
-            //{
-            for (int i = 1; i < fileGraph.Length; i++)
+            for (int i = start; i < fileGraph.Length; i++)
             {
                 string[] getEdge = fileGraph[i].Split('\t');
                 edges.Add(new Edge());
@@ -189,7 +199,15 @@ namespace Graphen
                 if (getEdge.Length > 2)
                 {
                     newEdge.cost = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
-                    newEdge.capacity = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
+
+                    if (getEdge.Length > 3)
+                    {
+                        newEdge.capacity = Double.Parse(getEdge[3], CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        newEdge.capacity = Double.Parse(getEdge[2], CultureInfo.InvariantCulture);
+                    }
                 }
                 else
                 {
@@ -286,6 +304,25 @@ namespace Graphen
                 item.connectedEdges.Clear();
             }
         }
-        
+
+        public Graph Copy()
+        {
+            Graph tmp = new Graph();
+            foreach (var item in this.edges)
+            {
+                Edge e = new Edge();
+                e = item;
+                tmp.edges.Add(e);
+            }
+            foreach (var item in this.vertices)
+            {
+                Vertex v = new Vertex();
+                v = item;
+                tmp.vertices.Add(v);
+            }
+            tmp.adjazenzliste = this.adjazenzliste;
+            tmp.fileGraph = this.fileGraph;
+            return tmp;
+        }
     }
 }
