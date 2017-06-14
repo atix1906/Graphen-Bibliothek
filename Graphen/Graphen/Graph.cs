@@ -311,6 +311,7 @@ namespace Graphen
             foreach (var item in this.edges)
             {
                 Edge e = new Edge();
+                e.capacity = item.capacity;
                 e = item;
                 tmp.edges.Add(e);
             }

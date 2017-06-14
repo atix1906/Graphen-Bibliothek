@@ -507,20 +507,21 @@ namespace Graphen
 
         public Tuple<double, Graph> EdmondsKarp(Graph G, int s, int t)
         {
-            List<Vertex> V = G.vertices;
-            List<Edge> E = G.edges;
+            Graph maxFlowGraph = G.Copy();
+            List<Vertex> V = maxFlowGraph.vertices;
+            List<Edge> E = maxFlowGraph.edges;
 
             Vertex source = V[s];
             Vertex target = V[t];
 
             double maxFlow = 0;
 
-            int count = G.edges.Count;
+            int count = maxFlowGraph.edges.Count;
             for (int i = 0; i < count; i++)
             {
-                G.edges[i].flow = 0;                                            //Schritt 1: Fluss auf 0
+                maxFlowGraph.edges[i].flow = 0;                                            //Schritt 1: Fluss auf 0
             }
-            Graph residualGraph = G;
+            Graph residualGraph = maxFlowGraph;
             while (true)
             {
                 residualGraph = generateResidualGraph(residualGraph);              //Schritt 2: Bestimmen von G_f und u_f(e)
@@ -533,16 +534,35 @@ namespace Graphen
                 List<Edge> path = generatePathFromStoT(findP.Item2, residualGraph.edges, s, t); //Schritt 3: konstruiere Weg
                 if (path == null)
                 {
-                    return Tuple.Create(maxFlow, G);                                             //Schritt 3: es existiert kein Weg mehr
+                    return Tuple.Create(maxFlow, maxFlowGraph);                                             //Schritt 3: es existiert kein Weg mehr
                 }
                 double gamma = findMinCapacity(path);                           //Schritt 4: finde Gamma
-                adjustCost(gamma, path, ref residualGraph, ref G);                                       //Schritt 4: Verändere Fluss entlang des Weges aus Schritt 3
-
+                adjustFlow(gamma, ref path, ref residualGraph);                                       //Schritt 4: Verändere Fluss entlang des Weges aus Schritt 3
+                adjustOriginalGraphFlow(path, ref maxFlowGraph);
                 maxFlow += gamma;
             }
         }
 
-        private void adjustCost(double gamma, List<Edge> path, ref Graph residualgraph, ref Graph G)
+
+
+        private void adjustOriginalGraphFlow(List<Edge> path, ref Graph G)
+        {
+            for (int i = 0; i < path.Count; i++)
+            {
+                Edge e = G.edges.Find(o => o.destinationVertex == path[i].destinationVertex && o.sourceVertex == path[i].sourceVertex);
+                if (e != null)
+                {
+                    e.flow += path[i].flow;
+                }
+                else
+                {
+                    e = G.edges.Find(o => o.destinationVertex == path[i].sourceVertex && o.sourceVertex == path[i].destinationVertex);
+                    e.flow -= path[i].flow;
+                }
+            }
+        }
+
+        private void adjustFlow(double gamma, ref List<Edge> path, ref Graph residualgraph)
         {
             foreach (Edge item in residualgraph.edges)
             {
@@ -605,6 +625,19 @@ namespace Graphen
             return Gf;
         }
 
+        public string ToStringEdgelist(Graph G)
+        {
+            StringBuilder s = new StringBuilder();
+            Graph clone = G.Copy();// to avoid the sorting of the edges-list in the original graph
+            //SGraphFunctions.SortEdgesBySourceIdAsc(clone.Edges);
+            //clone.edges.SortBy();
+            foreach (Edge e in clone.edges)
+            {
+                s.Append(e.sourceVertex.name + "--" + e.flow + "/" + e.capacity + "/" + e.cost + "-->" + e.destinationVertex.name + Environment.NewLine);
+            }
+            return s.ToString();
+        }
+
         private List<Edge> generatePathFromStoT(List<Vertex> V, List<Edge> E, int s, int t)
         {
             List<Edge> pathEdges = new List<Edge>();
@@ -660,16 +693,17 @@ namespace Graphen
             int indexST = G.vertices.FindIndex(o => o.name == targetSuper.name);
 
             var ek = EdmondsKarp(G, indexSS, indexST);
-            G.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
-            G.edges.RemoveAll(o => o.destinationVertex == targetSuper);
-            G.vertices.RemoveAt(indexST);
-            G.vertices.RemoveAt(indexSS);
+            Graph minFlussGraph = ek.Item2;
+            minFlussGraph.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
+            minFlussGraph.edges.RemoveAll(o => o.destinationVertex == targetSuper);
+            minFlussGraph.vertices.RemoveAt(indexST);
+            minFlussGraph.vertices.RemoveAt(indexSS);
 
             double validBFlow = 0;
 
-            for (int i = 0; i < G.vertices.Count; i++)
+            for (int i = 0; i < minFlussGraph.vertices.Count; i++)
             {
-                validBFlow += Math.Abs(G.vertices[i].balance);
+                validBFlow += Math.Abs(minFlussGraph.vertices[i].balance);
             }
             validBFlow *= 0.5;
             if (ek.Item1 != validBFlow)
@@ -680,16 +714,24 @@ namespace Graphen
 
 
             double costminimalFlow = double.NaN;
-            Graph residualGraph = G;
+            Graph residualGraph = minFlussGraph.Copy();
             while (true)
             {
 
                 residualGraph = generateResidualGraph(residualGraph);              //Schritt 2: Bestimmen von G_f und u_f(e)
                 residualGraph.ResetUsedVertices();
 
+                //string _G = ToStringEdgelist(minFlussGraph);
+                //string _Gf = ToStringEdgelist(residualGraph);
+
+                //Console.WriteLine("G\n" + _G);
+                //Console.WriteLine("Gf\n" + _Gf);
+
                 sourceSuper = CreateSuperSourceForAllVertices(ref residualGraph);
                 residualGraph.vertices.Add(sourceSuper);
-                //indexSS = G.vertices.FindIndex(o => o.name == sourceSuper.name);
+
+
+
                 var mbf = MooreBellmanFord(residualGraph, sourceSuper.name);
                 if (!mbf.Item3)
                 {
@@ -702,10 +744,33 @@ namespace Graphen
                 residualGraph.vertices.RemoveAt(sourceSuper.name);
                 residualGraph.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
                 List<Edge> zykel = getZykel(mbf.Item2, residualGraph);
-                residualGraph.ResetUsedVertices();
-                costminimalFlow = CostMinimalFlow(residualGraph);
+
+                double gamma = findMinCapacity(zykel);
+
+                generateOriginalGraphFlow(zykel, ref minFlussGraph, gamma);
+                costminimalFlow = CostMinimalFlow(minFlussGraph);
+                residualGraph = minFlussGraph;
             }
         }
+
+        private void generateOriginalGraphFlow(List<Edge> path, ref Graph G, double gamma)
+        {
+            for (int i = 0; i < path.Count; i++)
+            {
+                int index = G.edges.FindIndex(o => o.sourceVertex.name == path[i].sourceVertex.name && o.destinationVertex.name == path[i].destinationVertex.name);
+
+                if (index > -1)
+                {
+                    G.edges[index].flow += gamma;
+                }
+                else
+                {
+                    int index2 = G.edges.FindIndex(o => o.sourceVertex.name == path[i].destinationVertex.name && o.destinationVertex.name == path[i].sourceVertex.name);
+                    G.edges[index2].flow -= gamma;
+                }
+            }
+        }
+
 
         private double CostMinimalFlow(Graph G)
         {
@@ -716,6 +781,7 @@ namespace Graphen
             }
             return cmf;
         }
+
         private List<Edge> getZykel(Vertex v_suspect, Graph G)
         {
             List<Vertex> zykel = new List<Vertex>();
@@ -730,8 +796,8 @@ namespace Graphen
             }
             while (!v_suspect.visited);
             zykel.Add(v_suspect);
-
-
+            zykel.Reverse();
+            G.ResetUsedVertices();
             List<Edge> zykelEdges = new List<Edge>();
             for (int i = 0; i < zykel.Count - 1; i++)
             {
@@ -747,20 +813,11 @@ namespace Graphen
                     zykelEdges.Add(e);
                 }
             }
+            //double zykelCost = 0;
+            //foreach (var item in zykelEdges)
+            //{
 
-            double gamma = findMinCapacity(zykelEdges);
-
-            for (int i = 0, k = 0; i < zykel.Count - 1; i++, k++)
-            {
-                if (zykelEdges[k].sourceVertex == zykel[i])
-                {
-                    zykelEdges[k].flow -= gamma;
-                }
-                else
-                {
-                    zykelEdges[k].flow += gamma;
-                }
-            }
+            //}
 
             return zykelEdges;
         }
