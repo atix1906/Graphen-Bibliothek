@@ -10,6 +10,7 @@ namespace Graphen
     {
         public double cost = 0;
         public double capacity = 0;
+        public double flow = 0;
         public Vertex sourceVertex;
         public Vertex destinationVertex;
         public Edge()

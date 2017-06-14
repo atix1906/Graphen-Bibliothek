@@ -132,12 +132,12 @@ namespace Graphen
             }
 
 
-            if (checkIfAdjMatrix >= numberVertices)
-            {
-                BuildFromAdjMatrix(checkIfAdjMatrix);
-            }
-            else
-            {
+            //if (checkIfAdjMatrix >= numberVertices)
+            //{
+            //    BuildFromAdjMatrix(checkIfAdjMatrix);
+            //}
+            //else
+            //{
                 if (checkIfAdjMatrix == 1)
                 {
                     BuildFromEdgeList(gerichtet, numberVertices + 1);
@@ -146,7 +146,7 @@ namespace Graphen
                 {
                     BuildFromEdgeList(gerichtet);
                 }
-            }
+            //}
         }
 
         private void BuildFromAdjMatrix(int size)

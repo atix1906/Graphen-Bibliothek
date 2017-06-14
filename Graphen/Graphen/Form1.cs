@@ -382,7 +382,7 @@ namespace Graphen
                     var erg = functions.MooreBellmanFord(graph, (int)numericUpDownStartknoten.Value);
                     sw.Stop();
                     string filename = "C:\\Users\\atix\\Dropbox\\Studium\\Master\\1. Semester\\Mathematische Methoden der Informatik\\Praktikum\\Praktikum 5\\Ergebnis_MBF.txt";
-                    if (!erg.Item2)
+                    if (!erg.Item3)
                     {
 
                         string output = "";
@@ -443,10 +443,10 @@ namespace Graphen
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
-                double erg = functions.EdmondsKarp(graph, (int)numericUpDownSource.Value, (int)numericUpDownTarget.Value);
+                var erg = functions.EdmondsKarp(graph, (int)numericUpDownSource.Value, (int)numericUpDownTarget.Value);
                 sw.Stop();
 
-                MessageBox.Show("Edmonds-Karp\nElapsed Time: " + sw.Elapsed.ToString() + "\nMaximaler Fluss: " + erg);
+                MessageBox.Show("Edmonds-Karp\nElapsed Time: " + sw.Elapsed.ToString() + "\nMaximaler Fluss: " + erg.Item1);
 
                 ResetGraph();
             }

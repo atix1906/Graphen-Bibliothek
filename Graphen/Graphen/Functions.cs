@@ -452,8 +452,10 @@ namespace Graphen
         #region Moore-Bellman-Ford
 
         #endregion
-        public Tuple<List<Vertex>, bool> MooreBellmanFord(Graph G, int start)
+        public Tuple<List<Vertex>, Vertex, bool> MooreBellmanFord(Graph G, int start)
         {
+            Vertex v_suspect = new Vertex();
+            v_suspect = null;
             List<Vertex> vertices = G.vertices;
             List<Edge> edges = G.edges;
             //Initialisierung
@@ -489,12 +491,13 @@ namespace Graphen
                 {
                     //MessageBox.Show("Es exisitert ein negativer Zykel");
                     negZykel = true;
-                    //return Tuple.Create(vertices,negZykel);
+                    v_suspect = v;
+                    return Tuple.Create(vertices, v_suspect, negZykel);
                 }
             }
 
 
-            return Tuple.Create(vertices, negZykel);
+            return Tuple.Create(vertices, v_suspect, negZykel);
         }
 
         #endregion
@@ -502,7 +505,7 @@ namespace Graphen
         #region Praktikum 6 - Edmonds-Karp-Algorithmus
         #region
 
-        public double EdmondsKarp(Graph G, int s, int t)
+        public Tuple<double, Graph> EdmondsKarp(Graph G, int s, int t)
         {
             List<Vertex> V = G.vertices;
             List<Edge> E = G.edges;
@@ -515,16 +518,12 @@ namespace Graphen
             int count = G.edges.Count;
             for (int i = 0; i < count; i++)
             {
-                E.Add(new Edge());
-                int index = E.Count - 1;
-                E[index].sourceVertex = G.edges[i].destinationVertex;
-                E[index].destinationVertex = G.edges[i].sourceVertex;
-                G.edges[i].cost = 0;                                            //Schritt 1: Kosten auf 0
+                G.edges[i].flow = 0;                                            //Schritt 1: Fluss auf 0
             }
-
+            Graph residualGraph = G;
             while (true)
             {
-                Graph residualGraph = generateResidualGraph(ref E, ref V);              //Schritt 2: Bestimmen von G_f und u_f(e)
+                residualGraph = generateResidualGraph(residualGraph);              //Schritt 2: Bestimmen von G_f und u_f(e)
 
                 residualGraph.ResetUsedVertices();
                 residualGraph.ResetParentsAndConnectedEdgesOfVertices();
@@ -534,46 +533,76 @@ namespace Graphen
                 List<Edge> path = generatePathFromStoT(findP.Item2, residualGraph.edges, s, t); //Schritt 3: konstruiere Weg
                 if (path == null)
                 {
-                    return maxFlow;                                             //Schritt 3: es existiert kein Weg mehr
+                    return Tuple.Create(maxFlow, G);                                             //Schritt 3: es existiert kein Weg mehr
                 }
                 double gamma = findMinCapacity(path);                           //Schritt 4: finde Gamma
-                adjustCost(gamma, ref path, ref E);                                       //Schritt 4: Verändere Fluss entlang des Weges aus Schritt 3
+                adjustCost(gamma, path, ref residualGraph, ref G);                                       //Schritt 4: Verändere Fluss entlang des Weges aus Schritt 3
 
                 maxFlow += gamma;
             }
         }
 
-        private void adjustCost(double gamma, ref List<Edge> path, ref List<Edge> E)
+        private void adjustCost(double gamma, List<Edge> path, ref Graph residualgraph, ref Graph G)
         {
-            foreach (var item in path)
+            foreach (Edge item in residualgraph.edges)
             {
-                item.capacity -= gamma;
-                Edge e = E.Find(o => o.destinationVertex.name == item.sourceVertex.name && o.sourceVertex.name == item.destinationVertex.name);
-
-                e.capacity += gamma;
-
+                if (path.Contains(item))
+                {
+                    item.flow += gamma;
+                }
+                //Edge e = G.edges.Find(o => o.sourceVertex == item.sourceVertex && o.destinationVertex == item.destinationVertex);
+                //if (e != null)
+                //{
+                //    e.flow += gamma;
+                //}
+                //else
+                //{
+                //    e = G.edges.Find(o => o.sourceVertex == item.destinationVertex && o.destinationVertex == item.sourceVertex);
+                //    if (e != null)
+                //    {
+                //        e.flow -= gamma;
+                //    }
+                //}
             }
         }
 
-        private Graph generateResidualGraph(ref List<Edge> E, ref List<Vertex> V)
+        private Graph generateResidualGraph(Graph G)
         {
-            Graph residualGraph = new Graph();
-            List<Edge> edgesUpdate = new List<Edge>();
-            residualGraph.vertices = V;
-            int count = E.Count;
-            for (int i = 0; i < count; i++)
+            Graph Gf = new Graph();
+            //List<Edge> edgesUpdate = new List<Edge>();
+
+            foreach (Vertex item in G.vertices)
             {
-                if (0 < E[i].capacity)
-                {
-                    edgesUpdate.Add(E[i]);
-                }
-                //if (E[count + i].capacity > 0 && E[count + i].capacity > E[count + i].cost)
-                //{
-                //    edgesUpdate.Add(E[count + i]);
-                //}
+                Gf.vertices.Add(item);
             }
-            residualGraph.edges = edgesUpdate;
-            return residualGraph;
+
+            foreach (Edge item in G.edges)
+            {
+                double uf_forward = item.capacity - item.flow;
+                double cf_forward = item.cost;
+
+                double uf_backward = item.flow;
+                double cf_backward = item.cost * (-1);
+
+                if (uf_forward > 0)
+                {
+                    Edge e = new Edge(item.sourceVertex, item.destinationVertex);
+                    e.cost = cf_forward;
+                    e.capacity = uf_forward;
+                    //e.flow = 0;
+                    Gf.edges.Add(e);
+                }
+
+                if (uf_backward > 0)
+                {
+                    Edge e = new Edge(item.destinationVertex, item.sourceVertex);
+                    e.cost = cf_backward;
+                    e.capacity = uf_backward;
+                    //e.flow = 0;
+                    Gf.edges.Add(e);
+                }
+            }
+            return Gf;
         }
 
         private List<Edge> generatePathFromStoT(List<Vertex> V, List<Edge> E, int s, int t)
@@ -630,32 +659,131 @@ namespace Graphen
             int indexSS = G.vertices.FindIndex(o => o.name == sourceSuper.name);
             int indexST = G.vertices.FindIndex(o => o.name == targetSuper.name);
 
+            var ek = EdmondsKarp(G, indexSS, indexST);
+            G.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
+            G.edges.RemoveAll(o => o.destinationVertex == targetSuper);
+            G.vertices.RemoveAt(indexST);
+            G.vertices.RemoveAt(indexSS);
 
-            double ek = EdmondsKarp(G, indexSS, indexST);
             double validBFlow = 0;
 
-            for (int i = 0; i < G.vertices.Count - 2; i++)
+            for (int i = 0; i < G.vertices.Count; i++)
             {
                 validBFlow += Math.Abs(G.vertices[i].balance);
             }
             validBFlow *= 0.5;
-            if (ek != validBFlow)
+            if (ek.Item1 != validBFlow)
             {
                 MessageBox.Show("Kein B-Fluss möglich!");
                 return double.NaN;
             }
-            Graph residualGraph = generateResidualGraph(ref G.edges, ref G.vertices);              //Schritt 2: Bestimmen von G_f und u_f(e)
 
-            residualGraph.ResetUsedVertices();
 
-            var mbf = MooreBellmanFord(residualGraph, indexSS);
-            if (!mbf.Item2)
+            double costminimalFlow = double.NaN;
+            Graph residualGraph = G;
+            while (true)
             {
-                MessageBox.Show("Kein f-augmentierender Zykel in G_f mit negativen Kosten!");
-                return double.NaN;
+
+                residualGraph = generateResidualGraph(residualGraph);              //Schritt 2: Bestimmen von G_f und u_f(e)
+                residualGraph.ResetUsedVertices();
+
+                sourceSuper = CreateSuperSourceForAllVertices(ref residualGraph);
+                residualGraph.vertices.Add(sourceSuper);
+                //indexSS = G.vertices.FindIndex(o => o.name == sourceSuper.name);
+                var mbf = MooreBellmanFord(residualGraph, sourceSuper.name);
+                if (!mbf.Item3)
+                {
+                    if (costminimalFlow == double.NaN)
+                    {
+                        MessageBox.Show("Kein f-augmentierender Zykel in G_f mit negativen Kosten!");
+                    }
+                    return costminimalFlow;
+                }
+                residualGraph.vertices.RemoveAt(sourceSuper.name);
+                residualGraph.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
+                List<Edge> zykel = getZykel(mbf.Item2, residualGraph);
+                residualGraph.ResetUsedVertices();
+                costminimalFlow = CostMinimalFlow(residualGraph);
+            }
+        }
+
+        private double CostMinimalFlow(Graph G)
+        {
+            double cmf = 0;
+            foreach (Edge item in G.edges)
+            {
+                cmf += item.cost * item.flow;
+            }
+            return cmf;
+        }
+        private List<Edge> getZykel(Vertex v_suspect, Graph G)
+        {
+            List<Vertex> zykel = new List<Vertex>();
+            v_suspect.visited = true;
+            zykel.Add(v_suspect);
+            v_suspect = v_suspect.parent;
+            do
+            {
+                v_suspect.visited = true;
+                zykel.Add(v_suspect);
+                v_suspect = v_suspect.parent;
+            }
+            while (!v_suspect.visited);
+            zykel.Add(v_suspect);
+
+
+            List<Edge> zykelEdges = new List<Edge>();
+            for (int i = 0; i < zykel.Count - 1; i++)
+            {
+                Edge e = new Edge();
+                e = G.edges.Find(o => o.destinationVertex == zykel[i + 1] && o.sourceVertex == zykel[i]);
+                if (e == null)
+                {
+                    e = G.edges.Find(o => o.destinationVertex == zykel[i] && o.sourceVertex == zykel[i + 1]);
+                    zykelEdges.Add(e);
+                }
+                else
+                {
+                    zykelEdges.Add(e);
+                }
             }
 
-            return new double();
+            double gamma = findMinCapacity(zykelEdges);
+
+            for (int i = 0, k = 0; i < zykel.Count - 1; i++, k++)
+            {
+                if (zykelEdges[k].sourceVertex == zykel[i])
+                {
+                    zykelEdges[k].flow -= gamma;
+                }
+                else
+                {
+                    zykelEdges[k].flow += gamma;
+                }
+            }
+
+            return zykelEdges;
+        }
+
+        private Vertex CreateSuperSourceForAllVertices(ref Graph G)
+        {
+            Vertex sourceSuper = new Vertex();
+            int count = G.vertices.Count;
+            sourceSuper.name = count;
+
+            for (int i = 0; i < count; i++)
+            {
+                double bal = G.vertices[i].balance;
+
+                sourceSuper.balance += bal;
+                Edge e = new Edge(sourceSuper, G.vertices[i]);
+                e.capacity = Math.Abs(G.vertices[i].balance);
+                e.flow = 0;
+                sourceSuper.connectedEdges.Add(e);
+                G.edges.Add(e);
+            }
+
+            return sourceSuper;
         }
 
         private Tuple<Vertex, Vertex> CreateSuperSourceAndSuperTarget(ref Graph G)
@@ -664,7 +792,7 @@ namespace Graphen
             Vertex targetSuper = new Vertex();
 
             int count = G.vertices.Count;
-            sourceSuper.name = G.vertices.Count;
+            sourceSuper.name = count;
             G.vertices.Add(sourceSuper);
             targetSuper.name = G.vertices.Count;
             G.vertices.Add(targetSuper);
@@ -677,6 +805,7 @@ namespace Graphen
                     targetSuper.balance += bal;
                     Edge e = new Edge(G.vertices[i], targetSuper);
                     e.capacity = Math.Abs(G.vertices[i].balance);
+                    //e.flow = Math.Abs(G.vertices[i].balance);
                     targetSuper.connectedEdges.Add(e);
                     G.edges.Add(e);
                 }
@@ -685,6 +814,7 @@ namespace Graphen
                     sourceSuper.balance += bal;
                     Edge e = new Edge(sourceSuper, G.vertices[i]);
                     e.capacity = Math.Abs(G.vertices[i].balance);
+                    //e.flow = Math.Abs(G.vertices[i].balance);
                     sourceSuper.connectedEdges.Add(e);
                     G.edges.Add(e);
                 }
