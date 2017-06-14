@@ -721,12 +721,6 @@ namespace Graphen
                 residualGraph = generateResidualGraph(residualGraph);              //Schritt 2: Bestimmen von G_f und u_f(e)
                 residualGraph.ResetUsedVertices();
 
-                //string _G = ToStringEdgelist(minFlussGraph);
-                //string _Gf = ToStringEdgelist(residualGraph);
-
-                //Console.WriteLine("G\n" + _G);
-                //Console.WriteLine("Gf\n" + _Gf);
-
                 sourceSuper = CreateSuperSourceForAllVertices(ref residualGraph);
                 residualGraph.vertices.Add(sourceSuper);
 
@@ -785,6 +779,7 @@ namespace Graphen
         private List<Edge> getZykel(Vertex v_suspect, Graph G)
         {
             List<Vertex> zykel = new List<Vertex>();
+            G.ResetUsedVertices();
             v_suspect.visited = true;
             zykel.Add(v_suspect);
             v_suspect = v_suspect.parent;
@@ -796,16 +791,28 @@ namespace Graphen
             }
             while (!v_suspect.visited);
             zykel.Add(v_suspect);
+            v_suspect = zykel[zykel.Count - 1];
+            while (v_suspect != zykel[0])
+            {
+                zykel.RemoveAt(0);
+            }
             zykel.Reverse();
-            G.ResetUsedVertices();
+
+            List<Edge> zykelEdges = findZykelEdges(zykel, G);
+
+            return zykelEdges;
+        }
+
+        private List<Edge> findZykelEdges(List<Vertex> zykelVertices,Graph G)
+        {
             List<Edge> zykelEdges = new List<Edge>();
-            for (int i = 0; i < zykel.Count - 1; i++)
+            for (int i = 0; i < zykelVertices.Count - 1; i++)
             {
                 Edge e = new Edge();
-                e = G.edges.Find(o => o.destinationVertex == zykel[i + 1] && o.sourceVertex == zykel[i]);
+                e = G.edges.Find(o => o.destinationVertex == zykelVertices[i + 1] && o.sourceVertex == zykelVertices[i]);
                 if (e == null)
                 {
-                    e = G.edges.Find(o => o.destinationVertex == zykel[i] && o.sourceVertex == zykel[i + 1]);
+                    e = G.edges.Find(o => o.destinationVertex == zykelVertices[i] && o.sourceVertex == zykelVertices[i + 1]);
                     zykelEdges.Add(e);
                 }
                 else
@@ -813,15 +820,8 @@ namespace Graphen
                     zykelEdges.Add(e);
                 }
             }
-            //double zykelCost = 0;
-            //foreach (var item in zykelEdges)
-            //{
-
-            //}
-
             return zykelEdges;
         }
-
         private Vertex CreateSuperSourceForAllVertices(ref Graph G)
         {
             Vertex sourceSuper = new Vertex();
