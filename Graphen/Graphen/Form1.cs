@@ -460,19 +460,12 @@ namespace Graphen
         {
             if (graph != null && functions != null)
             {
-                //numericUpDownSource.Minimum = 0;
-                //numericUpDownSource.Maximum = graph.GetVerticesList().Count - 1;
-
-                //numericUpDownTarget.Minimum = 0;
-                //numericUpDownTarget.Maximum = graph.GetVerticesList().Count - 1;
-
-
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
                 double erg = functions.CycleCanceling(graph);
                 sw.Stop();
-                if (erg != double.NaN)
+                if (!double.IsNaN(erg))
                 {
                     MessageBox.Show("Cycle-Canceling\nElapsed Time: " + sw.Elapsed.ToString() + "\nKostenminimaler Fluss: " + erg);
                 }
