@@ -682,22 +682,23 @@ namespace Graphen
 
         public double CycleCanceling(Graph G)
         {
-            //Schritt 1
-
+            //Step 1
             var super = CreateSuperSourceAndSuperTarget(ref G);
             Vertex sourceSuper = super.Item1;
             Vertex targetSuper = super.Item2;
 
-
-            int indexSS = G.vertices.FindIndex(o => o.name == sourceSuper.name);
-            int indexST = G.vertices.FindIndex(o => o.name == targetSuper.name);
+            int countVertices = G.vertices.Count;
+            int indexSS = G.vertices[countVertices - 2].name;
+            int indexST = G.vertices[countVertices - 1].name;
 
             var ek = EdmondsKarp(G, indexSS, indexST);
-            Graph minFlussGraph = ek.Item2;
-            minFlussGraph.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
-            minFlussGraph.edges.RemoveAll(o => o.destinationVertex == targetSuper);
-            minFlussGraph.vertices.RemoveAt(indexST);
-            minFlussGraph.vertices.RemoveAt(indexSS);
+
+            Graph minFlussGraph = ek.Item2;             //max flow graph
+
+            minFlussGraph.edges.RemoveAll(o => o.sourceVertex == sourceSuper);          //remove super source edges
+            minFlussGraph.edges.RemoveAll(o => o.destinationVertex == targetSuper);     //remove super target edges
+            minFlussGraph.vertices.RemoveAt(indexST);                                   //remove super target 
+            minFlussGraph.vertices.RemoveAt(indexSS);                                   //remove super source 
 
             double validBFlow = 0;
 
@@ -706,28 +707,25 @@ namespace Graphen
                 validBFlow += Math.Abs(minFlussGraph.vertices[i].balance);
             }
             validBFlow *= 0.5;
-            if (ek.Item1 != validBFlow)
+
+            if (ek.Item1 != validBFlow)             //B-Flow valid?
             {
                 MessageBox.Show("Kein B-Fluss möglich!");
                 return double.NaN;
             }
 
-
             double costminimalFlow = double.NaN;
-            Graph residualGraph = minFlussGraph.Copy();
+            Graph residualGraph = minFlussGraph;
             while (true)
             {
-
-                residualGraph = generateResidualGraph(residualGraph);              //Schritt 2: Bestimmen von G_f und u_f(e)
+                residualGraph = generateResidualGraph(residualGraph);              //Step 2: generate G_f
                 residualGraph.ResetUsedVertices();
 
-                sourceSuper = CreateSuperSourceForAllVertices(ref residualGraph);
+                sourceSuper = CreateSuperSourceForAllVertices(ref residualGraph);  
                 residualGraph.vertices.Add(sourceSuper);
 
-
-
-                var mbf = MooreBellmanFord(residualGraph, sourceSuper.name);
-                if (!mbf.Item3)
+                var mbf = MooreBellmanFord(residualGraph, sourceSuper.name);        
+                if (!mbf.Item3)             //negative zykel exists?
                 {
                     if (costminimalFlow == double.NaN)
                     {
@@ -737,16 +735,16 @@ namespace Graphen
                 }
                 residualGraph.vertices.RemoveAt(sourceSuper.name);
                 residualGraph.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
-                List<Edge> zykel = getZykel(mbf.Item2, residualGraph);
+
+                List<Edge> zykel = getZykel(mbf.Item2, residualGraph);      
 
                 double gamma = findMinCapacity(zykel);
 
                 generateOriginalGraphFlow(zykel, ref minFlussGraph, gamma);
-                costminimalFlow = CostMinimalFlow(minFlussGraph);
+                costminimalFlow = CostMinimalFlow(minFlussGraph);           //sum: f(e)*c(e) of all edges
                 residualGraph = minFlussGraph;
             }
         }
-
         private void generateOriginalGraphFlow(List<Edge> path, ref Graph G, double gamma)
         {
             for (int i = 0; i < path.Count; i++)
@@ -764,8 +762,6 @@ namespace Graphen
                 }
             }
         }
-
-
         private double CostMinimalFlow(Graph G)
         {
             double cmf = 0;
@@ -775,7 +771,6 @@ namespace Graphen
             }
             return cmf;
         }
-
         private List<Edge> getZykel(Vertex v_suspect, Graph G)
         {
             List<Vertex> zykel = new List<Vertex>();
@@ -802,8 +797,7 @@ namespace Graphen
 
             return zykelEdges;
         }
-
-        private List<Edge> findZykelEdges(List<Vertex> zykelVertices,Graph G)
+        private List<Edge> findZykelEdges(List<Vertex> zykelVertices, Graph G)
         {
             List<Edge> zykelEdges = new List<Edge>();
             for (int i = 0; i < zykelVertices.Count - 1; i++)
@@ -842,7 +836,6 @@ namespace Graphen
 
             return sourceSuper;
         }
-
         private Tuple<Vertex, Vertex> CreateSuperSourceAndSuperTarget(ref Graph G)
         {
             Vertex sourceSuper = new Vertex();
