@@ -11,13 +11,15 @@ namespace Graphen
         public bool visited = false;
         public int name;
 
-        public List<Edge> connectedEdges = new List<Edge>();
+        public List<Edge> connectedEdgesOutgoing = new List<Edge>();
+        public List<Edge> connectedEdgesIncoming = new List<Edge>();
 
         public Vertex parent;
         public int id;
         public double distToStart = 0;
 
         public double balance = 0;
+        public double balanceInCostOptimalFlow = 0;
         public Vertex()
         {
 
@@ -26,6 +28,7 @@ namespace Graphen
         {
             this.name = name;
         }
+
 
         public int CompareTo(Vertex other)
         {

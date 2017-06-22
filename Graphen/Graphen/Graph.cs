@@ -30,6 +30,7 @@ namespace Graphen
             try
             {
                 generateGraph(gerichtet);
+                this.SortEdgesToVertex();
             }
             catch (Exception ex)
             {
@@ -68,7 +69,7 @@ namespace Graphen
             for (int i = 0; i < edges.Count; i++)
             {
                 adjazenzliste[edges[i].sourceVertex.name].Add(edges[i].destinationVertex);  //Anhängen der Knoten an die jeweilige Liste
-                vertices[edges[i].sourceVertex.name].connectedEdges.Add(edges[i]);
+                vertices[edges[i].sourceVertex.name].connectedEdgesOutgoing.Add(edges[i]);
             }
             try
             {
@@ -80,7 +81,6 @@ namespace Graphen
                 MessageBox.Show("GetAdjazenzliste " + ex.ToString());
             }
         }
-
         private void OrderAdjazenzListe()
         {
             for (int i = 0; i < adjazenzliste.Count; i++)
@@ -88,8 +88,6 @@ namespace Graphen
                 adjazenzliste[i] = adjazenzliste[i].OrderBy(o => o.name).ToList();
             }
         }
-
-
         private void generateAdjazenzliste()
         {
             adjazenzliste = new List<List<Vertex>>();
@@ -130,25 +128,15 @@ namespace Graphen
                     vertices[i].balance = Double.Parse(fileGraph[i + 1], CultureInfo.InvariantCulture);
                 }
             }
-
-
-            //if (checkIfAdjMatrix >= numberVertices)
-            //{
-            //    BuildFromAdjMatrix(checkIfAdjMatrix);
-            //}
-            //else
-            //{
-                if (checkIfAdjMatrix == 1)
-                {
-                    BuildFromEdgeList(gerichtet, numberVertices + 1);
-                }
-                else
-                {
-                    BuildFromEdgeList(gerichtet);
-                }
-            //}
+            if (checkIfAdjMatrix == 1)
+            {
+                BuildFromEdgeList(gerichtet, numberVertices + 1);
+            }
+            else
+            {
+                BuildFromEdgeList(gerichtet);
+            }
         }
-
         private void BuildFromAdjMatrix(int size)
         {
             int rows, cols;
@@ -246,7 +234,8 @@ namespace Graphen
             {
                 for (int i = 0; i < edges.Count; i++)
                 {
-                    vertices[edges[i].sourceVertex.name].connectedEdges.Add(edges[i]);
+                    vertices[edges[i].sourceVertex.name].connectedEdgesOutgoing.Add(edges[i]);
+                    vertices[edges[i].destinationVertex.name].connectedEdgesIncoming.Add(edges[i]);
                 }
             }
             catch (Exception ex)
@@ -261,7 +250,8 @@ namespace Graphen
             {
                 for (int i = 0; i < edges.Count; i++)
                 {
-                    vertices[edges[i].sourceVertex.name].connectedEdges.Add(edges[i]);
+                    vertices[edges[i].sourceVertex.name].connectedEdgesOutgoing.Add(edges[i]);
+                    vertices[edges[i].destinationVertex.name].connectedEdgesIncoming.Add(edges[i]);
                 }
             }
             catch (Exception ex)
@@ -276,7 +266,7 @@ namespace Graphen
         {
             for (int i = 0; i < vertices.Count; i++)
             {
-                vertices[i].connectedEdges = vertices[i].connectedEdges.OrderBy(o => o.cost).ToList();
+                vertices[i].connectedEdgesOutgoing = vertices[i].connectedEdgesOutgoing.OrderBy(o => o.cost).ToList();
             }
         }
 
@@ -301,11 +291,11 @@ namespace Graphen
             foreach (var item in vertices)
             {
                 item.parent = null;
-                item.connectedEdges.Clear();
+                item.connectedEdgesOutgoing.Clear();
             }
         }
 
-        public Graph Copy()
+        public Graph CopyGraph()
         {
             Graph tmp = new Graph();
             foreach (var item in this.edges)
@@ -324,6 +314,18 @@ namespace Graphen
             tmp.adjazenzliste = this.adjazenzliste;
             tmp.fileGraph = this.fileGraph;
             return tmp;
+        }
+
+        public List<Edge> CopyEdges()
+        {
+            List<Edge> newEdgeList = new List<Edge>();
+
+            foreach (var item in edges)
+            {
+                newEdgeList.Add(item.Copy());
+            }
+
+            return newEdgeList;
         }
     }
 }

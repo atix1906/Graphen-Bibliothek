@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Graphen
 {
-    public class Edge :IComparable<Edge>
+    public class Edge : IComparable<Edge>
     {
         public double cost = 0;
         public double capacity = 0;
@@ -17,6 +17,19 @@ namespace Graphen
         {
 
         }
+
+        public Edge Copy()
+        {
+            Edge newEdge = new Edge();
+            newEdge.cost = this.cost;
+            newEdge.capacity = this.capacity;
+            newEdge.flow = this.flow;
+            newEdge.sourceVertex = this.sourceVertex;
+            newEdge.destinationVertex = this.destinationVertex;
+
+            return newEdge;
+        }
+
         public int CompareTo(Edge other)
         {
             if (this.cost < other.cost)

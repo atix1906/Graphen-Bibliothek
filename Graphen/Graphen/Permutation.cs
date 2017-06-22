@@ -54,7 +54,7 @@ namespace Graphen
 
         private Edge FindEdgeCost(Vertex start, Vertex end)
         {
-            return start.connectedEdges.Find(o => o.destinationVertex == end);
+            return start.connectedEdgesOutgoing.Find(o => o.destinationVertex == end);
         }
 
 
@@ -109,7 +109,7 @@ namespace Graphen
             else
             {
                 List<Edge> edgesFromCurrentVertex = new List<Edge>();
-                edgesFromCurrentVertex = currentVertex.connectedEdges;  // Alle Kanten des momentanen Knoten
+                edgesFromCurrentVertex = currentVertex.connectedEdgesOutgoing;  // Alle Kanten des momentanen Knoten
 
                 for (int i = 0; i < edgesFromCurrentVertex.Count; i++)
                 {

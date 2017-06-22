@@ -49,14 +49,14 @@ namespace Graphen
                 level++;
                 route.Add(activeNode);
                 activeNode.visited = true;
-                for (int i = 0; i < activeNode.connectedEdges.Count; i++)     //Knoten aus der Liste des aktiven Knoten anhängen
+                for (int i = 0; i < activeNode.connectedEdgesOutgoing.Count; i++)     //Knoten aus der Liste des aktiven Knoten anhängen
                 {
-                    if (!activeNode.connectedEdges.ElementAt(i).destinationVertex.visited)
+                    if (!activeNode.connectedEdgesOutgoing.ElementAt(i).destinationVertex.visited)
                     {
-                        activeNode.connectedEdges.ElementAt(i).destinationVertex.visited = true;
-                        activeNode.connectedEdges.ElementAt(i).destinationVertex.parent = activeNode;
-                        activeNode.connectedEdges.ElementAt(i).destinationVertex.id = level;
-                        queueVertices.Enqueue(activeNode.connectedEdges.ElementAt(i).destinationVertex);
+                        activeNode.connectedEdgesOutgoing.ElementAt(i).destinationVertex.visited = true;
+                        activeNode.connectedEdgesOutgoing.ElementAt(i).destinationVertex.parent = activeNode;
+                        activeNode.connectedEdgesOutgoing.ElementAt(i).destinationVertex.id = level;
+                        queueVertices.Enqueue(activeNode.connectedEdgesOutgoing.ElementAt(i).destinationVertex);
                     }
                 }
 
@@ -93,18 +93,22 @@ namespace Graphen
 
         }
 
-        private Tuple<List<Vertex>, List<Edge>> Tiefensuche(List<Edge> edges)
+        private Tuple<List<Vertex>, List<Edge>> Tiefensuche(Graph G, int start = 0, List<Edge> edges = null)
         {
+            if (edges == null)
+            {
+                edges = G.CopyEdges();
+            }
             List<Vertex> followMeAround = new List<Vertex>();
             Stack<Vertex> visitedVertex = new Stack<Vertex>();
             List<Edge> visitedEdges = new List<Edge>();
 
-            visitedVertex.Push(edges[0].sourceVertex);
-            followMeAround.Add(edges[0].sourceVertex);
+            visitedVertex.Push(edges[start].sourceVertex);
+            followMeAround.Add(edges[start].sourceVertex);
 
-            visitedVertex.Push(edges[0].destinationVertex);
-            followMeAround.Add(edges[0].destinationVertex);
-            visitedEdges.Add(edges[0]);
+            visitedVertex.Push(edges[start].destinationVertex);
+            followMeAround.Add(edges[start].destinationVertex);
+            visitedEdges.Add(edges[start]);
             edges.RemoveAt(0);
 
             while (visitedVertex.Count > 0)
@@ -217,7 +221,7 @@ namespace Graphen
             PriorityQueue<Edge> queue = new PriorityQueue<Edge>();
             List<Edge> edgesMST = new List<Edge>();
 
-            queue.EnqueueList(G.vertices[v].connectedEdges);
+            queue.EnqueueList(G.vertices[v].connectedEdgesOutgoing);
             for (int i = 0; i < G.vertices.Count - 1; i++)
             {
                 while (queue.Root().destinationVertex.visited)               //Suche noch nicht besuchten Knoten
@@ -227,7 +231,7 @@ namespace Graphen
                 queue.Root().MarkVerticesAsUsed();
 
                 edgesMST.Add(queue.Dequeue());
-                queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).destinationVertex.connectedEdges.FindAll(    //FindAll: o(n)
+                queue.EnqueueList(edgesMST.ElementAt(edgesMST.Count - 1).destinationVertex.connectedEdgesOutgoing.FindAll(    //FindAll: o(n)
                     (Edge e) => { return e.destinationVertex.visited == false; }));                      //Füge nur die Kanten der Queue hinzu, die unbesuchte connected Vertices haben
 
                 costMST += edgesMST[edgesMST.Count - 1].cost;
@@ -253,14 +257,14 @@ namespace Graphen
 
             for (int i = 0; i < vertices.Count; i++)
             {
-                vertices[i].connectedEdges = vertices[i].connectedEdges.OrderBy(o => o.cost).ToList();      //sortiere die Kanten des Knoten nach ihren Kosten
+                vertices[i].connectedEdgesOutgoing = vertices[i].connectedEdgesOutgoing.OrderBy(o => o.cost).ToList();      //sortiere die Kanten des Knoten nach ihren Kosten
             }
 
             visitedVertices.Add(vertices[v]);
 
             for (int i = 0; i < vertices.Count; i++)
             {
-                sortedEdges = vertices[v].connectedEdges.FindAll((Edge e) => { return e.destinationVertex.visited == false; });    //Suche Kanten mit einem unbesuchten Zielknoten
+                sortedEdges = vertices[v].connectedEdgesOutgoing.FindAll((Edge e) => { return e.destinationVertex.visited == false; });    //Suche Kanten mit einem unbesuchten Zielknoten
 
                 if (sortedEdges.Count > 0)
                 {
@@ -275,7 +279,7 @@ namespace Graphen
                 {
                     int index = visitedVertices.Count - 1;
                     Vertex lastVertex = visitedVertices[index];
-                    Edge returnHome = lastVertex.connectedEdges.Find((Edge e) => { return e.destinationVertex.name == startVertex; });
+                    Edge returnHome = lastVertex.connectedEdgesOutgoing.Find((Edge e) => { return e.destinationVertex.name == startVertex; });
                     usedEdges.Add(returnHome);
                     costTSP += returnHome.cost;
                     break;
@@ -306,7 +310,7 @@ namespace Graphen
                 doubleEdgesMST[mst.Count + i].cost = mst[i].cost;
             }
 
-            var ts = Tiefensuche(doubleEdgesMST);
+            var ts = Tiefensuche(G, 0, doubleEdgesMST);
 
             List<Edge> tour = new List<Edge>();
             Edge newEdge = new Edge();
@@ -429,9 +433,9 @@ namespace Graphen
 
                 minDistVertex.visited = true;
 
-                for (int i = 0; i < minDistVertex.connectedEdges.Count; i++)
+                for (int i = 0; i < minDistVertex.connectedEdgesOutgoing.Count; i++)
                 {
-                    Edge edgeTmp = minDistVertex.connectedEdges[i];
+                    Edge edgeTmp = minDistVertex.connectedEdgesOutgoing[i];
 
                     double dist = minDistVertex.distToStart + edgeTmp.cost;
 
@@ -496,7 +500,6 @@ namespace Graphen
                 }
             }
 
-
             return Tuple.Create(vertices, v_suspect, negZykel);
         }
 
@@ -507,7 +510,7 @@ namespace Graphen
 
         public Tuple<double, Graph> EdmondsKarp(Graph G, int s, int t)
         {
-            Graph maxFlowGraph = G.Copy();
+            Graph maxFlowGraph = G.CopyGraph();
             List<Vertex> V = maxFlowGraph.vertices;
             List<Edge> E = maxFlowGraph.edges;
 
@@ -570,26 +573,12 @@ namespace Graphen
                 {
                     item.flow += gamma;
                 }
-                //Edge e = G.edges.Find(o => o.sourceVertex == item.sourceVertex && o.destinationVertex == item.destinationVertex);
-                //if (e != null)
-                //{
-                //    e.flow += gamma;
-                //}
-                //else
-                //{
-                //    e = G.edges.Find(o => o.sourceVertex == item.destinationVertex && o.destinationVertex == item.sourceVertex);
-                //    if (e != null)
-                //    {
-                //        e.flow -= gamma;
-                //    }
-                //}
             }
         }
 
         private Graph generateResidualGraph(Graph G)
         {
             Graph Gf = new Graph();
-            //List<Edge> edgesUpdate = new List<Edge>();
 
             foreach (Vertex item in G.vertices)
             {
@@ -609,7 +598,6 @@ namespace Graphen
                     Edge e = new Edge(item.sourceVertex, item.destinationVertex);
                     e.cost = cf_forward;
                     e.capacity = uf_forward;
-                    //e.flow = 0;
                     Gf.edges.Add(e);
                 }
 
@@ -618,7 +606,6 @@ namespace Graphen
                     Edge e = new Edge(item.destinationVertex, item.sourceVertex);
                     e.cost = cf_backward;
                     e.capacity = uf_backward;
-                    //e.flow = 0;
                     Gf.edges.Add(e);
                 }
             }
@@ -628,7 +615,7 @@ namespace Graphen
         public string ToStringEdgelist(Graph G)
         {
             StringBuilder s = new StringBuilder();
-            Graph clone = G.Copy();// to avoid the sorting of the edges-list in the original graph
+            Graph clone = G.CopyGraph();// to avoid the sorting of the edges-list in the original graph
             //SGraphFunctions.SortEdgesBySourceIdAsc(clone.Edges);
             //clone.edges.SortBy();
             foreach (Edge e in clone.edges)
@@ -678,6 +665,8 @@ namespace Graphen
         #endregion
         #endregion
 
+        #region Kostenminimale Flüsse
+
         #region Praktikum 7 - Cycle-Cancleling-Algorithmus
 
         public double CycleCanceling(Graph G)
@@ -718,14 +707,14 @@ namespace Graphen
             Graph residualGraph = minFlussGraph;
             while (true)
             {
-                residualGraph = generateResidualGraph(residualGraph);              //Step 2: generate G_f
+                residualGraph = generateResidualGraph(minFlussGraph);              //Step 2: generate G_f
                 residualGraph.ResetUsedVertices();
 
-                sourceSuper = CreateSuperSourceForAllVertices(ref residualGraph);  
+                sourceSuper = CreateSuperSourceForAllVertices(ref residualGraph);
                 residualGraph.vertices.Add(sourceSuper);
 
-                var mbf = MooreBellmanFord(residualGraph, sourceSuper.name);        
-                if (!mbf.Item3)             //negative zykel exists?
+                var mbf = MooreBellmanFord(residualGraph, sourceSuper.name);
+                if (!mbf.Item3)             //does negative zykel exist?
                 {
                     if (costminimalFlow == double.NaN)
                     {
@@ -736,13 +725,13 @@ namespace Graphen
                 residualGraph.vertices.RemoveAt(sourceSuper.name);
                 residualGraph.edges.RemoveAll(o => o.sourceVertex == sourceSuper);
 
-                List<Edge> zykel = getZykel(mbf.Item2, residualGraph);      
+                List<Edge> zykel = getZykel(mbf.Item2, residualGraph);
 
                 double gamma = findMinCapacity(zykel);
 
                 generateOriginalGraphFlow(zykel, ref minFlussGraph, gamma);
                 costminimalFlow = CostMinimalFlow(minFlussGraph);           //sum: f(e)*c(e) of all edges
-                residualGraph = minFlussGraph;
+                //residualGraph = minFlussGraph;
             }
         }
         private void generateOriginalGraphFlow(List<Edge> path, ref Graph G, double gamma)
@@ -830,7 +819,7 @@ namespace Graphen
                 Edge e = new Edge(sourceSuper, G.vertices[i]);
                 e.capacity = Math.Abs(G.vertices[i].balance);
                 e.flow = 0;
-                sourceSuper.connectedEdges.Add(e);
+                sourceSuper.connectedEdgesOutgoing.Add(e);
                 G.edges.Add(e);
             }
 
@@ -850,22 +839,21 @@ namespace Graphen
             for (int i = 0; i < count; i++)
             {
                 double bal = G.vertices[i].balance;
-                if (bal < 0)
+                double bal_strich = G.vertices[i].balanceInCostOptimalFlow;
+                if (bal - bal_strich < 0)
                 {
                     targetSuper.balance += bal;
                     Edge e = new Edge(G.vertices[i], targetSuper);
                     e.capacity = Math.Abs(G.vertices[i].balance);
-                    //e.flow = Math.Abs(G.vertices[i].balance);
-                    targetSuper.connectedEdges.Add(e);
+                    targetSuper.connectedEdgesOutgoing.Add(e);
                     G.edges.Add(e);
                 }
-                else if (bal > 0)
+                else if (bal - bal_strich > 0)
                 {
                     sourceSuper.balance += bal;
                     Edge e = new Edge(sourceSuper, G.vertices[i]);
                     e.capacity = Math.Abs(G.vertices[i].balance);
-                    //e.flow = Math.Abs(G.vertices[i].balance);
-                    sourceSuper.connectedEdges.Add(e);
+                    sourceSuper.connectedEdgesOutgoing.Add(e);
                     G.edges.Add(e);
                 }
             }
@@ -873,6 +861,146 @@ namespace Graphen
             return Tuple.Create(sourceSuper, targetSuper);
         }
 
+        #endregion
+
+        #region Praktikum 8 - Successive Shortest Path Algorithmus
+
+        public double SuccessiveShortestPath(Graph G)
+        {
+
+            //step 1
+            foreach (Edge item in G.edges)
+            {
+                if (item.cost >= 0)
+                {
+                    item.flow = 0;
+                }
+                else
+                {
+                    item.flow = item.capacity;
+                }
+            }
+
+            for (int i = 0; i < G.vertices.Count; i++)
+            {
+                Vertex v = G.vertices[i];
+
+                //sum of capacity of all outgoing edges with cost < 0
+                for (int k = 0; k < v.connectedEdgesOutgoing.Count; k++)
+                {
+                    Edge e = v.connectedEdgesOutgoing[k];
+                    if (e.cost < 0)
+                    {
+                        v.balanceInCostOptimalFlow += e.capacity;
+                    }
+                }
+
+                //sum of capacity of all incmoing edges with cost < 0
+                for (int k = 0; k < v.connectedEdgesIncoming.Count; k++)
+                {
+                    Edge e = v.connectedEdgesIncoming[k];
+                    if (e.cost < 0)
+                    {
+                        v.balanceInCostOptimalFlow -= e.capacity;
+                    }
+                }
+            }
+            double costMinimalFlow = double.NaN;
+            while (true)
+            {
+                //step 2
+                var super = CreateSuperSourceAndSuperTarget(ref G);
+
+                int countVertices = G.vertices.Count;
+                int indexSS = G.vertices[countVertices - 2].name;
+                int indexST = G.vertices[countVertices - 1].name;
+
+                if (super.Item1.balance-super.Item1.balanceInCostOptimalFlow == 0)
+                {
+                    foreach (Vertex item in G.vertices)
+                    {
+                        if (item.balance != item.balanceInCostOptimalFlow)
+                        {
+                            return double.NaN;
+                        }
+                    }
+
+                    return 0;
+                }
+                Vertex source = super.Item1.connectedEdgesOutgoing[0].destinationVertex;
+                Vertex target = super.Item2.connectedEdgesOutgoing[0].sourceVertex;
+
+
+                G.edges.RemoveAll(o => o.sourceVertex == super.Item1);          //remove super source edges
+                G.edges.RemoveAll(o => o.destinationVertex == super.Item2);     //remove super target edges
+                G.vertices.RemoveAt(indexST);                                   //remove super target 
+                G.vertices.RemoveAt(indexSS);
+
+                //step 3
+
+                Graph residualGraph = generateResidualGraph(G);
+                string G_ = ToStringEdgelist(G);
+                string G_f = ToStringEdgelist(residualGraph);
+
+                System.Console.WriteLine("G\n" + G_);
+                System.Console.WriteLine("Gf\n" + G_f);
+
+                var mbf = MooreBellmanFord(residualGraph, source.name);
+
+                List<Edge> path = generatePathFromStoT(residualGraph.vertices, residualGraph.edges, source.name, target.name);
+
+                //step 4
+
+                double gamma = findMinimumOfCostAndBalance(path, source, target);
+                source.balanceInCostOptimalFlow += gamma;
+                target.balanceInCostOptimalFlow -= gamma;
+                generateOriginalGraphFlow(path, ref G, gamma);
+                costMinimalFlow = CostMinimalFlow(G);
+            }
+            //return double.NaN;
+        }
+
+        private double findMinimumOfCostAndBalance(List<Edge> path, Vertex source, Vertex target)
+        {
+            double minimum = double.PositiveInfinity;
+            if (source.balance - source.balanceInCostOptimalFlow < minimum)
+            {
+                minimum = source.balance - source.balanceInCostOptimalFlow;
+            }
+            if (target.balanceInCostOptimalFlow - target.balance < minimum)
+            {
+                minimum = target.balanceInCostOptimalFlow - target.balance;
+            }
+            foreach (Edge item in path)
+            {
+                if (minimum > item.capacity)
+                {
+                    minimum = item.capacity;
+                }
+            }
+
+            return minimum;
+        }
+        private Tuple<Vertex, Vertex> findSourceAndTarget(Graph G, List<Vertex> sourcesList, List<Vertex> targetsList)
+        {
+            Vertex source = new Vertex();
+            Vertex target = new Vertex();
+
+            for (int i = 0; i < sourcesList.Count; i++)
+            {
+                source = sourcesList[i];
+                var ts = Tiefensuche(G, source.name);
+                for (int k = 0; k < targetsList.Count; k++)
+                {
+                    target = ts.Item1.Find(o => o.name == targetsList[k].name);
+                    return Tuple.Create(source, target);
+                }
+            }
+
+            target = null;
+            return Tuple.Create(source, target);
+        }
+        #endregion
         #endregion
     }
 }
