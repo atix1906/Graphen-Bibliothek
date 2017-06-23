@@ -103,13 +103,15 @@ namespace Graphen
             Stack<Vertex> visitedVertex = new Stack<Vertex>();
             List<Edge> visitedEdges = new List<Edge>();
 
-            visitedVertex.Push(edges[start].sourceVertex);
-            followMeAround.Add(edges[start].sourceVertex);
+            int firstEdge = edges.FindIndex(o => o.sourceVertex == G.vertices[start]);
 
-            visitedVertex.Push(edges[start].destinationVertex);
-            followMeAround.Add(edges[start].destinationVertex);
-            visitedEdges.Add(edges[start]);
-            edges.RemoveAt(0);
+            visitedVertex.Push(edges[firstEdge].sourceVertex);
+            followMeAround.Add(edges[firstEdge].sourceVertex);
+
+            visitedVertex.Push(edges[firstEdge].destinationVertex);
+            followMeAround.Add(edges[firstEdge].destinationVertex);
+            visitedEdges.Add(edges[firstEdge]);
+            edges.RemoveAt(firstEdge);
 
             while (visitedVertex.Count > 0)
             {
@@ -905,17 +907,33 @@ namespace Graphen
                     }
                 }
             }
-            double costMinimalFlow = double.NaN;
+            //double costMinimalFlow = double.NaN;
             while (true)
             {
                 //step 2
-                var super = CreateSuperSourceAndSuperTarget(ref G);
 
-                int countVertices = G.vertices.Count;
-                int indexSS = G.vertices[countVertices - 2].name;
-                int indexST = G.vertices[countVertices - 1].name;
+                Vertex source = new Vertex();
+                Vertex target = new Vertex();
+                List<Vertex> sourceList = new List<Vertex>();
+                List<Vertex> targetList = new List<Vertex>();
 
-                if (super.Item1.balance-super.Item1.balanceInCostOptimalFlow == 0)
+                foreach (Vertex item in G.vertices)
+                {
+                    if (item.balance - item.balanceInCostOptimalFlow > 0)
+                    {
+                        sourceList.Add(item);
+                    }
+                    else if (item.balance - item.balanceInCostOptimalFlow < 0)
+                    {
+                        targetList.Add(item);
+                    }
+                }
+
+                var sourceAndTarget = findSourceAndTarget(G, sourceList, targetList);
+                source = sourceAndTarget.Item1;
+                target = sourceAndTarget.Item2;
+
+                if (target == null)
                 {
                     foreach (Vertex item in G.vertices)
                     {
@@ -924,30 +942,36 @@ namespace Graphen
                             return double.NaN;
                         }
                     }
-
-                    return 0;
+                    double costMinimalFlow = CostMinimalFlow(G);
+                    return costMinimalFlow;
                 }
-                Vertex source = super.Item1.connectedEdgesOutgoing[0].destinationVertex;
-                Vertex target = super.Item2.connectedEdgesOutgoing[0].sourceVertex;
-
-
-                G.edges.RemoveAll(o => o.sourceVertex == super.Item1);          //remove super source edges
-                G.edges.RemoveAll(o => o.destinationVertex == super.Item2);     //remove super target edges
-                G.vertices.RemoveAt(indexST);                                   //remove super target 
-                G.vertices.RemoveAt(indexSS);
 
                 //step 3
 
                 Graph residualGraph = generateResidualGraph(G);
-                string G_ = ToStringEdgelist(G);
-                string G_f = ToStringEdgelist(residualGraph);
+                //string G_ = ToStringEdgelist(G);
+                //string G_f = ToStringEdgelist(residualGraph);
 
-                System.Console.WriteLine("G\n" + G_);
-                System.Console.WriteLine("Gf\n" + G_f);
+                //System.Console.WriteLine("G\n" + G_);
+                //System.Console.WriteLine("Gf\n" + G_f);
 
                 var mbf = MooreBellmanFord(residualGraph, source.name);
 
-                List<Edge> path = generatePathFromStoT(residualGraph.vertices, residualGraph.edges, source.name, target.name);
+                List<Edge> path = generatePathFromStoT(mbf.Item1, residualGraph.edges, source.name, target.name);
+
+                //List<Edge> path = mbf.Item1;
+                if (path == null)
+                {
+                    foreach (Vertex item in G.vertices)
+                    {
+                        if (item.balance != item.balanceInCostOptimalFlow)
+                        {
+                            return double.NaN;
+                        }
+                    }
+                    double costMinimalFlow = CostMinimalFlow(G);
+                    return costMinimalFlow;
+                }
 
                 //step 4
 
@@ -955,7 +979,7 @@ namespace Graphen
                 source.balanceInCostOptimalFlow += gamma;
                 target.balanceInCostOptimalFlow -= gamma;
                 generateOriginalGraphFlow(path, ref G, gamma);
-                costMinimalFlow = CostMinimalFlow(G);
+                //costMinimalFlow = CostMinimalFlow(G);
             }
             //return double.NaN;
         }
@@ -993,7 +1017,10 @@ namespace Graphen
                 for (int k = 0; k < targetsList.Count; k++)
                 {
                     target = ts.Item1.Find(o => o.name == targetsList[k].name);
-                    return Tuple.Create(source, target);
+                    if (target != null)
+                    {
+                        return Tuple.Create(source, target);
+                    }
                 }
             }
 
