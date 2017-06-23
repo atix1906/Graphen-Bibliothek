@@ -907,7 +907,6 @@ namespace Graphen
                     }
                 }
             }
-            //double costMinimalFlow = double.NaN;
             while (true)
             {
                 //step 2
@@ -949,23 +948,17 @@ namespace Graphen
                 //step 3
 
                 Graph residualGraph = generateResidualGraph(G);
-                //string G_ = ToStringEdgelist(G);
-                //string G_f = ToStringEdgelist(residualGraph);
-
-                //System.Console.WriteLine("G\n" + G_);
-                //System.Console.WriteLine("Gf\n" + G_f);
-
                 var mbf = MooreBellmanFord(residualGraph, source.name);
 
                 List<Edge> path = generatePathFromStoT(mbf.Item1, residualGraph.edges, source.name, target.name);
 
-                //List<Edge> path = mbf.Item1;
                 if (path == null)
                 {
                     foreach (Vertex item in G.vertices)
                     {
                         if (item.balance != item.balanceInCostOptimalFlow)
                         {
+                            MessageBox.Show("Kein B-Fluss");
                             return double.NaN;
                         }
                     }
@@ -979,9 +972,7 @@ namespace Graphen
                 source.balanceInCostOptimalFlow += gamma;
                 target.balanceInCostOptimalFlow -= gamma;
                 generateOriginalGraphFlow(path, ref G, gamma);
-                //costMinimalFlow = CostMinimalFlow(G);
             }
-            //return double.NaN;
         }
 
         private double findMinimumOfCostAndBalance(List<Edge> path, Vertex source, Vertex target)

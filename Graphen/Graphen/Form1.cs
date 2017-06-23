@@ -497,7 +497,7 @@ namespace Graphen
                 sw.Stop();
                 if (!double.IsNaN(erg))
                 {
-                    MessageBox.Show("Cycle-Canceling\nElapsed Time: " + sw.Elapsed.ToString() + "\nKostenminimaler Fluss: " + erg);
+                    MessageBox.Show("Successive Shortest Path\nElapsed Time: " + sw.Elapsed.ToString() + "\nKostenminimaler Fluss: " + erg);
                 }
 
                 ResetGraph();
