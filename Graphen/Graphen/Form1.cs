@@ -518,7 +518,7 @@ namespace Graphen
                 int erg = functions.MaximalMatchings(graph);
                 sw.Stop();
 
-                MessageBox.Show("Maximale Matchings\nElapsed Time: " + sw.Elapsed.ToString() + "\nAnzahl Matchings: " + erg);
+                MessageBox.Show("Maximale Matchings\nElapsed Time: " + sw.Elapsed.ToString() + "\nAnzahl Matchingkanten: " + erg);
 
                 ResetGraph();
             }

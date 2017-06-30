@@ -1011,24 +1011,44 @@ namespace Graphen
 
         public int MaximalMatchings(Graph G)
         {
-
+            //Generate super source and super target
             var sourceAndTarget = GenerateSuperSourceAndSuperTarget(ref G);
             Vertex superSource = sourceAndTarget.Item1;
             Vertex superTarget = sourceAndTarget.Item2;
+
+            //set capacity for all edges to 1
             foreach (Edge item in G.edges)
             {
                 item.capacity = 1;
             }
             int verticesCount = G.vertices.Count;
             var ek = EdmondsKarp(G, verticesCount - 2, verticesCount - 1);
-            return (int)ek.Item1;
+
+            //remove super source and super target including connected edges
+            ek.Item2.edges.RemoveAll(o => o.sourceVertex == superSource);
+            ek.Item2.edges.RemoveAll(o => o.destinationVertex == superTarget);
+            ek.Item2.vertices.Remove(superSource);
+            ek.Item2.vertices.Remove(superTarget);
+            
+            //Get M = {e element of E | f(e) = 1}
+            List<Edge> matchingEdges = new List<Edge>();
+            Graph maxFlowGraph = ek.Item2;
+            for (int i = 0; i < maxFlowGraph.edges.Count; i++)
+            {
+                Edge e = maxFlowGraph.edges[i];
+                if (e.flow == 1)
+                {
+                    matchingEdges.Add(e);
+                }
+            }
+
+            return matchingEdges.Count;
         }
 
         private Tuple<Vertex, Vertex> GenerateSuperSourceAndSuperTarget(ref Graph G)
         {
             Vertex sourceSuper = new Vertex();
             Vertex targetSuper = new Vertex();
-
             int count = G.vertices.Count;
             sourceSuper.name = count;
             G.vertices.Add(sourceSuper);
