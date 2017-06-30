@@ -928,31 +928,12 @@ namespace Graphen
                     }
                 }
 
-                var sourceAndTarget = findSourceAndTarget(G, sourceList, targetList);
+                Graph residualGraph = generateResidualGraph(G);
+                var sourceAndTarget = findSourceAndTarget(residualGraph, sourceList, targetList);
                 source = sourceAndTarget.Item1;
                 target = sourceAndTarget.Item2;
 
                 if (target == null)
-                {
-                    foreach (Vertex item in G.vertices)
-                    {
-                        if (item.balance != item.balanceInCostOptimalFlow)
-                        {
-                            return double.NaN;
-                        }
-                    }
-                    double costMinimalFlow = CostMinimalFlow(G);
-                    return costMinimalFlow;
-                }
-
-                //step 3
-
-                Graph residualGraph = generateResidualGraph(G);
-                var mbf = MooreBellmanFord(residualGraph, source.name);
-
-                List<Edge> path = generatePathFromStoT(mbf.Item1, residualGraph.edges, source.name, target.name);
-
-                if (path == null)
                 {
                     foreach (Vertex item in G.vertices)
                     {
@@ -965,6 +946,12 @@ namespace Graphen
                     double costMinimalFlow = CostMinimalFlow(G);
                     return costMinimalFlow;
                 }
+
+                //step 3
+
+                var mbf = MooreBellmanFord(residualGraph, source.name);
+
+                List<Edge> path = generatePathFromStoT(mbf.Item1, residualGraph.edges, source.name, target.name);
 
                 //step 4
 
