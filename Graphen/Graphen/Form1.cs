@@ -39,7 +39,7 @@ namespace Graphen
 
             OpenFileDialog openFileDialogGetGraph = new OpenFileDialog();
 
-            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 8";
+            openFileDialogGetGraph.InitialDirectory = @"C:\Users\atix\Dropbox\Studium\Master\1. Semester\Mathematische Methoden der Informatik\Praktikum\Praktikum 9";
             openFileDialogGetGraph.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileDialogGetGraph.FilterIndex = 2;
             openFileDialogGetGraph.RestoreDirectory = true;
@@ -505,6 +505,26 @@ namespace Graphen
             else
             {
                 MessageBox.Show("Beim Successive Shortest Path Algorithmus ist etwas schief gegangen.");
+            }
+        }
+
+        private void btnMaximaleMatchings_Click(object sender, EventArgs e)
+        {
+            if (graph != null && functions != null)
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
+                int erg = functions.MaximalMatchings(graph);
+                sw.Stop();
+
+                MessageBox.Show("Maximale Matchings\nElapsed Time: " + sw.Elapsed.ToString() + "\nAnzahl Matchings: " + erg);
+
+                ResetGraph();
+            }
+            else
+            {
+                MessageBox.Show("Beim Maximale-Matchings-Algorithmus ist etwas schief gegangen.");
             }
         }
     }

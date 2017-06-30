@@ -68,6 +68,7 @@
             this.target = new System.Windows.Forms.Label();
             this.btnCycleCanceling = new System.Windows.Forms.Button();
             this.btnSuccessiveShortestPath = new System.Windows.Forms.Button();
+            this.btnMaximaleMatchings = new System.Windows.Forms.Button();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -505,6 +506,7 @@
             this.tableLayoutPanel6.Controls.Add(this.tableLayoutPanel7, 1, 0);
             this.tableLayoutPanel6.Controls.Add(this.btnCycleCanceling, 0, 1);
             this.tableLayoutPanel6.Controls.Add(this.btnSuccessiveShortestPath, 0, 2);
+            this.tableLayoutPanel6.Controls.Add(this.btnMaximaleMatchings, 0, 3);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(573, 324);
             this.tableLayoutPanel6.Margin = new System.Windows.Forms.Padding(4);
@@ -617,6 +619,17 @@
             this.btnSuccessiveShortestPath.UseVisualStyleBackColor = true;
             this.btnSuccessiveShortestPath.Click += new System.EventHandler(this.btnSuccessiveShortestPath_Click);
             // 
+            // btnMaximaleMatchings
+            // 
+            this.btnMaximaleMatchings.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnMaximaleMatchings.Location = new System.Drawing.Point(3, 237);
+            this.btnMaximaleMatchings.Name = "btnMaximaleMatchings";
+            this.btnMaximaleMatchings.Size = new System.Drawing.Size(275, 35);
+            this.btnMaximaleMatchings.TabIndex = 4;
+            this.btnMaximaleMatchings.Text = "Maximale Matchings";
+            this.btnMaximaleMatchings.UseVisualStyleBackColor = true;
+            this.btnMaximaleMatchings.Click += new System.EventHandler(this.btnMaximaleMatchings_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -690,6 +703,7 @@
         private System.Windows.Forms.Label target;
         private System.Windows.Forms.Button btnCycleCanceling;
         private System.Windows.Forms.Button btnSuccessiveShortestPath;
+        private System.Windows.Forms.Button btnMaximaleMatchings;
     }
 }
 

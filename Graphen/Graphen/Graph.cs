@@ -12,6 +12,7 @@ namespace Graphen
 {
     class Graph
     {
+        public int numberVerticesInGroupA = 0;
         public List<Edge> edges;
         public List<Vertex> vertices;
         private string[] fileGraph;
@@ -119,18 +120,25 @@ namespace Graphen
         {
             int numberVertices = Int32.Parse(fileGraph[0]);
             int checkIfAdjMatrix = fileGraph[1].Split('\t').Length;    //Anzahl der Tabs dient zur Entscheidung ob Adjazenzmatrix oder Kantenliste
-
+            int checkIfMatchingGraph = fileGraph[2].Split('\t').Length;
             for (int i = 0; i < numberVertices; i++)          //Fügt Anzahl der in der 1. Zeile der .txt Datei angegebenen Knoten der Liste hinzu
             {
                 vertices.Add(new Vertex(i));
-                if (checkIfAdjMatrix == 1)
+                
+                if (checkIfAdjMatrix == 1 && checkIfMatchingGraph!=2)
                 {
                     vertices[i].balance = Double.Parse(fileGraph[i + 1], CultureInfo.InvariantCulture);
                 }
             }
-            if (checkIfAdjMatrix == 1)
+            if (checkIfAdjMatrix == 1 && checkIfMatchingGraph!=2)
             {
                 BuildFromEdgeList(gerichtet, numberVertices + 1);
+            }
+            else if(checkIfAdjMatrix==1 && checkIfMatchingGraph == 2)
+            {
+                
+                numberVerticesInGroupA = Int32.Parse(fileGraph[1], CultureInfo.InvariantCulture);
+                BuildFromEdgeList(gerichtet,2);
             }
             else
             {

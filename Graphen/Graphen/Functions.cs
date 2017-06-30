@@ -618,8 +618,7 @@ namespace Graphen
         {
             StringBuilder s = new StringBuilder();
             Graph clone = G.CopyGraph();// to avoid the sorting of the edges-list in the original graph
-            //SGraphFunctions.SortEdgesBySourceIdAsc(clone.Edges);
-            //clone.edges.SortBy();
+
             foreach (Edge e in clone.edges)
             {
                 s.Append(e.sourceVertex.name + "--" + e.flow + "/" + e.capacity + "/" + e.cost + "-->" + e.destinationVertex.name + Environment.NewLine);
@@ -1006,6 +1005,58 @@ namespace Graphen
             return Tuple.Create(source, target);
         }
         #endregion
+        #endregion
+
+        #region Praktikum 9 - Maximale Matchings
+
+        public int MaximalMatchings(Graph G)
+        {
+
+            var sourceAndTarget = GenerateSuperSourceAndSuperTarget(ref G);
+            Vertex superSource = sourceAndTarget.Item1;
+            Vertex superTarget = sourceAndTarget.Item2;
+            foreach (Edge item in G.edges)
+            {
+                item.capacity = 1;
+            }
+            int verticesCount = G.vertices.Count;
+            var ek = EdmondsKarp(G, verticesCount - 2, verticesCount - 1);
+            return (int)ek.Item1;
+        }
+
+        private Tuple<Vertex, Vertex> GenerateSuperSourceAndSuperTarget(ref Graph G)
+        {
+            Vertex sourceSuper = new Vertex();
+            Vertex targetSuper = new Vertex();
+
+            int count = G.vertices.Count;
+            sourceSuper.name = count;
+            G.vertices.Add(sourceSuper);
+            targetSuper.name = G.vertices.Count;
+            G.vertices.Add(targetSuper);
+
+            for (int i = 0; i < count; i++)
+            {
+                Vertex v = G.vertices[i];
+                if (v.name < G.numberVerticesInGroupA)
+                {
+                    Edge e = new Edge(sourceSuper, v);
+                    v.connectedEdgesIncoming.Add(e);
+                    sourceSuper.connectedEdgesOutgoing.Add(e);
+                    G.edges.Add(e);
+                }
+                else
+                {
+                    Edge e = new Edge(v, targetSuper);
+                    v.connectedEdgesOutgoing.Add(e);
+                    targetSuper.connectedEdgesIncoming.Add(e);
+                    G.edges.Add(e);
+                }
+            }
+
+            return Tuple.Create(sourceSuper, targetSuper);
+        }
+
         #endregion
     }
 }
