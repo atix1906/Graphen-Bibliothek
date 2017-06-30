@@ -515,10 +515,38 @@ namespace Graphen
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
 
-                int erg = functions.MaximalMatchings(graph);
+                List<Edge> erg = functions.MaximalMatchings(graph);
                 sw.Stop();
 
-                MessageBox.Show("Maximale Matchings\nElapsed Time: " + sw.Elapsed.ToString() + "\nAnzahl Matchingkanten: " + erg);
+                MessageBox.Show("Maximale Matchings\nElapsed Time: " + sw.Elapsed.ToString() + "\nAnzahl Matchingkanten: " + erg.Count);
+
+                string filename = "C:\\Users\\atix\\Dropbox\\Studium\\Master\\1. Semester\\Mathematische Methoden der Informatik\\Praktikum\\Praktikum 9\\Ergebnis_MaxMatching.txt";
+                if (erg.Count > 0)
+                {
+
+                    string output = "";
+                    StreamWriter file = new StreamWriter(filename);
+
+                    for (int i = 0; i < erg.Count; i++)
+                    {
+                        output = erg[i].sourceVertex.name + "-->" + erg[i].destinationVertex.name;
+
+                        file.WriteLine(output);
+                    }
+
+                    file.Close();
+
+                    var process = new Process();
+                    process.StartInfo = new ProcessStartInfo()
+                    {
+                        UseShellExecute = true,
+                        FileName = filename
+                    };
+
+                    process.Start();
+                    process.WaitForExit();
+
+                }
 
                 ResetGraph();
             }

@@ -1009,7 +1009,7 @@ namespace Graphen
 
         #region Praktikum 9 - Maximale Matchings
 
-        public int MaximalMatchings(Graph G)
+        public List<Edge> MaximalMatchings(Graph G)
         {
             //Generate super source and super target
             var sourceAndTarget = GenerateSuperSourceAndSuperTarget(ref G);
@@ -1042,7 +1042,7 @@ namespace Graphen
                 }
             }
 
-            return matchingEdges.Count;
+            return matchingEdges;
         }
 
         private Tuple<Vertex, Vertex> GenerateSuperSourceAndSuperTarget(ref Graph G)
