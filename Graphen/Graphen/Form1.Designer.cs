@@ -151,26 +151,26 @@
             // radioButtonGerichtet
             // 
             this.radioButtonGerichtet.AutoSize = true;
-            this.radioButtonGerichtet.Checked = true;
             this.radioButtonGerichtet.Dock = System.Windows.Forms.DockStyle.Fill;
             this.radioButtonGerichtet.Location = new System.Drawing.Point(283, 2);
             this.radioButtonGerichtet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButtonGerichtet.Name = "radioButtonGerichtet";
             this.radioButtonGerichtet.Size = new System.Drawing.Size(275, 56);
             this.radioButtonGerichtet.TabIndex = 0;
-            this.radioButtonGerichtet.TabStop = true;
             this.radioButtonGerichtet.Text = "Gerichteter Graph";
             this.radioButtonGerichtet.UseVisualStyleBackColor = true;
             // 
             // radioButtonUngerichtet
             // 
             this.radioButtonUngerichtet.AutoSize = true;
+            this.radioButtonUngerichtet.Checked = true;
             this.radioButtonUngerichtet.Dock = System.Windows.Forms.DockStyle.Fill;
             this.radioButtonUngerichtet.Location = new System.Drawing.Point(283, 62);
             this.radioButtonUngerichtet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.radioButtonUngerichtet.Name = "radioButtonUngerichtet";
             this.radioButtonUngerichtet.Size = new System.Drawing.Size(275, 56);
             this.radioButtonUngerichtet.TabIndex = 1;
+            this.radioButtonUngerichtet.TabStop = true;
             this.radioButtonUngerichtet.Text = "Ungerichteter Graph";
             this.radioButtonUngerichtet.UseVisualStyleBackColor = true;
             // 

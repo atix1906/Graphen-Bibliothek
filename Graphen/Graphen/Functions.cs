@@ -1011,6 +1011,8 @@ namespace Graphen
 
         public List<Edge> MaximalMatchings(Graph G)
         {
+            //Direct all Edges e Element of E from A to B
+            directEdges(ref G);
             //Generate super source and super target
             var sourceAndTarget = GenerateSuperSourceAndSuperTarget(ref G);
             Vertex superSource = sourceAndTarget.Item1;
@@ -1029,7 +1031,7 @@ namespace Graphen
             ek.Item2.edges.RemoveAll(o => o.destinationVertex == superTarget);
             ek.Item2.vertices.Remove(superSource);
             ek.Item2.vertices.Remove(superTarget);
-            
+
             //Get M = {e element of E | f(e) = 1}
             List<Edge> matchingEdges = new List<Edge>();
             Graph maxFlowGraph = ek.Item2;
@@ -1045,6 +1047,24 @@ namespace Graphen
             return matchingEdges;
         }
 
+        private void directEdges(ref Graph G)
+        {
+            for (int i = 0; i < G.vertices.Count; i++)
+            {
+                Vertex v = G.vertices[i];
+                if (v.name < G.numberVerticesInGroupA)
+                {
+                    G.RemoveEdges(v.connectedEdgesIncoming);
+                    v.connectedEdgesIncoming = new List<Edge>();
+
+                }
+                else
+                {
+                    G.RemoveEdges(v.connectedEdgesOutgoing);
+                    v.connectedEdgesOutgoing = new List<Edge>();
+                }
+            }
+        }
         private Tuple<Vertex, Vertex> GenerateSuperSourceAndSuperTarget(ref Graph G)
         {
             Vertex sourceSuper = new Vertex();

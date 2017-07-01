@@ -335,5 +335,13 @@ namespace Graphen
 
             return newEdgeList;
         }
+
+        public void RemoveEdges(List<Edge> E)
+        {
+            foreach (Edge item in E)
+            {
+                this.edges.Remove(item);
+            }
+        }
     }
 }
