@@ -457,7 +457,6 @@ namespace Graphen
 
         #region Moore-Bellman-Ford
 
-        #endregion
         public Tuple<List<Vertex>, Vertex, bool> MooreBellmanFord(Graph G, int start)
         {
             Vertex v_suspect = new Vertex();
@@ -505,6 +504,7 @@ namespace Graphen
             return Tuple.Create(vertices, v_suspect, negZykel);
         }
 
+        #endregion
         #endregion
 
         #region Praktikum 6 - Edmonds-Karp-Algorithmus
